@@ -1,3 +1,7 @@
+19.8 2019, VERSION 1.1.0
+ - Added Makefile, which compiles and installs jaclang to /usr/bin
+ - added uninstall.sh, which removes jaclang from /usr/bin
+
 19.8 2019, VERSION 1.0.0
  - Uploaded language Jaclang. Its intensions can be seen in README.md
  - You can have inline assembly, such as __asmtext__, for code in text section,
