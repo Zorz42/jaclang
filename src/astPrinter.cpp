@@ -1,5 +1,7 @@
 #include "jaclang.h"
 
+// This file prints out abstract syntax tree
+
 int nested = -1;
 
 void printAST(branch obj)
