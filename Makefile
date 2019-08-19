@@ -2,4 +2,4 @@ make: src/*.cpp
 	g++ src/*.cpp
 	mv a.out jaclang
 	sudo cp jaclang /usr/bin/jaclang
-	echo Jsaclang compiled sucsessfully!
+	echo Jaclang compiled sucsessfully!
