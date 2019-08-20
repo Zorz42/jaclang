@@ -4,6 +4,9 @@
 
 int file::inputLineCount = 0;
 
+bool debug = false;
+std::streambuf* orig_buf;
+
 int file::asm_data = 1; 
 int file::asm_bss = 3;  
 int file::asm_text = 9;
@@ -16,9 +19,10 @@ std::vector<std::string> file::outputVector;
 
 int main(int argc, char **argv)
 {
+	orig_buf = std::cout.rdbuf();
 	if (argc < 3) // At least two arguments - input and output file
 	{
-		std::cout << "\033[1;31mMust input at least 2 arguments!\033[0m" << std::endl;
+		coutn << "\033[1;31mMust input at least 2 arguments!\033[0m" << std::endl;
 		error::terminate("NOT ENOUGH ARGUMENTS", ERROR_ARGUMENT_COUNT);
 	}
 	
@@ -27,6 +31,8 @@ int main(int argc, char **argv)
 	for(int i = 3; i < argc; i++)
 		args.push_back(argv[i]); // set args vector
 	
+	if(contains(args, "debug"))
+		debug = true;
 	
 	file::input = argv[1]; 
 	file::output = argv[2];
@@ -85,7 +91,7 @@ int main(int argc, char **argv)
 	command += ".o";
 	system(command.c_str());
 	
-	std::cout << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // Yay, compilation sucsessful!
+	coutn << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // Yay, compilation sucsessful!
 	
 	if(!contains(args, "norun")) // also run file if not specified not to (confusing)
 	{
@@ -99,33 +105,7 @@ int main(int argc, char **argv)
 
 void file::read()
 {
-	std::ifstream inputFileObj(file::input); // Open file and store it in std::ifstream object
-	if(!inputFileObj.is_open()) // If didnt open (file missing,...)
-	{
-		std::cout << "Unable to open file!" << std::endl;
-		return;
-	}
-	//                              |||| String for iteration
-	std::string line; //            VVVV
-	while(std::getline(inputFileObj,line)) // Iterate through lines of input file
-	{
-		// preprocessor
-		bool lineComment = false;
-		for(int i = 0; i < line.length(); i++)
-		{
-			if(i < line.length() - 3) // if not in the last 3 characters of line
-				if(line[i] == '/' && line[i + 1] == '/' && line[i + 2] == '/') // if triple slash
-					lineComment = true; // then there is comment
-			if(!lineComment) // character is not in comment
-				file::inputText += line[i]; // Adds line of code to the output
-		}
-		file::inputText += '\n'; // Adds line of code to the output
-		file::inputLineCount++;  // Adds one line count
-	}
-	
-	file::inputText += " "; // So that lexer stores the last token for sure
-	
-	inputFileObj.close(); // Close the file - file have been read
+	preprocessor::main(file::input);
 }
 
 void file::write()
@@ -136,7 +116,7 @@ void file::write()
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
 			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line
 	}
-	else std::cout << "Unable to write to file!" << std::endl; // If file failed to open (or create)
+	else coutn << "Unable to write to file!" << std::endl; // If file failed to open (or create)
 	
 	outputFileObj.close(); // Close file, c++ code has been written
 }

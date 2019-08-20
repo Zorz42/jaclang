@@ -164,7 +164,7 @@ void lexer::main() // main lexer function
 			else
 				iter.type = TYPE_INDENT; // indent is only left
 		}
-		std::cout << iter.type << ": " << iter.text << std::endl;
+		coutd << iter.type << ": " << iter.text << std::endl;
 		
 		prevToken = iter; // set previous token
 	}

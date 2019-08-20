@@ -11,7 +11,7 @@ void printAST(branch obj)
 	for(int i = 0; i < nested; i++)
 		name += "	";
 	name += obj.name;
-	std::cout << name << std::endl;
+	coutd << name << std::endl;
 	for(branch iterator : obj.sub)
 	{
 		printAST(iterator);

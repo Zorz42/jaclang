@@ -11,7 +11,7 @@ void generator::main()
 	for(; mainBranch.count < mainBranch.sub.size(); mainBranch.count++) // iterate though branches
 	{
 		file::append_text("");
-		std::cout << current.name << std::endl;
+		coutd << current.name << std::endl;
 		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
