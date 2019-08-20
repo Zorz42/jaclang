@@ -1,4 +1,4 @@
-# jaclang version 1.1.0
+# jaclang beta
 jaclang is like C programming language very fast and light
 
 // --------------------------
