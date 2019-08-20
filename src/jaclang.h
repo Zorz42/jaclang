@@ -12,11 +12,11 @@
 struct branch;
 
 // headers/
-	#include "constants.h"
-	#include "shortcuts.h"
-	#include "error.h"
+	#include "../include/constants.h"
+	#include "../include/shortcuts.h"
+	#include "../include/error.h"
 	
-	#include "file.h"      // opens file
-	#include "lexer.h"     // breaks it into tokens
-	#include "parser.h"    // parses it into syntax tree
-	#include "generator.h" // generates asm code
+	#include "../include/file.h"      // opens file
+	#include "../include/lexer.h"     // breaks it into tokens
+	#include "../include/parser.h"    // parses it into syntax tree
+	#include "../include/generator.h" // generates asm code
