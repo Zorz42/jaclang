@@ -1,6 +1,6 @@
 // the error module, which reports syntax errors
 
-#include <jaclang.h>
+#include "jaclang.h"
 
 void error::syntaxError(std::string error) // Print out syntax error
 {

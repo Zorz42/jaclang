@@ -1,6 +1,6 @@
 // this generates variable declarations
 
-#include <jaclang.h>
+#include "jaclang.h"
 
 void generator::e::variableDeclaration()
 {
