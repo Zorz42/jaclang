@@ -1,3 +1,5 @@
+// this generates system functions
+
 #include "jaclang.h"
 
 void f_asmtext();

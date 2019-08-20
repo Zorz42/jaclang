@@ -1,3 +1,5 @@
+// parser for builtin functions, like __asm__
+
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)

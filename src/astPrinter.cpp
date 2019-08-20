@@ -1,3 +1,5 @@
+// this file prints out abstract syntax tree
+
 #include "jaclang.h"
 
 int nested = -1;

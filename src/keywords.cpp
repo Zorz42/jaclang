@@ -1,11 +1,13 @@
+// this stores keyword values
+
 #include "jaclang.h"
 
-std::vector<std::string> lexer::keywords = // list of keywords
+std::vector<std::string> lexer::keywords =
 {
-	"int" // integer - 4byte non-decimal number
+	"int"
 };
 
-std::vector<std::string> keywordsDatatype = // list of datatype keywords
+std::vector<std::string> keywordsDatatype =
 {
 	"int"
 };

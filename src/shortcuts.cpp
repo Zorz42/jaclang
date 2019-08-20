@@ -20,3 +20,8 @@ bool isSystemIndent(std::string indent) // check if string has __ at the beggini
 	
 	return result;
 }
+
+std::string onStack(int offset)
+{
+	return "[rbp-" + std::to_string(offset) + "]"; // returns position on stack: [rbp-offset]
+}

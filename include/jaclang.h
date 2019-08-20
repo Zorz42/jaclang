@@ -1,3 +1,5 @@
+// main header, which includes everything all files need
+
 #include <iostream>
 #include <fstream>
 #include <string>

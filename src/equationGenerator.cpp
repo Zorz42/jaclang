@@ -1,5 +1,7 @@
 #include "jaclang.h"
 
+// this generates tree equation into asm code
+
 int generator::currentRegister32 = 0;
 std::vector<std::string> generator::availableRegisters32 =  // all registers that equations can use
 {

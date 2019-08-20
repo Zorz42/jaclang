@@ -1,3 +1,5 @@
+// this generates variable declarations
+
 #include "jaclang.h"
 
 void generator::e::variableDeclaration()
