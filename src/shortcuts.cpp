@@ -1,3 +1,5 @@
+// there are defined functions, that are often used to make code more readable
+
 #include "jaclang.h"
 
 bool contains(std::string text, char character) 
