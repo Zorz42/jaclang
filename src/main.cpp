@@ -1,4 +1,34 @@
 #include "jaclang.h"
+// --------------------------
+// PROJECT MADE BY JAKOB
+// --------------------------
+/* Jaclang is very similar to C++, but it's not a general purpose language.
+ * 
+ * It is trying to achieve as small compiled binaries as possible. Predefined variables, like complier version 
+ * and other stuff is not defined by default, you have to enable them, because some do not use them. Defined will be 
+ * the core data. You can enable to track execution time, because if you do 
+ * not need it, it will only take performance.  
+ * 
+ * Support:
+ * 
+ * - ONLY 64 bit computers,
+ * - ONLY linux, for now - compiled binary, (for sources maybe you can compile for mac too)
+ * - NASM compiler,
+ * - Intel architecture CPU.
+ * 
+ * This language is not begginer friendly.
+ * Syntax will be almost the same as C++. Some 
+ * unnecessary tokens will be removed.
+ * 
+ *  THE ZEN OF JACLANG: (like python)
+ * 
+ * - execution time of compiled code is more important than compilation time,
+ * - hirearhical is better than flat,
+ * - purity is imortant
+ * - practicality beats purity (from python, I agree)
+ * - size of compiled binaries should be as small as possible
+ */
+
 // FILE
 
 int file::inputLineCount = 0;
