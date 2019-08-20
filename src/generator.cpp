@@ -1,6 +1,6 @@
 // this generates ast into asm code
 
-#include "jaclang.h"
+#include <jaclang.h>
 
 int generator::stackPointer = 0; // top of stack
 std::vector<variable> generator::stack; // the stack, not actual just for allocation

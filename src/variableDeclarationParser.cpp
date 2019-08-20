@@ -1,6 +1,6 @@
 // this parses variable declaration
 
-#include "jaclang.h"
+#include <jaclang.h>
 
 #define current lexer::toks.at(parser::tokCount)
 
