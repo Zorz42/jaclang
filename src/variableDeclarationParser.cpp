@@ -24,7 +24,7 @@ bool parser::e::variableDeclaration()
 		branch equationBranch = parser::equation(";", "\\n");
 		appendBranch(equationBranch, currentBranch);
 		
-		appendBranch(currentBranch, mainBranch);
+		appendBranch(currentBranch, *currentBranchScope);
 		return true;
 	}
 	else

@@ -30,3 +30,11 @@ jaclang is like C programming language very fast and light
  * - practicality beats purity (from python, I agree)
  * - size of compiled binaries should be as small as possible
  *
+ * - HOW TO USE
+ * 
+ * - jaclang [input file] [output file] [options]
+ * -
+ * - options:
+ * -> debug : enable debug mode (see tokens, ast)
+ * -> norun : do not run file on compilation
+ * -> keep  : keep the assembly file

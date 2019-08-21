@@ -3,13 +3,16 @@
 #include "jaclang.h"
 
 int parser::tokCount = 0;
+std::vector<branch*> scopes = {&mainBranch};
 
+branch* currentBranchScope;
 branch mainBranch;
 
 #define current lexer::toks.at(parser::tokCount)
 
 void parser::main()
 {
+	currentBranchScope = &mainBranch;
 	mainBranch.name = file::input; // root name is input file name
 	//for(token iterator : tokens)
 		//coutd << iterator.type << ": " << iterator.text << std::endl;
@@ -21,10 +24,12 @@ void parser::main()
 			if(parser::e::functionCall()) 0; // execute functionCall
 			else if(parser::e::systemFunctionCall()) 0; // else execute systemFunctionCall
 			else if(parser::e::variableDeclaration()) 0; // else execute variableDeclaration
+			else if(parser::e::beginScope()) 0;
+			else if(parser::e::endScope()) 0;
 			else
 			{
 				branch equation = parser::equation(";", "\\n"); // else parse equation
-				appendBranch(equation, mainBranch);
+				appendBranch(equation, *currentBranchScope);
 			}
 		}
 	}

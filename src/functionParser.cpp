@@ -22,7 +22,7 @@ bool parser::e::functionCall()
 		}
 		if(current.text != "\\n" && current.text != ";") // function end
 			error::syntaxError("Expected newline or ';' at the end of function");
-		appendBranch(currentBranch, mainBranch); // append branch to root
+		appendBranch(currentBranch, *currentBranchScope); // append branch to root
 		return true;
 	}
 	else

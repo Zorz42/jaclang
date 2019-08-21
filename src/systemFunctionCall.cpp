@@ -8,8 +8,8 @@ void f_asmbss();
 
 void generator::e::systemFunctionCall() // system function: __test__
 {
-	#define current mainBranch.sub.at(mainBranch.count) // function branch
-	#define currentName mainBranch.sub.at(mainBranch.count).sub.at(0).name // name of function
+	#define current currentBranchScope->sub.at(currentBranchScope->count) // function branch
+	#define currentName currentBranchScope->sub.at(currentBranchScope->count).sub.at(0).name // name of function
 	
 	if(currentName == "__asmtext__") // system functions
 		f_asmtext();

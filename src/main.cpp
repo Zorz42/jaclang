@@ -9,7 +9,7 @@ std::streambuf* orig_buf;
 
 int file::asm_data = 1; 
 int file::asm_bss = 3;  
-int file::asm_text = 9;
+int file::asm_text = 8;
 
 std::string file::input;
 std::string file::output;
@@ -47,7 +47,6 @@ int main(int argc, char **argv)
 	file::add("section .text"); // text section
 	file::add("	global _start"); // for linker
 	file::add("_start:");
-	file::add("	mov rbp, rsp"); // set stack
 	file::add("");
 	file::add("");
 	file::add("	mov eax, 1");  // sys exit
@@ -110,13 +109,16 @@ void file::read()
 
 void file::write()
 {
+	std::string command = "touch ";
+	command += file::output;
+	command += ".asm";
+	system(command.c_str()); // create file
 	std::ofstream outputFileObj(file::output + ".asm"); // Open file (or create)
 	if (outputFileObj.is_open()) // If file was opened (or created)
 	{
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
 			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line
 	}
-	else coutn << "Unable to write to file!" << std::endl; // If file failed to open (or create)
 	
 	outputFileObj.close(); // Close file, c++ code has been written
 }

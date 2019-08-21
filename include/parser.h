@@ -6,6 +6,7 @@ struct branch
 };
 
 extern branch mainBranch;
+extern branch* currentBranchScope;
 
 void appendBranch(branch& source, branch& target);
 void appendBranch(std::string source, branch& target);
@@ -22,5 +23,9 @@ namespace parser
 		bool functionCall();
 		bool systemFunctionCall();
 		bool variableDeclaration();
+		bool beginScope();
+		bool endScope();
 	}
+	
+	extern std::vector<branch*> scopes;
 }

@@ -4,7 +4,7 @@
 
 void generator::e::variableDeclaration()
 {
-	#define current mainBranch.sub.at(mainBranch.count)
+	#define current currentBranchScope->sub.at(currentBranchScope->count)
 	
 	variable obj; // obj variable
 	obj.indent = current.sub.at(0).name; // indent

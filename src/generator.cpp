@@ -7,11 +7,11 @@ std::vector<variable> generator::stack; // the stack, not actual just for alloca
 
 void generator::main()
 {
-	#define current mainBranch.sub.at(mainBranch.count) // current branch
-	for(; mainBranch.count < mainBranch.sub.size(); mainBranch.count++) // iterate though branches
+	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
+	file::append_text("	mov rbp, rsp");
+	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
 	{
 		file::append_text("");
-		coutd << current.name << std::endl;
 		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
