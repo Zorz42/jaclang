@@ -38,3 +38,5 @@ jaclang is like C programming language very fast and light
  * -> debug : enable debug mode (see tokens, ast)
  * -> norun : do not run file on compilation
  * -> keep  : keep the assembly file
+ * 
+ * Version tags are stable versions. Master branch is the latest version in development. Might be unstable and full ob bugs.
