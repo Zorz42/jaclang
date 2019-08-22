@@ -6,11 +6,14 @@ void error::syntaxError(std::string error) // Print out syntax error
 {
 	coutn << "\033[1;31mSyntax error, line " << lexer::toks.at(parser::tokCount).line << ": "; // Syntax error in red
 	coutn << error << std::endl << std::endl; // Actual error
-	coutn << file::getLine(lexer::toks.at(parser::tokCount).line) << std::endl; // find line of error
+	std::string errorLine = file::getLine(lexer::toks.at(parser::tokCount).line);
+	while(errorLine.at(0) == ' ' || errorLine.at(0) == '	')
+		errorLine.erase(errorLine.begin());
+	coutn << errorLine << std::endl; // find line of error
 	for(int i = 0; i < lexer::toks.at(parser::tokCount).pos; i++) // point to error token
-		coutd << " ";
+		std::cout << " ";
 	coutn << "^" << std::endl;
-	coutn << "\033[0m"; // Reset to whte
+	coutn << "\033[0m"; // Reset to white
 	
 	terminate("SYNTAX ERROR", ERROR_SYNTAX_ERROR);
 }

@@ -3,7 +3,7 @@
 #include "jaclang.h"
 
 int parser::tokCount = 0;
-std::vector<branch*> scopes = {&mainBranch};
+std::vector<branch*> parser::scopes = {&mainBranch};
 
 branch* currentBranchScope;
 branch mainBranch;

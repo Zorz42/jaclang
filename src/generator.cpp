@@ -8,7 +8,8 @@ std::vector<variable> generator::stack; // the stack, not actual just for alloca
 void generator::main()
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
-	file::append_text("	mov rbp, rsp");
+	if(currentBranchScope == &mainBranch)
+		file::append_text("	mov rbp, rsp");
 	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
 	{
 		file::append_text("");
@@ -18,6 +19,13 @@ void generator::main()
 			generator::e::variableDeclaration();
 		else if(current.name == "/equation")
 			generator::e::equation(current);
+		else if(current.name == "scope")
+		{
+			branch* prevScope = currentBranchScope;
+			currentBranchScope = &(current);
+			generator::main();
+			currentBranchScope = prevScope;
+		}
 		else
 			error::treeError("Unknown branch: " + current.name);
 	}

@@ -14,7 +14,6 @@ namespace generator
 		void systemFunctionCall();
 		void variableDeclaration();
 		void equation(branch equation);
-
 	}
 	
 	extern int stackPointer;
