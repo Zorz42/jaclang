@@ -34,7 +34,8 @@ void preprocessor::main(std::string text)
 				file::inputText += line[i]; // Adds line of code to the output
 			
 		}
-		file::inputText += '\n'; // Adds line of code to the output
+		if(!multilineComment) // character is not in multiline comment
+			file::inputText += '\n'; // Adds line of code to the output
 		file::inputLineCount++;  // Adds one line count
 	}
 	

@@ -1,7 +1,8 @@
-22.8 2019, BETA 1.2.0
+22.8 2019, BETA 1.3.0
  - Added scopes
  - Updated readme.md for usage
- - fixed bug for not writing to file
+ - fixed bug which sometimes does't write to file
+ - fixed bug where newline in multiline comment count as token
 
 20.8 2019, BETA 1.2.0
  - Added multiline comments
