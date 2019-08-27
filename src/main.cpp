@@ -19,12 +19,18 @@ std::vector<std::string> file::outputVector;
 
 int main(int argc, char **argv)
 {
+	using namespace std::chrono;
+	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+	
 	orig_buf = std::cout.rdbuf();
 	if (argc < 3) // At least two arguments - input and output file
 	{
-		coutn << "\033[1;31mMust input at least 2 arguments!\033[0m" << std::endl;
+		coutn << "\033[1;31mMust input at least 2 arguments, input and output file!\033[0m" << std::endl;
 		error::terminate("NOT ENOUGH ARGUMENTS", ERROR_ARGUMENT_COUNT);
 	}
+	
+	file::input = argv[1]; 
+	file::output = argv[2];
 	
 	std::vector<std::string> args;
 	
@@ -33,10 +39,6 @@ int main(int argc, char **argv)
 	
 	if(contains(args, "debug"))
 		debug = true;
-	
-	file::input = argv[1]; 
-	file::output = argv[2];
-	
 	
 	file::read(); // Read file
 	
@@ -54,7 +56,8 @@ int main(int argc, char **argv)
 	
 	lexer::main(); // convert code into tokens
 	parser::main(); // convert tokens into syntax tree
-	printAST(mainBranch);
+	if(debug)
+		printAST(mainBranch);
 	generator::main(); // generate assembly code out of syntax tree
 	
 	file::write(); // Writes to file
@@ -71,13 +74,7 @@ int main(int argc, char **argv)
 	command += ".o";
 	system(command.c_str());
 	
-	bool remove_cache = true; // cache = assembly code
-	
-	if(contains(args, "keep")) // if argument is keep, then keep the cache (aka assembly code)
-		if(argv[3] != "keep")
-			remove_cache = false;
-	
-	if(remove_cache) // remove cache if needed
+	if(!contains(args, "keep")) // remove cache if needed
 	{
 		command = "rm ";
 		command += file::output;
@@ -90,7 +87,14 @@ int main(int argc, char **argv)
 	command += ".o";
 	system(command.c_str());
 	
-	coutn << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // Yay, compilation sucsessful!
+	coutn << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // compilation sucsessful!
+	
+	long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+	std::string ms = std::to_string((end - start) % 1000);
+	int len = ms.length();
+	for(int i = 4; i > len; i--)
+		ms.insert(ms.begin(), '0');
+	coutn << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
 	
 	if(!contains(args, "norun")) // also run file if not specified not to (confusing)
 	{
@@ -115,10 +119,8 @@ void file::write()
 	system(command.c_str()); // create file
 	std::ofstream outputFileObj(file::output + ".asm"); // Open file (or create)
 	if (outputFileObj.is_open()) // If file was opened (or created)
-	{
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
 			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line
-	}
 	
 	outputFileObj.close(); // Close file, c++ code has been written
 }
@@ -160,15 +162,11 @@ std::string file::getLine(int LINE) // get line of code
 	std::string currentString = "";
 	int i = 0;
 	for(; currentLine != LINE; i++) // until we are in the line desired
-	{
 		if(file::inputText.at(i) == '\n')
 			currentLine++; // if '\n' (newline) then it is next line
-	}
 	
 	for(;file::inputText.at(i) != '\n'; i++) // when desired line, read line until '\n'
-	{
 		currentString += file::inputText.at(i);
-	}
 	
 	return currentString;
 }
@@ -180,7 +178,8 @@ void file::append_instruction(std::string instruction, std::string arg1, std::st
 	expr += instruction;
 	expr += " ";
 	expr += arg1;
-	expr += ", ";
+	if(arg2.c_str())
+		expr += ", ";
 	expr += arg2;
 	file::append_text(expr);
 }

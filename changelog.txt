@@ -4,6 +4,8 @@
  - fixed bug which sometimes does't write to file
  - fixed bug where newline in multiline comment count as token
  - fixed bug where error points at the wrong character
+ - optimized code
+ - added timing
 
 20.8 2019, BETA 1.2.0
  - Added multiline comments

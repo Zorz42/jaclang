@@ -14,10 +14,7 @@ void generator::e::variableDeclaration()
 		if(iter.indent == current.sub.at(0).name) // if this variable already exists, then report error
 			error::treeError("Declaration of already existing variable");
 	
-	
-	generator::stackPointer += 4; // shift by 4 (size of int -> 4bytes)
-	obj.position = generator::stackPointer; // set position
-	generator::stack.push_back(obj); // push to stack
+	generator::pushToStack(obj); // push to stack
 	
 	if(current.sub.at(1).name == "/equation")
 	{

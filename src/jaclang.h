@@ -8,6 +8,8 @@
 #include <math.h>
 #include <iterator>
 #include <stdio.h>
+#include <chrono>
+#include <unistd.h>
 
 extern std::streambuf* orig_buf;
 
