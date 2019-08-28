@@ -7,8 +7,8 @@ void preprocessor::main(std::string text)
 	std::ifstream inputFileObj(text); // Open file and store it in std::ifstream object
 	if(!inputFileObj.is_open()) // If didnt open (file missing,...)
 	{
-		coutn << "Unable to open file!" << std::endl;
-		return;
+		coutn << "\033[1;31mFile does not exist!\033[0m" << std::endl;
+		error::terminate("UNABLE TO OPEN FILE", ERROR_UNABLE_TO_OPEN_FILE);
 	}
 	
 	bool multilineComment = false;

@@ -32,6 +32,24 @@ int main(int argc, char **argv)
 	file::input = argv[1]; 
 	file::output = argv[2];
 	
+	if(file::input.length() > 3)
+	{
+		if( !(
+			file::input[file::input.length()-3] == '.' &&
+			file::input[file::input.length()-2] == 'j' &&
+			file::input[file::input.length()-1] == 'l'
+		) )
+		{
+			coutn << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
+			error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
+		}
+	}
+	else
+	{
+		coutn << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
+		error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
+	}
+	
 	std::vector<std::string> args;
 	
 	for(int i = 3; i < argc; i++)

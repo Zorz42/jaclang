@@ -1,3 +1,7 @@
+28.8 2019, BETA 1.3.2
+ - compiling only files with .jl extension, otherwise its an unrecognised format
+ - made that program terminates if file does not exist
+
 28.8 2019, BETA 1.3.1
  - made shorter asm files by removing unnecessary newlines
 
