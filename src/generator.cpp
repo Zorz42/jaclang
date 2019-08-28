@@ -23,7 +23,10 @@ void generator::main()
 		{
 			branch* prevScope = currentBranchScope;
 			currentBranchScope = &(current);
+			int stackLength = generator::stack.size();
 			generator::main();
+			while(generator::stack.size() > stackLength)
+				generator::stack.pop_back();
 			currentBranchScope = prevScope;
 		}
 		else
