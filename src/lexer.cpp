@@ -131,13 +131,16 @@ void lexer::main() // main lexer function
 			else
 				newToken(TYPE_OPERATOR); // just create new token if operator is single-char
 		}
-		else if(CHAR == '\n' && !IN_STRING) // if character is newline  
+		else if(CHAR == '\n' && !IN_STRING && c >= 0) // if character is newline  
 		{
-			newToken();
-			currentToken = "\\n";
-			newToken(TYPE_NEWLINE);
-			currentLine++;
-			posInLine = -1;
+			if(file::inputText.at(c - 1) != '\n')
+			{
+				newToken();
+				currentToken = "\\n";
+				newToken(TYPE_NEWLINE);
+				currentLine++;
+				posInLine = -1;
+			}
 		}
 		else
 			currentToken += CHAR; // else just append character to token

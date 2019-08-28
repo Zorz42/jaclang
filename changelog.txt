@@ -1,4 +1,7 @@
-22.8 2019, BETA 1.3.0
+28.8 2019, BETA 1.3.1
+ - made shorter asm files by removing unnecessary newlines
+
+28.8 2019, BETA 1.3.0
  - Added scopes
  - Updated readme.md for usage
  - fixed bug which sometimes does't write to file
@@ -17,26 +20,3 @@
 
 19.8 2019, BETA 1.0.0
  - Uploaded language Jaclang. Its intensions can be seen in README.md
- - You can have inline assembly, such as __asmtext__, for code in text section,
- __asmdata__ for code in data section,
- __asmbss__ for code in bss section,
- __asm__ does the same thing as __asmtext__.
- assembly file is compiled in nasm.
-  - You can declare variable, like:
-    int a = 0;
-    
-    For now you can not declare more variables in a sigle expression, or leave them undefined.
-  - You do not necesserily need ; for terminating expression. If compiler sees that the expression could end and if there is newline, it terminates it. eg.
-   int a = 1 +
-   1 + 2 +
-   1
-   This will count as one expression, because equation cannot end with operator.
-   int a = 1 + 1
-   + 1 + 2
-   Only first line will count as expression.
-   int a = (1 + 1
-   + 1 + 2)
-   You can fix that, because the expression will not be valid with open brace, therefore it cannot end.
-   This will not take performance, because if compiler seen plain braces in equation, that do't have an advantage over anything, then it will remove those, but expression will stay.
-   Equations will have +, -, *, /  and braces.
-   Single-line comments will be with triple-slash (///), because double-slash (//) is reserved for floor dividing
