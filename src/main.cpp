@@ -7,9 +7,9 @@ int file::inputLineCount = 0;
 bool debug = false;
 std::streambuf* orig_buf;
 
-int file::asm_data = 1; 
-int file::asm_bss = 3;  
-int file::asm_text = 8;
+int file::asm_data; 
+int file::asm_bss;  
+int file::asm_text;
 
 std::string file::input;
 std::string file::output;
@@ -71,6 +71,14 @@ int main(int argc, char **argv)
 	file::add("");
 	file::add("	mov eax, 1");  // sys exit
 	file::add("	int 0x80");  // call kernel
+	
+	#define find(x) std::distance(file::outputVector.begin(), std::find(file::outputVector.begin(), file::outputVector.end(), x))
+	
+	file::asm_data = find("section .data") + 1;
+	file::asm_bss  = find("section .bss")  + 1;
+	file::asm_text = find("section .text") + 4;
+	
+	#undef find(x)
 	
 	lexer::main(); // convert code into tokens
 	parser::main(); // convert tokens into syntax tree
