@@ -1,5 +1,11 @@
 // the error module, which reports syntax errors
 
+#define LIB_IOSTREAM
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_LEXER
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 void error::syntaxError(std::string error) // Print out syntax error

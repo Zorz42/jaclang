@@ -1,4 +1,6 @@
+#pragma once
+
 namespace preprocessor
 {
-	void main(std::string text);
+	void main(std::string& text);
 }

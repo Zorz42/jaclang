@@ -1,10 +1,15 @@
 // this file parses equations
 
+#define LIB_ERROR
+#define LIB_SHORTCUTS
+#define LIB_LEXER
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)
 
-std::string equationSymbols[4] = {"+", "-", "*", "/"}; // valid operators in equation
+std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in equation
 
 branch parser::equation(std::string end, std::string end2) // parse equation
 {
@@ -44,7 +49,7 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 			appendBranch(current.text, currentBranch);
 			timeForValue = false;
 		}
-		else if(std::find(std::begin(equationSymbols), std::end(equationSymbols), current.text) != std::end(equationSymbols))
+		else if(find(equationSymbols, current.text) != equationSymbols.size())
 		{ // if there is valid operator
 			if(timeForValue) // if its time for value
 				error::syntaxError("Value expected");

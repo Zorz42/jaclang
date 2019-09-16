@@ -1,3 +1,7 @@
+#define LIB_IOSTREAM
+#define LIB_FILE
+#define LIB_SHORTCUTS
+#define LIB_LEXER
 #include "jaclang.h"
 
 /* this is the LEXER which breaks code into lexer::toks aka more readable code.
@@ -191,7 +195,7 @@ void newToken(int TYPE)
 
 bool isKeyword(std::string text)
 {
-	return std::find(lexer::keywords.begin(), lexer::keywords.end(), text) != lexer::keywords.end(); // check if vector keywords containg that string
+	return find(lexer::keywords, text) != lexer::keywords.size(); // check if vector keywords containg that string
 }
 
 double toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
@@ -217,7 +221,7 @@ double toDec(std::string text) // not going to explain it is a little too comple
 			char temp = text.at(i + c);
 			std::string oneDec(1, temp);
 			int res = strtol(oneDec.c_str(), &p2, 10);
-			converted += res / pow(10, c);
+			converted += res / c*c*c*c*c*c*c*c*c*c; // pow(10, c)
 		}
 		return converted;
 	}

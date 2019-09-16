@@ -1,5 +1,9 @@
 // This will detect scopes
 
+#define LIB_ERROR
+#define LIB_LEXER
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)

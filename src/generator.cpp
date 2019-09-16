@@ -1,5 +1,10 @@
 // this generates ast into asm code
 
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_PARSER
+#define LIB_GENERATOR
+
 #include "jaclang.h"
 
 int generator::stackPointer = 0; // top of stack

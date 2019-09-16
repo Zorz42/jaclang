@@ -1,3 +1,7 @@
+#pragma once
+
+#include <string>
+
 namespace error
 {
 	void syntaxError(std::string error); // Print out syntax error

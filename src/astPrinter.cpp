@@ -1,10 +1,13 @@
 // this file prints out abstract syntax tree
 
+#define LIB_IOSTREAM
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 int nested = -1;
 
-void printAST(branch obj)
+void printAST(branch& obj)
 {
 	nested++;
 	std::string name;

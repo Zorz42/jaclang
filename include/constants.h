@@ -1,3 +1,5 @@
+#pragma once
+
 #define ERROR_ARGUMENT_COUNT 1
 #define ERROR_SYNTAX_ERROR 2
 #define ERROR_INVALID_FORMAT 3

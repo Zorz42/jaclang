@@ -1,3 +1,14 @@
+#define LIB_IOSTREAM
+#define LIB_FSTREAM
+#define LIB_CHRONO
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_SHORTCUTS
+#define LIB_PREPROCESSOR
+#define LIB_LEXER
+#define LIB_PARSER
+#define LIB_GENERATOR
+
 #include "jaclang.h"
 
 // the main file, where the main loop is happening, and also where the file members are defined
@@ -72,7 +83,7 @@ int main(int argc, char **argv)
 	file::add("	mov eax, 1");  // sys exit
 	file::add("	int 0x80");  // call kernel
 	
-	#define find(x) std::distance(file::outputVector.begin(), std::find(file::outputVector.begin(), file::outputVector.end(), x))
+	#define find(x) find(file::outputVector, x)
 	
 	file::asm_data = find("section .data") + 1;
 	file::asm_bss  = find("section .bss")  + 1;

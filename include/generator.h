@@ -1,7 +1,9 @@
+#pragma once
+
 struct variable
 {
 	std::string indent; // indent
-	int type; // type of value
+	int8_t type; // type of value
 	int position; // position on stack
 };
 
@@ -13,7 +15,7 @@ namespace generator
 	{
 		void systemFunctionCall();
 		void variableDeclaration();
-		void equation(branch equation);
+		void equation(branch& equation);
 	}
 	
 	extern int stackPointer;

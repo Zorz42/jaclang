@@ -1,8 +1,15 @@
 // this file preprocesses the input code.
 
+#define LIB_IOSTREAM
+#define LIB_FSTREAM
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_PREPROCESSOR
+#define LIB_CONSTANTS
+
 #include "jaclang.h"
 
-void preprocessor::main(std::string text)
+void preprocessor::main(std::string& text)
 {
 	std::ifstream inputFileObj(text); // Open file and store it in std::ifstream object
 	if(!inputFileObj.is_open()) // If didnt open (file missing,...)

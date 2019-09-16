@@ -1,5 +1,12 @@
 // this generates variable declarations
 
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_SHORTCUTS
+#define LIB_PARSER
+#define LIB_GENERATOR
+#define LIB_CONSTANTS
+
 #include "jaclang.h"
 
 void generator::e::variableDeclaration()

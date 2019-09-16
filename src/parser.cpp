@@ -1,5 +1,9 @@
 // the main loop of parser
 
+#define LIB_FILE
+#define LIB_LEXER
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 int parser::tokCount = 0;

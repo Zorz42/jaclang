@@ -1,5 +1,10 @@
 // this generates tree equation into asm code
 
+#define LIB_FILE
+#define LIB_ERROR
+#define LIB_PARSER
+#define LIB_GENERATOR
+
 #include "jaclang.h"
 
 int generator::currentRegister32 = 0;
@@ -20,7 +25,7 @@ std::vector<std::string> generator::availableRegisters32 =  // all registers tha
 	"r15d"
 };
 
-void generator::e::equation(branch equation)
+void generator::e::equation(branch& equation)
 {
 	if(equation.name == "/equation") // if branch is equation
 	{

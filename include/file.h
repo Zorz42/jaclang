@@ -1,3 +1,8 @@
+#pragma once
+
+#include <vector>
+#include <string>
+
 namespace file
 {
 	extern int asm_data;

@@ -1,6 +1,12 @@
+#pragma once
+
+#include "constants.h"
+#include <vector>
+#include <string>
+
 struct token
 {
-	int type;
+	int8_t type;
 	std::string text;
 	int line;
 	int pos;

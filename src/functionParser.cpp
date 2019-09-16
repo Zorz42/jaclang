@@ -1,5 +1,10 @@
 // this file parses function calls, equation calls that file too
 
+#define LIB_ERROR
+#define LIB_SHORTCUTS
+#define LIB_LEXER
+#define LIB_PARSER
+
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)
