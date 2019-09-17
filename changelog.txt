@@ -1,3 +1,6 @@
+17.9 2019, BETA 1.3.5
+ - Fixed scope bug
+
 16.9 2019, BETA 1.3.4
  - Jaclang binary is smaller by ~200KB and optimised because of:
  - jaclang.h select libraries instead of importing all
