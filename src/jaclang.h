@@ -3,7 +3,7 @@
 #pragma once
 
 #ifdef LIB_IOSTREAM
-#include "../include/iostream.h" // cout
+#include <iostream> // cout
 #endif
 #ifdef LIB_FSTREAM
 #include <fstream>  // open file
