@@ -9,7 +9,7 @@
 
 #include "jaclang.h"
 
-void generator::e::variableDeclaration()
+void generator::e::variableDeclaration(int scopeOnStack)
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count)
 	
@@ -17,9 +17,14 @@ void generator::e::variableDeclaration()
 	obj.indent = current.sub.at(0).name; // indent
 	obj.type = VARIABLE_INT; // type
 	
+	int i = 0;
+	
 	for(variable iter : generator::stack) // go through stack
-		if(iter.indent == current.sub.at(0).name) // if this variable already exists, then report error
+	{
+		if(iter.indent == current.sub.at(0).name && i >= scopeOnStack) // if this variable already exists, then report error
 			error::treeError("Declaration of already existing variable");
+		i++;
+	}
 	
 	generator::pushToStack(obj); // push to stack
 	

@@ -14,7 +14,7 @@ namespace generator
 	namespace e
 	{
 		void systemFunctionCall();
-		void variableDeclaration();
+		void variableDeclaration(int scopeOnStack);
 		void equation(branch& equation);
 	}
 	

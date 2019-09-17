@@ -10,6 +10,8 @@
 int generator::stackPointer = 0; // top of stack
 std::vector<variable> generator::stack; // the stack, not actual just for allocation
 
+int currentScopeOnStack = 0;
+
 void generator::main()
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
@@ -21,7 +23,7 @@ void generator::main()
 		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
-			generator::e::variableDeclaration();
+			generator::e::variableDeclaration(currentScopeOnStack);
 		else if(current.name == "/equation")
 			generator::e::equation(current);
 		else if(current.name == "scope")
@@ -29,7 +31,10 @@ void generator::main()
 			branch* prevScope = currentBranchScope;
 			currentBranchScope = &(current);
 			int stackLength = generator::stack.size();
+			int prevScopeStack = currentScopeOnStack;
+			currentScopeOnStack = stackLength;
 			generator::main();
+			currentScopeOnStack = prevScopeStack;
 			while(generator::stack.size() > stackLength)
 				generator::stack.pop_back();
 			currentBranchScope = prevScope;
