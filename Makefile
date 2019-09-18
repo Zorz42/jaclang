@@ -1,6 +1,6 @@
-make: src/*.cpp
-	g++ src/*.cpp
-	mv a.out jaclang
-	sudo cp jaclang /usr/bin/jaclang
-	sudo apt install nasm
-	echo Jaclang compiled sucsessfully!
+install: install.py
+	python3 install.py install
+	python3 install.py dependencies
+
+uninstall: install.py
+	python3 install.py uninstall
