@@ -36,7 +36,10 @@ void generator::main()
 			generator::main();
 			currentScopeOnStack = prevScopeStack;
 			while(generator::stack.size() > stackLength)
+			{
+				stackPointer -= generator::stack.at(generator::stack.size() - 1).size;
 				generator::stack.pop_back();
+			}
 			currentBranchScope = prevScope;
 		}
 		else

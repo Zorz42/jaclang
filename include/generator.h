@@ -5,6 +5,7 @@ struct variable
 	std::string indent; // indent
 	int8_t type; // type of value
 	int position; // position on stack
+	int8_t size;
 };
 
 namespace generator
