@@ -39,5 +39,13 @@ jaclang is like C programming language very fast and light
  * -> -n : do not run file on compilation
  * -> -k : keep the assembly file
  * 
+ * - jaclang
+ * - this will display help
+ * 
+ * - jaclang [option]
+ * - options:
+ * -> version : check version
+ * -> uninstall : uninstall jaclang
+ *
  * Version tags are stable versions. 
  * Master branch is the latest version in development. Might be unstable and full of bugs.
