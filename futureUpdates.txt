@@ -2,4 +2,4 @@
 1.6 function implementation:
 	-function declaration
 	-function call only void used in equations
-2.0 documentation renew, syntax revamp
+2.0 documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
