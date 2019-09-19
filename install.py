@@ -15,10 +15,6 @@ except:
 		system("g++ src/*.cpp -o jaclang")
 		system("sudo cp jaclang /usr/bin/jaclang")
 		print("Jaclang installed sucsessfully!")
-	elif(sys.argv[1] == "uninstall"):
-		system("sudo rm -f /usr/bin/jaclang")
-		system("sudo apt remove nasm")
-		print("Jaclang uninstalled sucsessfully!")
 	elif(sys.argv[1] == "dependencies"):
 		print("Checking for dependencies: nasm")
 		if(popen("whereis nasm").read() == "nasm:\n"):
