@@ -13,8 +13,16 @@ try:
 except:
 	if(sys.argv[1] == "install"):
 		if(popen("ls /usr/bin/jaclang").read() == "/usr/bin/jaclang\n"):
-			print("Jaclang already installed!")
-			exit()
+			decision = input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
+			yesOptions = ["Y", "YES"]
+			noOptions  = ["N", "NO"]
+			if(decision.upper() in yesOptions):
+				pass
+			elif(decision.upper() in noOptions):
+				exit()
+			else:
+				print("Wrong answer!")
+				exit()
 		system("g++ src/*.cpp -o jaclang")
 		system("sudo mv jaclang /usr/bin/jaclang")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
