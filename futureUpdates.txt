@@ -1,0 +1,5 @@
+1.4 variables in equations, equation optimisation
+1.5 function implementation:
+	-function declaration
+	-function call only void used in equations
+2.0 documentation renew, syntax revamp
