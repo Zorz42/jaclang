@@ -28,20 +28,90 @@ std::string file::output;
 std::string file::inputText;
 std::vector<std::string> file::outputVector;
 
+const std::string helpText =
+"Jaclang help: \n"
+"usage:\n"
+"	jaclang - for help\n"
+"	jaclang [option] - for misc\n"
+"	jaclang [input file] [output file] - for compilation\n"
+"\n"
+"options:\n"
+"	-n - norun - do not run file after compilation\n"
+"	-d - debug - get more detailed compilation (for nerds)\n"
+"	-k - keep  - keep the assembly file\n"
+"\n"
+"misc options:\n"
+"	version   - check the version\n"
+"	uninstall - remove jaclang"
+;
+
 int main(int argc, char **argv)
 {
 	using namespace std::chrono;
 	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 	
 	orig_buf = std::cout.rdbuf();
-	if (argc < 3) // At least two arguments - input and output file
+	
+	std::vector<std::string> args;
+	std::vector<char> ops;
+	const char allowedOptions[] = {
+		'n', // norun
+		'd', // debug
+		'k', // keep
+	};
+	
+	for(int i = 1; i < argc; i++)
 	{
-		coutn << "\033[1;31mMust input at least 2 arguments, input and output file!\033[0m" << std::endl;
-		error::terminate("NOT ENOUGH ARGUMENTS", ERROR_ARGUMENT_COUNT);
+		if(argv[i][0] == '-')
+		{
+			for(int i2 = 1; argv[i][i2] != 0; i2++)
+			{
+				if(find(allowedOptions, argv[i][i2]) == 3)
+				{
+					coutn << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl;
+					error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+				}
+				ops.push_back(argv[i][i2]);
+			}
+		}
+		else
+			args.push_back(argv[i]);
 	}
 	
-	file::input = argv[1]; 
-	file::output = argv[2];
+	if(args.size() == 0)
+	{
+		coutn << helpText << std::endl;
+		return 0;
+	}
+	
+	else if(args.size() == 1)
+	{
+		if(args.at(0) == "version")
+		{
+			coutn << VERSION_STR << " ID:" << VERSION_INT << std::endl;
+			return 0;
+		}
+		else if(args.at(0) == "uninstall")
+		{
+			system("sudo rm /usr/bin/jaclang");
+			coutn << "Jaclang sucsessfully removed!" << std::endl;
+			return 0;
+		}
+		else
+		{
+			coutn << "\033[1;31mInvalid option:" << args.at(0) << "\033[0m" << std::endl;
+			error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
+		}
+	}
+	else if (args.size() > 2)
+	{
+		coutn << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
+		error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
+	}
+	
+	
+	file::input = args.at(0); 
+	file::output = args.at(1);
 	
 	if(file::input.length() > 3)
 	{
@@ -61,12 +131,7 @@ int main(int argc, char **argv)
 		error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
 	}
 	
-	std::vector<std::string> args;
-	
-	for(int i = 3; i < argc; i++)
-		args.push_back(argv[i]); // set args vector
-	
-	if(contains(args, "debug"))
+	if(contains(ops, 'd'))
 		debug = true;
 	
 	file::read(); // Read file
@@ -111,7 +176,7 @@ int main(int argc, char **argv)
 	command += ".o";
 	system(command.c_str());
 	
-	if(!contains(args, "keep")) // remove cache if needed
+	if(!contains(ops, 'k')) // remove cache if needed
 	{
 		command = "rm ";
 		command += file::output;
@@ -131,9 +196,10 @@ int main(int argc, char **argv)
 	int len = ms.length();
 	for(int i = 4; i > len; i--)
 		ms.insert(ms.begin(), '0');
+	
 	coutn << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
 	
-	if(!contains(args, "norun")) // also run file if not specified not to (confusing)
+	if(!contains(ops, 'n')) // also run file if not specified not to (confusing)
 	{
 		std::string command = "./";
 		command += file::output;

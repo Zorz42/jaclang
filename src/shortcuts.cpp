@@ -14,6 +14,11 @@ bool contains(std::vector<std::string>& list, std::string text)
 	return find(list, text) != list.size();
 }
 
+bool contains(std::vector<char>& list, char text)
+{
+	return find(list, text) != list.size();
+}
+
 bool isSystemIndent(std::string indent) // check if string has __ at the beggining and at the end. 
 {
 	bool result =
@@ -39,6 +44,14 @@ int find(std::vector<std::string>& source, std::string target)
 }
 
 int find(std::string source, char target)
+{
+	for(int i = 0; i < source.size(); i++)
+		if(source.at(i) == target)
+			return i;
+	return source.size();
+}
+
+int find(std::vector<char>& source, char& target)
 {
 	for(int i = 0; i < source.size(); i++)
 		if(source.at(i) == target)
