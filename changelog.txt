@@ -1,3 +1,6 @@
+19.9 2019, BETA 1.5.0
+ - Variables can be used in equations
+
 19.9 2019, BETA 1.4.0
  - revamped arguments
  - added option to check version and to uninstall

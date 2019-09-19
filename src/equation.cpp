@@ -16,7 +16,7 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
 	currentBranch.name = "/equation"; // sets current branch to equation
-	if(current.type == TYPE_CONST) // if first value is number
+	if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
 	{
 		if(contains(current.text, '.')) // if it has '.' in it then its float
 			appendBranch("float", currentBranch);
@@ -42,11 +42,13 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 		if(parser::tokCount + 1 == lexer::toks.size())
 			error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
 		
-		else if(current.type == TYPE_CONST || current.type == TYPE_STRING) // if its constant or string
+		else if(current.type == TYPE_CONST || current.type == TYPE_STRING || current.type == TYPE_INDENT) // if its constant or string or variable
 		{
 			if(!timeForValue) // if isnt time for value
 				error::syntaxError("Operator expected");
-			appendBranch(current.text, currentBranch);
+			std::string currentText = current.type == TYPE_INDENT ? ":" : "";
+			currentText += current.text;
+			appendBranch(currentText, currentBranch);
 			timeForValue = false;
 		}
 		else if(find(equationSymbols, current.text) != equationSymbols.size())
@@ -77,7 +79,6 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 		
 		parser::tokCount++;
 	}
-	
 	if(timeForValue) // if it was a time for value
 		error::syntaxError("Value expected");
 	

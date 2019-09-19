@@ -1,4 +1,4 @@
-1.5 variables in equations, equation optimisation
+1.5.1 equation optimisation
 1.6 function implementation:
 	-function declaration
 	-function call only void used in equations

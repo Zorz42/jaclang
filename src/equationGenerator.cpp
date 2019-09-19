@@ -4,6 +4,7 @@
 #define LIB_ERROR
 #define LIB_PARSER
 #define LIB_GENERATOR
+#define LIB_SHORTCUTS
 
 #include "jaclang.h"
 
@@ -33,7 +34,24 @@ void generator::e::equation(branch& equation)
 			error::treeError("equation must be int");
 		
 		if(equation.sub.at(1).name != "/equation")
-			file::append_instruction("mov", generator::availableRegister32(), equation.sub.at(1).name); // mov first value to register
+		{
+			std::string value = equation.sub.at(1).name;
+			if(value.at(0) == ':')
+			{
+				value.erase(value.begin());
+				bool varExists = false;
+				for(variable iter : generator::stack) // go through stack
+					if(iter.indent == value)
+					{
+						varExists = true;
+						value = onStack(iter.position);
+						break;
+					}
+				if(!varExists)
+					error::treeError("Variable does not exist!");
+			}
+			file::append_instruction("mov", generator::availableRegister32(), value); // mov first value to register
+		}
 		else
 		{
 			generator::nextRegister();
