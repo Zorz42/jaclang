@@ -66,6 +66,21 @@ void generator::e::equation(branch& equation)
 		
 		for(int i = 3; i <= equation.sub.size(); i += 2)
 		{
+			std::string currentValueAsm = currentValue;
+			if(currentValueAsm.at(0) == ':')
+			{
+				currentValueAsm.erase(currentValueAsm.begin());
+				bool varExists = false;
+				for(variable iter : generator::stack) // go through stack
+					if(iter.indent == currentValueAsm)
+					{
+						varExists = true;
+						currentValueAsm = onStack(iter.position);
+						break;
+					}
+				if(!varExists)
+					error::treeError("Variable does not exist!");
+			}
 			if(currentValue.at(0) == '.')
 				error::treeError("int cannot add string");
 			else if(currentValue == "/equation")
@@ -94,12 +109,12 @@ void generator::e::equation(branch& equation)
 				generator::currentRegister32--;
 			}
 			else if(currentOperator == "+")
-				file::append_instruction("add", generator::availableRegister32(), currentValue);
+				file::append_instruction("add", generator::availableRegister32(), currentValueAsm);
 			else if(currentOperator == "-")
-				file::append_instruction("sub", generator::availableRegister32(), currentValue);
+				file::append_instruction("sub", generator::availableRegister32(), currentValueAsm);
 			else if(currentOperator == "*")
 			{
-				file::append_instruction("mov", "eax", currentValue);
+				file::append_instruction("mov", "eax", currentValueAsm);
 				file::append_text("	imul " + generator::availableRegister32());
 				file::append_instruction("mov", generator::availableRegister32(), "eax");
 			}
@@ -107,7 +122,7 @@ void generator::e::equation(branch& equation)
 			{
 				file::append_instruction("mov", "eax", generator::availableRegister32());
 				generator::nextRegister();
-				file::append_instruction("mov", generator::availableRegister32(), currentValue);
+				file::append_instruction("mov", generator::availableRegister32(), currentValueAsm);
 				file::append_text("	idiv " + generator::availableRegister32());
 				generator::currentRegister32--;
 				file::append_instruction("mov", generator::availableRegister32(), "eax");

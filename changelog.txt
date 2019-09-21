@@ -1,3 +1,8 @@
+21.9 2019, BETA 1.5.1
+ - Added optimisation to equations,
+ - Fixed single-element equation bug
+ - Fixed variable in equation bug
+
 19.9 2019, BETA 1.5.0
  - Variables can be used in equations
 

@@ -2,8 +2,8 @@
 
 #pragma once
 
-#define VERSION_STR "BETA 1.5.0"
-#define VERSION_INT 1
+#define VERSION_STR "BETA 1.5.1"
+#define VERSION_INT 2
 
 #ifdef LIB_IOSTREAM
 #include <iostream> // cout

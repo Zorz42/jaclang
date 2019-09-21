@@ -4,14 +4,16 @@
 #define LIB_SHORTCUTS
 #define LIB_LEXER
 #define LIB_PARSER
+#define LIB_IOSTREAM //
 
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)
 
 std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in equation
+branch optimize(branch currentBranch, bool nested);
 
-branch parser::equation(std::string end, std::string end2) // parse equation
+branch parser::equation(std::string end, std::string end2, bool nested) // parse equation
 {
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
@@ -64,7 +66,8 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 				error::syntaxError("Operator expected");
 			timeForValue = false;
 			parser::tokCount++;
-			branch obj = parser::equation(")"); // make eqution until ')'
+			branch obj = parser::equation(")", "\n", true); // make eqution until ')'
+			coutn << obj.sub.size() << std::endl;
 			appendBranch(obj, currentBranch);
 		}
 		else if(current.type == TYPE_INDENT)
@@ -106,17 +109,48 @@ branch parser::equation(std::string end, std::string end2) // parse equation
 				eraseEl(i);
 			}
 			
+			obj = optimize(obj, true);
+			
 			currentBranch.sub.insert(currentBranch.sub.begin() + i, obj);
 			i--;
 		}
 	}
 	
-	// optimisation
-	if(currentBranch.sub.size() == 2) 
+	currentBranch = optimize(currentBranch, nested);
+	
+	return currentBranch;
+}
+
+branch optimize(branch currentBranch, bool nested)
+{
+	if(currentBranch.sub.size() == 2 && nested)
 	{
 		branch obj = currentBranch.sub.at(1);
 		currentBranch = obj;
-	} 
+	}
+	
+	for(int i = 1; i + 2 <= currentBranch.sub.size(); i += 2)
+	{
+		if(isInt(currentBranch.sub.at(i).name) && isInt(currentBranch.sub.at(i + 2).name))
+		{
+			if(currentBranch.sub.at(i + 1).name == "+")
+				currentBranch.sub.at(i).name = std::to_string(std::stoi(currentBranch.sub.at(i).name) + std::stoi(currentBranch.sub.at(i + 2).name));
+			else if(currentBranch.sub.at(i + 1).name == "-")
+				currentBranch.sub.at(i).name = std::to_string(std::stoi(currentBranch.sub.at(i).name) - std::stoi(currentBranch.sub.at(i + 2).name));
+			else if(currentBranch.sub.at(i + 1).name == "*")
+				currentBranch.sub.at(i).name = std::to_string(std::stoi(currentBranch.sub.at(i).name) * std::stoi(currentBranch.sub.at(i + 2).name));
+			else if(currentBranch.sub.at(i + 1).name == "/")
+				currentBranch.sub.at(i).name = std::to_string(std::stoi(currentBranch.sub.at(i).name) / std::stoi(currentBranch.sub.at(i + 2).name));
+			currentBranch.sub.erase(currentBranch.sub.begin() + i + 1);
+			currentBranch.sub.erase(currentBranch.sub.begin() + i + 1);
+			i -= 2;
+		}
+	}
+	if(currentBranch.sub.size() == 2 && nested)
+	{
+		branch obj = currentBranch.sub.at(1);
+		currentBranch = obj;
+	}
 	
 	return currentBranch;
 }
