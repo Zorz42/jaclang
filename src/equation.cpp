@@ -7,28 +7,45 @@
 std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in equation
 branch optimize(branch currentBranch, bool nested);
 
+void insertBranchAtBegin(std::string name, branch& target)
+{
+	branch obj;
+	obj.name = name;
+	target.sub.insert(target.sub.begin(), obj);
+}
+void insertBranchAtBegin(branch source, branch& target)
+{
+	target.sub.insert(target.sub.begin(), source);
+}
+
 branch parser::equation(std::string end, std::string end2, bool nested) // parse equation
 {
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
 	currentBranch.name = "/equation"; // sets current branch to equation
+	if(current.text == "-")
+	{
+		appendBranch("0", currentBranch);
+		appendBranch("-", currentBranch);
+		parser::tokCount++;
+	}
 	if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
 	{
 		if(contains(current.text, '.')) // if it has '.' in it then its float
-			appendBranch("float", currentBranch);
+			insertBranchAtBegin("float", currentBranch);
 		else
-			appendBranch("int", currentBranch); // else its integer
+			insertBranchAtBegin("int", currentBranch); // else its integer
 	}
 	else if(current.type == TYPE_STRING) // if its string
-		appendBranch("string", currentBranch);
+		insertBranchAtBegin("string", currentBranch);
 	else if(current.text == "(") // if its nested with () then its equation within equation
 	{
 		parser::tokCount++;
 		branch obj = parser::equation(")");
 		parser::tokCount++;
 		timeForValue = false;
-		appendBranch(obj.sub.at(0).name, currentBranch);
-		appendBranch(obj, currentBranch);
+		insertBranchAtBegin(obj.sub.at(0).name, currentBranch);
+		insertBranchAtBegin(obj, currentBranch);
 	}
 	else
 		error::syntaxError("Value expected");

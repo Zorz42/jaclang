@@ -7,8 +7,8 @@
  - (DONE) remove useless optimization
  - (DONE) coutd improve
  - (DONE) coutn remove
- - equations - at the begining indicating negative number
+ - (DONE) equations - at the begining indicating negative number
  - (DONE) improve performance,  in var declaration by counting as nested
- - new options: versionid, versionstr
- - remove norun option and do not automatically run program
+ - (DONE) new options: versionid, versionstr
+ - (DONE) remove norun option and do not automatically run program
  - (DONE) fixed some bugs

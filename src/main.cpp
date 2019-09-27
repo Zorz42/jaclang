@@ -54,7 +54,6 @@ int main(int argc, char **argv)
 	std::vector<std::string> args;
 	std::vector<char> ops;
 	const char allowedOptions[] = {
-		'n', // norun
 		'd', // debug
 		'k', // keep
 	};
@@ -86,21 +85,22 @@ int main(int argc, char **argv)
 	else if(args.size() == 1)
 	{
 		if(args.at(0) == "version")
-		{
 			std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
-			return 0;
-		}
 		else if(args.at(0) == "uninstall")
 		{
 			system("sudo rm /usr/bin/jaclang");
 			std::cout << "Jaclang sucsessfully removed!" << std::endl;
-			return 0;
 		}
+		else if(args.at(0) == "versionid")
+			std::cout << VERSION_INT << std::endl;
+		else if(args.at(0) == "versionstr")
+			std::cout << VERSION_STR << std::endl;
 		else
 		{
-			std::cout << "\033[1;31mInvalid option:" << args.at(0) << "\033[0m" << std::endl;
+			std::cout << "\033[1;31mInvalid option: " << args.at(0) << "\033[0m" << std::endl;
 			error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
 		}
+		return 0;
 	}
 	else if (args.size() > 2)
 	{
@@ -143,29 +143,26 @@ int main(int argc, char **argv)
 	
 	#undef find
 	
-	
 	lexer::main(); // convert code into tokens
 	parser::main(); // convert tokens into syntax tree
 	if(debug)
 		printAST(mainBranch);
 	generator::main(); // generate assembly code out of syntax tree
 	
-	
 	file::write(); // Writes to file
 	
 	std::string command = "nasm -f elf64 "; // compile assembly code
 	command += file::output;
 	command += ".asm";
-	system(command.c_str());
-	
-	command = "ld -m elf_x86_64 -s -o "; // link assembly code
+	command += " && ";
+	command += "ld -m elf_x86_64 -s -o "; // link assembly code
 	command += file::output;
 	command += " ";
 	command += file::output;
 	command += ".o";
 	system(command.c_str());
 	
-	if(!contains(ops, 'k')) // remove cache if needed
+	if(!contains(ops, 'k')) // remove asm file if needed
 	{
 		command = "rm ";
 		command += file::output;
@@ -187,13 +184,6 @@ int main(int argc, char **argv)
 		ms.insert(ms.begin(), '0');
 	
 	std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
-	
-	if(!contains(ops, 'n')) // also run file if not specified not to (confusing)
-	{
-		std::string command = "./";
-		command += file::output;
-		system(command.c_str());
-	}
 	
 	return 0;
 }

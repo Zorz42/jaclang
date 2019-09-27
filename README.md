@@ -36,7 +36,6 @@ jaclang is like C programming language very fast and light
  * -
  * - options:
  * -> -d : enable debug mode (see tokens, ast)
- * -> -n : do not run file on compilation
  * -> -k : keep the assembly file
  * 
  * - jaclang
