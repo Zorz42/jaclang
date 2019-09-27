@@ -1,7 +1,7 @@
 W = -Wall -Wextra -Wshadow -pedantic
 
-objdir = build
-srcdir = src
+objdir  = build
+srcdir  = src
 incldir = include
 
 cc = g++ $(incldir:%=-I%)
