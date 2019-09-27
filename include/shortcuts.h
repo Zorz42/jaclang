@@ -1,8 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 bool contains(std::string text, char character);
 bool contains(std::vector<std::string>& list, std::string text);
 bool contains(std::vector<char>& list, char text);

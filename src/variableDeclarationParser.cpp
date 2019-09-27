@@ -1,10 +1,5 @@
 // this parses variable declaration
 
-#define LIB_ERROR
-#define LIB_LEXER
-#define LIB_PARSER
-#define LIB_GENERATOR
-
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)

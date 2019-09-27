@@ -1,14 +1,3 @@
-#define LIB_IOSTREAM
-#define LIB_FSTREAM
-#define LIB_CHRONO
-#define LIB_FILE
-#define LIB_ERROR
-#define LIB_SHORTCUTS
-#define LIB_PREPROCESSOR
-#define LIB_LEXER
-#define LIB_PARSER
-#define LIB_GENERATOR
-
 #include "jaclang.h"
 
 // the main file, where the main loop is happening, and also where the file members are defined

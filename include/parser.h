@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 struct branch
 {
 	std::string name;

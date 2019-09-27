@@ -2,61 +2,30 @@
 
 #pragma once
 
-#define VERSION_STR "BETA 1.5.1"
-#define VERSION_INT 2
+#define VERSION_STR "BETA 1.2.0"
+#define VERSION_INT 3
 
-#ifdef LIB_IOSTREAM
 #include <iostream> // cout
-#endif
-#ifdef LIB_FSTREAM
 #include <fstream>  // open file
-#endif
-#ifdef LIB_STRING
 #include <string>   // better strings
-#endif
-#ifdef LIB_VECTOR
 #include <vector>   // better arrays
-#endif
-#ifdef LIB_CHRONO
 #include <chrono>   // time
-#endif
 
-#ifdef LIB_IOSTREAM
 extern std::streambuf* orig_buf;
-#endif
 
 struct branch;
 
-#ifdef LIB_IOSTREAM
 #define coutd if(debug) std::cout.rdbuf(orig_buf); else std::cout.rdbuf(NULL); std::cout
 #define coutn std::cout.rdbuf(orig_buf); std::cout
-#endif
 
 extern bool debug;
 
 // headers/
-#ifdef LIB_CONSTANTS
-	#include "../include/constants.h"
-#endif
-#ifdef LIB_SHORTCUTS
-	#include "../include/shortcuts.h"
-#endif
-#ifdef LIB_ERROR
-	#include "../include/error.h"
-#endif
-	
-#ifdef LIB_FILE
-	#include "../include/file.h"         // opens file
-#endif
-#ifdef LIB_PREPROCESSOR
-	#include "../include/preprocessor.h" // preprocesses file
-#endif
-#ifdef LIB_LEXER
-	#include "../include/lexer.h"        // breaks it into tokens
-#endif
-#ifdef LIB_PARSER
-	#include "../include/parser.h"       // parses it into syntax tree
-#endif
-#ifdef LIB_GENERATOR
-	#include "../include/generator.h"    // generates asm code
-#endif
+#include "constants.h"
+#include "shortcuts.h"
+#include "error.h"
+#include "file.h"         // opens file
+#include "preprocessor.h" // preprocesses file
+#include "lexer.h"        // breaks it into tokens
+#include "parser.h"       // parses it into syntax tree
+#include "generator.h"    // generates asm code

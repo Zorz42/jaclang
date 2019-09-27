@@ -1,9 +1,5 @@
 #pragma once
 
-#include "constants.h"
-#include <vector>
-#include <string>
-
 struct token
 {
 	int8_t type;

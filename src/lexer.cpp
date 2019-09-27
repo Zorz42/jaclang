@@ -1,7 +1,3 @@
-#define LIB_IOSTREAM
-#define LIB_FILE
-#define LIB_SHORTCUTS
-#define LIB_LEXER
 #include "jaclang.h"
 
 /* this is the LEXER which breaks code into lexer::toks aka more readable code.

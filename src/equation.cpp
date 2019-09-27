@@ -1,11 +1,5 @@
 // this file parses equations
 
-#define LIB_ERROR
-#define LIB_SHORTCUTS
-#define LIB_LEXER
-#define LIB_PARSER
-#define LIB_IOSTREAM //
-
 #include "jaclang.h"
 
 #define current lexer::toks.at(parser::tokCount)

@@ -1,11 +1,5 @@
 // this generates tree equation into asm code
 
-#define LIB_FILE
-#define LIB_ERROR
-#define LIB_PARSER
-#define LIB_GENERATOR
-#define LIB_SHORTCUTS
-
 #include "jaclang.h"
 
 int generator::currentRegister32 = 0;
