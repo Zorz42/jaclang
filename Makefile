@@ -23,7 +23,7 @@ $(objdir):
 	mkdir $@
 
 clean:
-	rm -rf $(objdir) $(depdir)
+	rm -rf $(objdir)
 
 install: install.py
 	python3 install.py install
