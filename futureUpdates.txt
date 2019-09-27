@@ -5,9 +5,10 @@
  - documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
  - (DONE) new and improved makefile
  - (DONE) remove useless optimization
- - coutd improve
- - coutn remove
+ - (DONE) coutd improve
+ - (DONE) coutn remove
  - equations - at the begining indicating negative number
- - improve performance,  in var declaration by counting as nested
+ - (DONE) improve performance,  in var declaration by counting as nested
  - new options: versionid, versionstr
  - remove norun option and do not automatically run program
+ - (DONE) fixed some bugs

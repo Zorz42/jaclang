@@ -11,12 +11,9 @@
 #include <vector>   // better arrays
 #include <chrono>   // time
 
-extern std::streambuf* orig_buf;
-
 struct branch;
 
-#define coutd if(debug) std::cout.rdbuf(orig_buf); else std::cout.rdbuf(NULL); std::cout
-#define coutn std::cout.rdbuf(orig_buf); std::cout
+#define coutd if(debug) std::cout
 
 extern bool debug;
 

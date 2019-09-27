@@ -14,8 +14,6 @@ void parser::main()
 {
 	currentBranchScope = &mainBranch;
 	mainBranch.name = file::input; // root name is input file name
-	//for(token iterator : tokens)
-		//coutd << iterator.type << ": " << iterator.text << std::endl;
 	
 	for(;parser::tokCount < lexer::toks.size(); parser::tokCount++) // go through all tokens
 	{

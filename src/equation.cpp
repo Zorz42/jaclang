@@ -61,7 +61,6 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 			timeForValue = false;
 			parser::tokCount++;
 			branch obj = parser::equation(")", "\n", true); // make eqution until ')'
-			coutn << obj.sub.size() << std::endl;
 			appendBranch(obj, currentBranch);
 		}
 		else if(current.type == TYPE_INDENT)

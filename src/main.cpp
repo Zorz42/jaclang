@@ -15,7 +15,19 @@ std::string file::input;
 std::string file::output;
 
 std::string file::inputText;
-std::vector<std::string> file::outputVector;
+std::vector<std::string> file::outputVector = {
+	"section .data", // data section
+	"",
+	"section .bss",  // bss section
+	"",
+	"section .text", // text section
+	"	global _start", // for linker
+	"_start:",
+	"",
+	"",
+	"	mov eax, 1",  // sys exit
+	"	int 0x80",
+	};
 
 const std::string helpText =
 "Jaclang help: \n"
@@ -39,8 +51,6 @@ int main(int argc, char **argv)
 	using namespace std::chrono;
 	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 	
-	orig_buf = std::cout.rdbuf();
-	
 	std::vector<std::string> args;
 	std::vector<char> ops;
 	const char allowedOptions[] = {
@@ -57,7 +67,7 @@ int main(int argc, char **argv)
 			{
 				if(find(allowedOptions, argv[i][i2]) == 3)
 				{
-					coutn << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl;
+					std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl;
 					error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
 				}
 				ops.push_back(argv[i][i2]);
@@ -69,7 +79,7 @@ int main(int argc, char **argv)
 	
 	if(args.size() == 0)
 	{
-		coutn << helpText << std::endl;
+		std::cout << helpText << std::endl;
 		return 0;
 	}
 	
@@ -77,24 +87,24 @@ int main(int argc, char **argv)
 	{
 		if(args.at(0) == "version")
 		{
-			coutn << VERSION_STR << " ID:" << VERSION_INT << std::endl;
+			std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
 			return 0;
 		}
 		else if(args.at(0) == "uninstall")
 		{
 			system("sudo rm /usr/bin/jaclang");
-			coutn << "Jaclang sucsessfully removed!" << std::endl;
+			std::cout << "Jaclang sucsessfully removed!" << std::endl;
 			return 0;
 		}
 		else
 		{
-			coutn << "\033[1;31mInvalid option:" << args.at(0) << "\033[0m" << std::endl;
+			std::cout << "\033[1;31mInvalid option:" << args.at(0) << "\033[0m" << std::endl;
 			error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
 		}
 	}
 	else if (args.size() > 2)
 	{
-		coutn << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
+		std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
 		error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
 	}
 	
@@ -110,13 +120,13 @@ int main(int argc, char **argv)
 			file::input[file::input.length()-1] == 'l'
 		) )
 		{
-			coutn << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
+			std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
 			error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
 		}
 	}
 	else
 	{
-		coutn << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
+		std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
 		error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
 	}
 	
@@ -125,31 +135,21 @@ int main(int argc, char **argv)
 	
 	file::read(); // Read file
 	
-	file::add("section .data"); // data section
-	file::add("");
-	file::add("section .bss");  // bss section
-	file::add("");
-	file::add("section .text"); // text section
-	file::add("	global _start"); // for linker
-	file::add("_start:");
-	file::add("");
-	file::add("");
-	file::add("	mov eax, 1");  // sys exit
-	file::add("	int 0x80");  // call kernel
-	
 	#define find(x) find(file::outputVector, x)
 	
 	file::asm_data = find("section .data") + 1;
 	file::asm_bss  = find("section .bss")  + 1;
 	file::asm_text = find("section .text") + 4;
 	
-	#undef find(x)
+	#undef find
+	
 	
 	lexer::main(); // convert code into tokens
 	parser::main(); // convert tokens into syntax tree
 	if(debug)
 		printAST(mainBranch);
 	generator::main(); // generate assembly code out of syntax tree
+	
 	
 	file::write(); // Writes to file
 	
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
 	command += ".o";
 	system(command.c_str());
 	
-	coutn << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // compilation sucsessful!
+	std::cout << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // compilation sucsessful!
 	
 	long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 	std::string ms = std::to_string((end - start) % 1000);
@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 	for(int i = 4; i > len; i--)
 		ms.insert(ms.begin(), '0');
 	
-	coutn << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
+	std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
 	
 	if(!contains(ops, 'n')) // also run file if not specified not to (confusing)
 	{
