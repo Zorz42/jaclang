@@ -23,7 +23,8 @@ except:
 			else:
 				print("Wrong answer!")
 				exit()
-		system("g++ src/*.cpp -o jaclang")
+		system("make build/*.o")
+		system("make jaclang")
 		system("sudo mv jaclang /usr/bin/jaclang")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 	elif(sys.argv[1] == "dependencies"):
