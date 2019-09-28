@@ -178,7 +178,7 @@ void newToken(int TYPE)
 	if(currentToken == "") // if token is empty just do nothing
 		return;
 	token obj;
-	obj.text = (TYPE == TYPE_STRING ? "." : "") + currentToken;
+	obj.text = currentToken;
 	obj.type = TYPE;
 	obj.line = currentLine; // set token line to current line
 	if(obj.text.size() == 1) // if single char token

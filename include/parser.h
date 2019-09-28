@@ -22,11 +22,12 @@ namespace parser
 	
 	namespace e 
 	{
-		bool functionCall();
+		bool functionCall(branch& target);
 		bool systemFunctionCall();
 		bool variableDeclaration();
 		bool beginScope();
 		bool endScope();
+		bool functionDeclaration();
 	}
 	
 	extern std::vector<branch*> scopes;

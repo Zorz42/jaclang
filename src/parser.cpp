@@ -19,8 +19,9 @@ void parser::main()
 	{
 		if(current.text != ";" && current.text != "\\n") // ignore ';' and '\n'
 		{
-			if(parser::e::functionCall()) 0; // execute functionCall
-			else if(parser::e::systemFunctionCall()) 0; // else execute systemFunctionCall
+			//if(parser::e::functionCall()) 0; // execute functionCall
+			if(parser::e::systemFunctionCall()) 0; // else execute systemFunctionCall
+			else if(parser::e::functionDeclaration()) 0;
 			else if(parser::e::variableDeclaration()) 0; // else execute variableDeclaration
 			else if(parser::e::beginScope()) 0;
 			else if(parser::e::endScope()) 0;

@@ -4,25 +4,28 @@
 
 #define current lexer::toks.at(parser::tokCount)
 
-bool parser::e::functionCall()
+bool parser::e::functionCall(branch& target)
 {
+	std::cout << current.text << std::endl;
 	if(current.type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
+		std::cout << "/////" << std::endl;
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system fucntion call or just function call
 			return false;
 		else
 			currentBranch.name = "functionCall";
 		appendBranch(current.text, currentBranch); // append indent to branch 
-		parser::tokCount += 2; // go to arguments
-		for(; lexer::toks.at(parser::tokCount - 1).text != ")"; parser::tokCount++)
+		parser::tokCount += 2;
+		/*for(; lexer::toks.at(parser::tokCount - 1).text != ")"; parser::tokCount++)
 		{
 			branch obj = parser::equation(",", ")"); // ends with ',' or ')'
 			appendBranch(obj, currentBranch); // append branch
-		}
-		if(current.text != "\\n" && current.text != ";") // function end
-			error::syntaxError("Expected newline or ';' at the end of function");
-		appendBranch(currentBranch, *currentBranchScope); // append branch to root
+		}*/
+		if(current.text != ")")
+			error::syntaxError("Function call cannot have arguments (for now)");
+		//parser::tokCount++;
+		appendBranch(currentBranch, target); // append branch to root
 		return true;
 	}
 	else
@@ -48,6 +51,26 @@ bool parser::e::systemFunctionCall()
 		if(current.text != "\\n" && current.text != ";") // function end
 			error::syntaxError("Expected newline or ';' at the end of function");
 		appendBranch(currentBranch, *currentBranchScope); // append branch to root
+		return true;
+	}
+	else
+		return false;
+}
+
+bool parser::e::functionDeclaration()
+{
+	if(current.text == "int" && lexer::toks.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
+	{
+		branch currentBranch;
+		currentBranch.name = "functionDeclaration"; // set to variableDeclaration
+		parser::tokCount += 3;
+		if(current.text != ")") // check if everything is working out and append it to main branch
+			error::syntaxError("No arguments allowed in function declaration (for now)");
+		
+		appendBranch("int", currentBranch);
+		appendBranch(lexer::toks.at(parser::tokCount-2).text, currentBranch);
+		
+		appendBranch(currentBranch, *currentBranchScope);
 		return true;
 	}
 	else

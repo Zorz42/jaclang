@@ -29,15 +29,17 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 		appendBranch("-", currentBranch);
 		parser::tokCount++;
 	}
-	if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
+	if(parser::e::functionCall(currentBranch))
+	{
+		insertBranchAtBegin("int", currentBranch);
+	}
+	else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
 	{
 		if(contains(current.text, '.')) // if it has '.' in it then its float
 			insertBranchAtBegin("float", currentBranch);
 		else
 			insertBranchAtBegin("int", currentBranch); // else its integer
 	}
-	else if(current.type == TYPE_STRING) // if its string
-		insertBranchAtBegin("string", currentBranch);
 	else if(current.text == "(") // if its nested with () then its equation within equation
 	{
 		parser::tokCount++;
@@ -55,7 +57,11 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 		if(parser::tokCount + 1 == lexer::toks.size())
 			error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
 		
-		else if(current.type == TYPE_CONST || current.type == TYPE_STRING || current.type == TYPE_INDENT) // if its constant or string or variable
+		else if(parser::e::functionCall(currentBranch))
+		{
+			timeForValue = false;
+		}
+		else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if its constant or string or variable
 		{
 			if(!timeForValue) // if isnt time for value
 				error::syntaxError("Operator expected");

@@ -37,6 +37,8 @@ void generator::main()
 			}
 			currentBranchScope = prevScope;
 		}
+		else if(current.name == "functionDeclaration")
+			0;
 		else
 			error::treeError("Unknown branch: " + current.name);
 	}
