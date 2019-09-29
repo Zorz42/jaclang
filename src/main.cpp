@@ -88,7 +88,7 @@ int main(int argc, char **argv)
 			std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
 		else if(args.at(0) == "uninstall")
 		{
-			system("sudo rm /usr/bin/jaclang");
+			system("sudo rm /usr/local/bin/jaclang");
 			std::cout << "Jaclang sucsessfully removed!" << std::endl;
 		}
 		else if(args.at(0) == "versionid")

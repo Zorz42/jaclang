@@ -14,7 +14,7 @@ except:
 	if sys.argv[1] == "install":
 		yesOptions = ["Y", "YES"]
 		noOptions  = ["N", "NO"]
-		if popen("ls /usr/bin/jaclang").read() == "/usr/bin/jaclang\n":
+		if popen("ls /usr/local/bin/jaclang").read() == "/usr/local/bin/jaclang\n":
 			decision = raw_input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
 			if decision.upper() in yesOptions:
 				pass
@@ -25,7 +25,7 @@ except:
 				exit()
 		system("make build/*.o")
 		system("make jaclang")
-		system("sudo mv jaclang /usr/bin/jaclang")
+		system("sudo mv jaclang /usr/local/bin/jaclang")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 		decision = raw_input("Would you like to clean up object files[y,n]:")
 		if decision.upper() in yesOptions:
