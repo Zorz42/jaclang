@@ -6,10 +6,8 @@
 
 bool parser::e::functionCall(branch& target)
 {
-	std::cout << current.text << std::endl;
 	if(current.type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
-		std::cout << "/////" << std::endl;
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system fucntion call or just function call
 			return false;

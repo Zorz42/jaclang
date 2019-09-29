@@ -14,7 +14,7 @@ except:
 	if sys.argv[1] == "install":
 		yesOptions = ["Y", "YES"]
 		noOptions  = ["N", "NO"]
-		if popen("ls /usr/local/bin/jaclang").read() == "/usr/local/bin/jaclang\n":
+		if popen("whereis jaclang").read() == "jaclang: /usr/local/bin/jaclang\n":
 			decision = raw_input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
 			if decision.upper() in yesOptions:
 				pass

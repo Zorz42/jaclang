@@ -10,6 +10,7 @@ std::streambuf* orig_buf;
 int file::asm_data; 
 int file::asm_bss;  
 int file::asm_text;
+int file::asm_func;
 
 std::string file::input;
 std::string file::output;
@@ -27,6 +28,8 @@ std::vector<std::string> file::outputVector = {
 	"",
 	"	mov eax, 1",  // sys exit
 	"	int 0x80",
+	""
+	""
 	};
 
 const std::string helpText =
@@ -138,9 +141,10 @@ int main(int argc, char **argv)
 	
 	#define find(x) find(file::outputVector, x)
 	
-	file::asm_data = find("section .data") + 1;
-	file::asm_bss  = find("section .bss")  + 1;
-	file::asm_text = find("section .text") + 4;
+	file::asm_data = find("section .data")     + 1;
+	file::asm_bss  = find("section .bss")      + 1;
+	file::asm_text = find("section .text")     + 4;
+	file::asm_func = file::outputVector.size() - 1;
 	
 	#undef find
 	
@@ -214,6 +218,7 @@ void file::append_data(std::string line)
 	file::asm_data++;
 	file::asm_bss++;
 	file::asm_text++;
+	file::asm_func++;
 }
 
 void file::append_bss(std::string line)
@@ -221,13 +226,22 @@ void file::append_bss(std::string line)
 	file::add(line, file::asm_bss); // append text to bss section
 	file::asm_bss++;
 	file::asm_text++;
+	file::asm_func++;
 }
 
 void file::append_text(std::string line)
 {
 	file::add(line, file::asm_text); // append text to text section
 	file::asm_text++;
+	file::asm_func++;
 }
+
+void file::append_func(std::string line)
+{
+	file::add(line, file::asm_func); // append text to text section
+	file::asm_func++;
+}
+
 
 void file::add(std::string line, int position)
 {
@@ -261,8 +275,16 @@ void file::append_instruction(std::string instruction, std::string arg1, std::st
 	expr += instruction;
 	expr += " ";
 	expr += arg1;
-	if(arg2.c_str())
+	if(arg2 != "")
 		expr += ", ";
 	expr += arg2;
-	file::append_text(expr);
+	file::append(expr);
+}
+
+void file::append(std::string line)
+{
+	if(generator::inFunction)
+		file::append_func(line);
+	else
+		file::append_text(line);
 }

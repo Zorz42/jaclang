@@ -5,6 +5,7 @@ namespace file
 	extern int asm_data;
 	extern int asm_bss;
 	extern int asm_text;
+	extern int asm_func;
 	
 	extern std::string inputText; // Text of the input file
 	extern int inputLineCount; // How many lines does the input file have
@@ -20,8 +21,10 @@ namespace file
 	void append_data(std::string line);
 	void append_bss(std::string line);
 	void append_text(std::string line);
+	void append_func(std::string line);
+	void append(std::string line);
 	void add(std::string line, int position);
 	void add(std::string line);
 	
-	void append_instruction(std::string instruction, std::string arg1, std::string arg2);
+	void append_instruction(std::string instruction, std::string arg1="", std::string arg2="");
 }

@@ -4,6 +4,8 @@
 
 int generator::stackPointer = 0; // top of stack
 std::vector<variable> generator::stack; // the stack, not actual just for allocation
+std::vector<function> generator::functionVector;
+bool generator::inFunction = false;
 
 int currentScopeOnStack = 0;
 
@@ -14,7 +16,8 @@ void generator::main()
 		file::append_text("	mov rbp, rsp");
 	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
 	{
-		file::append_text("");
+		if(file::outputVector.at(file::asm_text - 1) != "")
+			file::append_text("");
 		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
@@ -37,8 +40,8 @@ void generator::main()
 			}
 			currentBranchScope = prevScope;
 		}
-		else if(current.name == "functionDeclaration")
-			0;
+		else if(current.name == "functionDeclaration" && !generator::inFunction)
+			generator::e::functionDeclaration();
 		else
 			error::treeError("Unknown branch: " + current.name);
 	}

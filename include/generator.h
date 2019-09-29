@@ -8,19 +8,26 @@ struct variable
 	int8_t size;
 };
 
+struct function
+{
+	std::string name;
+};
+
 namespace generator
 {
 	void main();
-	
+	extern bool inFunction;
 	namespace e
 	{
 		void systemFunctionCall();
+		void functionDeclaration();
 		void variableDeclaration(int scopeOnStack);
 		void equation(branch& equation);
 	}
 	
 	extern int stackPointer;
 	extern std::vector<variable> stack;
+	extern std::vector<function> functionVector;
 	
 	void pushToStack(variable source);
 
