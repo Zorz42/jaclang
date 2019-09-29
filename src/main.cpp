@@ -45,8 +45,8 @@ const std::string helpText =
 "\n"
 "misc options:\n"
 "	version    - check the version name and id\n"
-"	versionid  - show only version id"
-"	versionstr - show only version name"
+"	versionid  - show only version id\n"
+"	versionstr - show only version name\n"
 "	uninstall  - remove jaclang"
 ;
 
