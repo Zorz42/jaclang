@@ -49,7 +49,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 		parser::tokCount++;
 		timeForValue = false;
 		insertBranchAtBegin(obj.sub.at(0).name, currentBranch);
-		insertBranchAtBegin(obj, currentBranch);
+		appendBranch(obj, currentBranch);
 	}
 	else
 		error::syntaxError("Value expected");
@@ -63,7 +63,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 		else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if its constant or string or variable
 		{
 			if(!timeForValue) // if isnt time for value
-				error::syntaxError("Operator expected");
+				break;
 			std::string currentText = current.type == TYPE_INDENT ? ":" : "";
 			currentText += current.text;
 			appendBranch(currentText, currentBranch);
@@ -79,7 +79,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 		else if(current.text == "(") // then its nested within the operation
 		{
 			if(!timeForValue)
-				error::syntaxError("Operator expected");
+				break;
 			timeForValue = false;
 			parser::tokCount++;
 			branch obj = parser::equation(")", "\n", true); // make eqution until ')'
