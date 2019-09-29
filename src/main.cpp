@@ -37,13 +37,14 @@ const std::string helpText =
 "	jaclang [input file] [output file] - for compilation\n"
 "\n"
 "options:\n"
-"	-n - norun - do not run file after compilation\n"
 "	-d - debug - get more detailed compilation (for nerds)\n"
 "	-k - keep  - keep the assembly file\n"
 "\n"
 "misc options:\n"
-"	version   - check the version\n"
-"	uninstall - remove jaclang"
+"	version    - check the version name and id\n"
+"	versionid  - show only version id"
+"	versionstr - show only version name"
+"	uninstall  - remove jaclang"
 ;
 
 int main(int argc, char **argv)
