@@ -13,10 +13,8 @@ jaclang is like C programming language very fast and light
  * 
  * Support:
  * 
- * - ONLY 64 bit computers,
- * - ONLY linux, for now - compiled binary, (for sources maybe you can compile for mac too)
- * - NASM compiler,
- * - Intel architecture CPU.
+ * - 64 bit computers,
+ * - linux and macos (linux distros with apt)
  * 
  * This language is not begginer friendly.
  * Syntax will be almost the same as C++. Some 
@@ -43,8 +41,10 @@ jaclang is like C programming language very fast and light
  * 
  * - jaclang [option]
  * - options:
- * -> version : check version
- * -> uninstall : uninstall jaclang
+ * -> version    : check version
+ * -> versionid  : check version id
+ * -> versionstr : check version name
+ * -> uninstall  : uninstall jaclang
  *
  * Version tags are stable versions. 
  * Master branch is the latest version in development. Might be unstable and full of bugs.
