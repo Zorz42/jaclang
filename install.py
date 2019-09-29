@@ -27,6 +27,14 @@ except:
 		system("make jaclang")
 		system("sudo mv jaclang /usr/bin/jaclang")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
+		decision = input("Would you like to clean up object files[y,n]:")
+		if(decision.upper() in yesOptions):
+			system("make clean")
+		elif(decision.upper() in noOptions):
+			exit()
+		else:
+			print("Wrong answer!")
+			exit()
 	elif(sys.argv[1] == "dependencies"):
 		print("Checking for dependencies: nasm")
 		if(popen("whereis nasm").read() == "nasm:\n"):
