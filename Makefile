@@ -5,7 +5,7 @@ srcdir  = src
 incldir = include
 
 cc = g++ $(incldir:%=-I%)
-flags = $W -o $@
+flags = $W -o $@ -m64 -std=gnu++11
 objs = astPrinter.o equation.o equationGenerator.o error.o functionParser.o generator.o keywords.o lexer.o main.o parser.o preprocessor.o scopes.o shortcuts.o systemFunctionCall.o variableDeclaration.o variableDeclarationParser.o
 fullnameobjs = $(patsubst %,$(objdir)/%,$(objs))
 
