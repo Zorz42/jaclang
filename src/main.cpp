@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 	
 	file::write(); // Writes to file
 	
-	std::string command = "nasm -f elf64 "; // compile assembly code
+	std::string command = "nasm -w-all -f elf64 "; // compile assembly code
 	command += file::output;
 	command += ".asm";
 	command += " && ";

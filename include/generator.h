@@ -23,6 +23,7 @@ namespace generator
 		void functionDeclaration();
 		void variableDeclaration(int scopeOnStack);
 		void equation(branch& equation);
+		void functionCall();
 	}
 	
 	extern int stackPointer;

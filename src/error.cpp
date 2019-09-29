@@ -12,7 +12,7 @@ void error::syntaxError(std::string error) // Print out syntax error
 	std::cerr << errorLine << std::endl; // find line of error
 	for(int i = 0; i < lexer::toks.at(parser::tokCount).pos; i++) // point to error token
 		std::cerr << " ";
-	std::cerr << "^" << "\033[0m"; // Reset to white
+	std::cerr << "^" << "\033[0m" << std::endl; // Reset to white
 	
 	terminate("SYNTAX ERROR", ERROR_SYNTAX_ERROR);
 }

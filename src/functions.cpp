@@ -28,6 +28,9 @@ void generator::e::functionDeclaration()
 {
 	function obj;
 	obj.name = currentName2;
+	for(function i : generator::functionVector)
+		if(i.name == obj.name)
+			error::treeError("Function already declared!");
 	generator::functionVector.push_back(obj);
 	currentBranchScope->count++;
 	std::vector<variable> prevStack = generator::stack;
@@ -55,6 +58,11 @@ void generator::e::functionDeclaration()
 	generator::inFunction = false;
 	currentBranchScope = prevScope;
 	generator::stack = prevStack;
+}
+
+void generator::e::functionCall()
+{
+	
 }
 
 std::string generateAsmText() // generate text for inline assmebly [text]  ;;__asm__

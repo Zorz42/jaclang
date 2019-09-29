@@ -1,5 +1,5 @@
 2.0 IN PROGRESS
- - function implementation:
+ - (DONE) function implementation:
 	-function declaration
 	-function call only int used in equations
  - documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew

@@ -8,6 +8,7 @@ bool parser::e::functionCall(branch& target)
 {
 	if(current.type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
+		std::cout << "fff" << current.text << std::endl;
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system fucntion call or just function call
 			return false;
@@ -15,14 +16,8 @@ bool parser::e::functionCall(branch& target)
 			currentBranch.name = "functionCall";
 		appendBranch(current.text, currentBranch); // append indent to branch 
 		parser::tokCount += 2;
-		/*for(; lexer::toks.at(parser::tokCount - 1).text != ")"; parser::tokCount++)
-		{
-			branch obj = parser::equation(",", ")"); // ends with ',' or ')'
-			appendBranch(obj, currentBranch); // append branch
-		}*/
 		if(current.text != ")")
 			error::syntaxError("Function call cannot have arguments (for now)");
-		//parser::tokCount++;
 		appendBranch(currentBranch, target); // append branch to root
 		return true;
 	}

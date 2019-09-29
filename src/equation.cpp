@@ -32,6 +32,8 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 	if(parser::e::functionCall(currentBranch))
 	{
 		insertBranchAtBegin("int", currentBranch);
+		parser::tokCount++;
+		timeForValue = false;
 	}
 	else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
 	{
@@ -54,6 +56,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 	
 	while(current.text != end && current.text != end2 || timeForValue) // repeat until end token and it shouldnt be time for value eg. 10 + 10 +;
 	{
+		std::cout << current.text << std::endl;
 		if(parser::tokCount + 1 == lexer::toks.size())
 			error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
 		

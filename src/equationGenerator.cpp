@@ -26,8 +26,21 @@ void generator::e::equation(branch& equation)
 	{
 		if(equation.sub.at(0).name != "int") // for now equations only support int
 			error::treeError("equation must be int");
+		if(equation.sub.at(1).name == "functionCall")
+		{
+			bool funcExists = false;
+			for(function iter : generator::functionVector)
+				if(iter.name == equation.sub.at(1).sub.at(0).name)
+				{
+					funcExists = true;
+					break;
+				}
+			if(!funcExists)
+				error::treeError("Function does not exist!");
+			file::append_instruction("call", equation.sub.at(1).sub.at(0).name + ".");
+		}
 		
-		if(equation.sub.at(1).name != "/equation")
+		else if(equation.sub.at(1).name != "/equation")
 		{
 			std::string value = equation.sub.at(1).name;
 			if(value.at(0) == ':')

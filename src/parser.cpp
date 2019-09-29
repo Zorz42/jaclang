@@ -19,12 +19,11 @@ void parser::main()
 	{
 		if(current.text != ";" && current.text != "\\n") // ignore ';' and '\n'
 		{
-			//if(parser::e::functionCall()) 0; // execute functionCall
-			if(parser::e::systemFunctionCall()) 0; // else execute systemFunctionCall
-			else if(parser::e::functionDeclaration()) 0;
-			else if(parser::e::variableDeclaration()) 0; // else execute variableDeclaration
-			else if(parser::e::beginScope()) 0;
-			else if(parser::e::endScope()) 0;
+			if(parser::e::systemFunctionCall()); // else execute systemFunctionCall
+			else if(parser::e::functionDeclaration());
+			else if(parser::e::variableDeclaration()); // else execute variableDeclaration
+			else if(parser::e::beginScope());
+			else if(parser::e::endScope());
 			else
 			{
 				branch equation = parser::equation(";", "\\n"); // else parse equation
