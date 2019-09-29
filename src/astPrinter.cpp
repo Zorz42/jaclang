@@ -13,8 +13,6 @@ void printAST(branch& obj)
 	name += obj.name;
 	coutd << name << std::endl;
 	for(branch iterator : obj.sub)
-	{
 		printAST(iterator);
-	}
 	nested--;
 }

@@ -17,18 +17,15 @@ void parser::main()
 	
 	for(;parser::tokCount < lexer::toks.size(); parser::tokCount++) // go through all tokens
 	{
-		if(current.text != ";" && current.text != "\\n") // ignore ';' and '\n'
+		if(parser::e::systemFunctionCall()); // else execute systemFunctionCall
+		else if(parser::e::functionDeclaration());
+		else if(parser::e::variableDeclaration()); // else execute variableDeclaration
+		else if(parser::e::beginScope());
+		else if(parser::e::endScope());
+		else
 		{
-			if(parser::e::systemFunctionCall()); // else execute systemFunctionCall
-			else if(parser::e::functionDeclaration());
-			else if(parser::e::variableDeclaration()); // else execute variableDeclaration
-			else if(parser::e::beginScope());
-			else if(parser::e::endScope());
-			else
-			{
-				branch equation = parser::equation(";", "\\n"); // else parse equation
-				appendBranch(equation, *currentBranchScope);
-			}
+			branch equation = parser::equation(); // else parse equation
+			appendBranch(equation, *currentBranchScope);
 		}
 	}
 }

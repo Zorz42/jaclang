@@ -54,13 +54,9 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 	else
 		error::syntaxError("Value expected");
 	
-	while(current.text != end && current.text != end2 || timeForValue) // repeat until end token and it shouldnt be time for value eg. 10 + 10 +;
+	while(true)
 	{
-		std::cout << current.text << std::endl;
-		if(parser::tokCount + 1 == lexer::toks.size())
-			error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
-		
-		else if(parser::e::functionCall(currentBranch))
+		if(parser::e::functionCall(currentBranch))
 		{
 			timeForValue = false;
 		}
@@ -96,13 +92,25 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 			appendBranch(current.text, currentBranch);
 			timeForValue = false;
 		}
-		else if(current.text != "\\n") // if token isn't newline, because operation can be in multiple lines
-			error::syntaxError("Unexpected token");
+		else
+			break;
+		
+		if(parser::tokCount + 1 == lexer::toks.size())
+			if(timeForValue)
+				error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
+			else
+			{
+				timeForValue = false;
+				break;
+			}
 		
 		parser::tokCount++;
 	}
 	if(timeForValue) // if it was a time for value
 		error::syntaxError("Value expected");
+	
+	if(current.text != ")" && parser::tokCount + 1 != lexer::toks.size())
+		parser::tokCount--;
 	
 	#define current(x) currentBranch.sub.at(x).name
 	#define currentObj(x) currentBranch.sub.at(x)

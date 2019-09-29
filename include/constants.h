@@ -14,6 +14,5 @@
 #define TYPE_STRING 4
 #define TYPE_SYMBOL 5
 #define TYPE_OPERATOR 6
-#define TYPE_NEWLINE 7
 
 #define VARIABLE_INT 0

@@ -37,7 +37,7 @@ void lexer::main() // main lexer function
 	#define CHAR file::inputText.at(c) // shortcut to get current character of string that for loop is parsing
 	for(long unsigned int c = 0; c < file::inputText.length(); c++) // the for loop parses through input file
 	{
-		if((CHAR == ' ' || CHAR == '	') && !IN_STRING) // tabs and spaces separate tokens if not in string
+		if((CHAR == ' ' || CHAR == '	' || CHAR == '\n') && !IN_STRING) // tabs and spaces separate tokens if not in string
 			newToken();
 		else if(CHAR == '"' && !inStringQ) // if double quotes occur and if not in single quoted string
 		{
@@ -130,17 +130,6 @@ void lexer::main() // main lexer function
 			}
 			else
 				newToken(TYPE_OPERATOR); // just create new token if operator is single-char
-		}
-		else if(CHAR == '\n' && !IN_STRING && c >= 0) // if character is newline  
-		{
-			if(file::inputText.at(c - 1) != '\n')
-			{
-				newToken();
-				currentToken = "\\n";
-				newToken(TYPE_NEWLINE);
-				currentLine++;
-				posInLine = -1;
-			}
 		}
 		else
 			currentToken += CHAR; // else just append character to token

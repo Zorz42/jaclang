@@ -2,7 +2,7 @@
  - (DONE) function implementation:
 	-function declaration
 	-function call only int used in equations
- - documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
+ - (HALF DONE) documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
  - (DONE) new and improved makefile
  - (DONE) remove useless optimization
  - (DONE) coutd improve
