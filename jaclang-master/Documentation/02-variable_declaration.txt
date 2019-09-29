@@ -1,0 +1,23 @@
+- You can declare variable, like:
+	int a = 0;
+(semicolon is optional)
+    
+For now you can not declare more variables in a sigle expression, or leave them undefined.
+- You do not necesserily need ; for terminating expression. If compiler sees that the expression could end and if there is newline, it terminates it. eg.
+int a = 1 +
+1 + 2 +
+1
+
+This will count as one expression, because equation cannot end with operator.
+int a = 1 + 1
++ 1 + 2
+
+Only first line will count as expression.
+int a = (1 + 1
++ 1 + 2)
+
+You can fix that, because the expression will not be valid with open brace, therefore it cannot end.
+This will not take performance, because if compiler seen plain braces in equation, that do't have an advantage over anything, then it will remove those, but expression will stay.
+
+Equations will have +, -, *, /  and braces.
+Single-line comments will be with triple-slash (///), because double-slash (//) is reserved for floor dividing

@@ -1,0 +1,61 @@
+21.9 2019, BETA 1.5.1
+ - Added optimisation to equations,
+ - Fixed single-element equation bug
+ - Fixed variable in equation bug
+
+19.9 2019, BETA 1.5.0
+ - Variables can be used in equations
+
+19.9 2019, BETA 1.4.0
+ - revamped arguments
+ - added option to check version and to uninstall
+ - if you type bare jaclang it will dispalay help
+
+18.9 2019, BETA 1.3.7
+ - Added install.py file to uninstall and install jaclang, which is better comoared to the poor makefile, you can still do make, make install, make uninstall
+ - remove uninstall.sh
+
+18.9 2019, BETA 1.3.6
+ - Fixed scope bug where stack pointer does not update
+
+17.9 2019, BETA 1.3.5
+ - Fixed scope bug
+
+16.9 2019, BETA 1.3.4
+ - Jaclang binary is smaller by ~200KB and optimised because of:
+ - jaclang.h select libraries instead of importing all
+ - removed unnecessary libraries that were just "standing there"
+ - removed libraries and replaced them with my own functions
+ - changed int to int8_t when struct has type integer that goes no higher than 5 (tokens, expressions), saving 3Bytes of memory per token and 3Bytes per expression
+ - added pointers for big arguments in functions to save memory
+
+8.9 2019, BETA 1.3.3
+ - added dynamic lookup for sections
+
+28.8 2019, BETA 1.3.2
+ - compiling only files with .jl extension, otherwise its an unrecognised format
+ - made that program terminates if file does not exist
+
+28.8 2019, BETA 1.3.1
+ - made shorter asm files by removing unnecessary newlines
+ - Added documentation
+ 
+28.8 2019, BETA 1.3.0
+ - Added scopes
+ - Updated readme.md for usage
+ - fixed bug which sometimes does't write to file
+ - fixed bug where newline in multiline comment count as token
+ - fixed bug where error points at the wrong character
+ - optimized code
+ - added timing
+
+20.8 2019, BETA 1.2.0
+ - Added multiline comments
+ - Added option to debug-compile
+
+19.8 2019, BETA 1.1.0
+ - Added Makefile, which compiles and installs jaclang to /usr/bin
+ - added uninstall.sh, which removes jaclang from /usr/bin
+
+19.8 2019, BETA 1.0.0
+ - Uploaded language Jaclang. Its intensions can be seen in README.md
