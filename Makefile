@@ -26,8 +26,8 @@ clean:
 	rm -rf $(objdir)
 
 install: install.py
-	python install.py install
-	python install.py dependencies
+	python3 install.py install
+	python3 install.py dependencies
 
 uninstall: install.py
 	jaclang uninstall

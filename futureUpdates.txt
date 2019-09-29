@@ -12,4 +12,3 @@
  - (DONE) new options: versionid, versionstr
  - (DONE) remove norun option and do not automatically run program
  - (DONE) fixed some bugs
- - (NOT PLANNED) added support for macos
