@@ -22,7 +22,7 @@ jaclang is like C programming language very fast and light
  * Syntax will be almost the same as C++. Some 
  * unnecessary tokens will be removed.
  * 
- *  THE ZEN OF JACLANG: (like python)
+ *  THE ZEN OF JACLANG:
  * 
  * - execution time of compiled code is more important than compilation time,
  * - hirearhical is better than flat,
