@@ -16,7 +16,6 @@
 #define IN_STRING (inStringQ || inStringDQ) // macro for later purposes
 
 int currentLine = 1;
-int posInLine = 0;
 
 std::vector<token> lexer::toks; // vector of tokens
 
@@ -29,16 +28,26 @@ double toDec(std::string text); // convert string to float or int
 bool isInt(std::string text); // check if int if float then returns false
 bool isDec(std::string text); // the same but says yes to floats
 
+long unsigned int prevC = 0;
+long unsigned int c = 0;
+
 void lexer::main() // main lexer function
 {
 	bool inStringQ = false;  // if in string with single quotes
 	bool inStringDQ = false; // if in string with double quotes
 	
 	#define CHAR file::inputText.at(c) // shortcut to get current character of string that for loop is parsing
-	for(long unsigned int c = 0; c < file::inputText.length(); c++) // the for loop parses through input file
+	#define nextChar c++
+	#define prevChar c--
+	
+	for(; c < file::inputText.length(); c++) // the for loop parses through input file
 	{
 		if((CHAR == ' ' || CHAR == '	' || CHAR == '\n') && !IN_STRING) // tabs and spaces separate tokens if not in string
+		{
 			newToken();
+			if(CHAR == '	')
+				prevC++;
+		}
 		else if(CHAR == '"' && !inStringQ) // if double quotes occur and if not in single quoted string
 		{
 			inStringDQ = !inStringDQ; // change to true if false and vice versa
@@ -71,7 +80,7 @@ void lexer::main() // main lexer function
 			}
 			if(CHAR == '*' || CHAR == '&') // symbols and operators share two symbols '*' and '&'
 			{
-				c++;
+				nextChar;
 				if(CHAR == lexer::operators[OPERATOR] || CHAR == '=') // if its "**", "*=", "&&", "&="
 				{
 					currentToken += CHAR; // then it is operator
@@ -79,12 +88,14 @@ void lexer::main() // main lexer function
 				}
 				else
 				{
-					c--; // if not decrement back and make new token to be determined later
+					prevChar; // if not decrement back and make new token to be determined later
 					newToken(); // because '*' or '&' can be operator or symbol based on the neighbor token
 				}
 			}
 			else if(!special)
+			{
 				newToken(TYPE_SYMBOL); // if its nothing special just append it to tokens
+			}
 		}
 		else if(contains(lexer::operators, CHAR) && !IN_STRING) // operators are the same, but multi-char
 		{
@@ -93,21 +104,21 @@ void lexer::main() // main lexer function
 			currentToken = CHAR; // sets token to that operator
 			if(CHAR == ':' && file::inputText.at(c + 1) == ':') // there is operator ':' and symbol '::'
 			{
-				c++; // increment
+				nextChar; // increment
 				currentToken += ':'; // add ':' to token, so its '::'
 				newToken(TYPE_SYMBOL); // its symbol
 				// if its ':' it will be handled later
 			}
 			else if(OPERATOR < 13) // if operator is not in area of single-character operators
 			{
-				c++; // increment to check on next operator
+				nextChar; // increment to check on next operator
 				if(OPERATOR < 4) // operators 0, 1, 2 and 3 have only '=' variant
 				{
 					if(CHAR == '=') // if this is the variant then write it in
 						currentToken += CHAR;
 					else // else go back
 					{
-						c--;
+						prevChar;
 						if(CHAR == '=') // if operator is '=' and not '==' then its symbol
 							newToken(TYPE_SYMBOL);
 					}
@@ -119,12 +130,12 @@ void lexer::main() // main lexer function
 						currentToken += CHAR; // if it is variant, cool
 						if((CHAR == '<' || CHAR == '>') && file::inputText.at(c + 1) == '=') // there are 2 three-char operators '<<=' and '>>='
 						{
-							c++;
+							nextChar;
 							currentToken += '=';
 						}
 					}
 					else // if its not, go back
-						c--;
+						prevChar;
 				}
 				newToken(TYPE_OPERATOR); // create new token
 			}
@@ -133,7 +144,11 @@ void lexer::main() // main lexer function
 		}
 		else
 			currentToken += CHAR; // else just append character to token
-		posInLine++;
+		if(CHAR == '\n')
+		{
+			currentLine++;
+			prevC = c + 1;
+		}
 	}
 	#undef CHAR
 	
@@ -148,7 +163,7 @@ void lexer::main() // main lexer function
 				iter.type = TYPE_CONST;
 			else if(iter.text == "*" || iter.text == "&") // unresolved '*' and '&'
 			{
-				if(prevToken.type == TYPE_CONST && prevToken.type == TYPE_INDENT) // if in operation, then its operator
+				if(prevToken.type == TYPE_CONST || prevToken.type == TYPE_INDENT) // if in operation, then its operator
 					iter.type = TYPE_OPERATOR;
 				else // else its symbol
 					iter.type = TYPE_SYMBOL;
@@ -156,7 +171,15 @@ void lexer::main() // main lexer function
 			else
 				iter.type = TYPE_INDENT; // indent is only left
 		}
-		coutd << int(iter.type) << ": " << iter.text << std::endl;
+		
+		if(debug)
+		{
+			coutd << int(iter.type) << ": " << iter.text;
+			if(iter.text.size() < 10)
+				for(int i = 0; i < 10 - iter.text.size(); i++)
+					coutd << " ";
+			coutd << " " << iter.line << ", " << iter.pos << std::endl;
+		}
 		
 		prevToken = iter; // set previous token
 	}
@@ -170,10 +193,9 @@ void newToken(int TYPE)
 	obj.text = currentToken;
 	obj.type = TYPE;
 	obj.line = currentLine; // set token line to current line
-	if(obj.text.size() == 1) // if single char token
-		obj.pos = posInLine - 1; // only position in line
-	else
-		obj.pos = posInLine - obj.text.size(); // position in line - length of obj
+	obj.pos = c - prevC - obj.text.size(); // position in line - length of obj
+	if(obj.type == TYPE_OPERATOR || obj.type == TYPE_SYMBOL)
+		obj.pos++;
 	lexer::toks.push_back(obj); // append token
 	currentToken = ""; // reset token
 }

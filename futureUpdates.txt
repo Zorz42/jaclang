@@ -14,3 +14,4 @@
  - (DONE) fixed some bugs
  - (NOT PLANNED) made support for macos
  - (NOT PLANNED) errors go in cerr instead of cout
+ - (NOT PLANNED) fixed error bug

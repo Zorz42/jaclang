@@ -13,7 +13,7 @@
 
 struct branch;
 
-#define coutd if(debug) std::cout
+#define coutd std::cout
 
 extern bool debug;
 

@@ -22,7 +22,7 @@ void preprocessor::main(std::string& text)
 		for(int i = 0; i < line.length(); i++)
 		{
 			if(i < line.length() - 3) // if not in the last 3 characters of line
-				if(line[i] == '/' && line[i + 1] == '/' && line[i + 2] == '/') // if triple slash
+				if(line[i] == ';') // if triple slash
 					lineComment = true; // then there is comment
 			if(i < line.length() - 2 && !lineComment)
 				if(line[i] == '/' && line[i + 1] == '*')
