@@ -32,7 +32,7 @@ except:
 		if decision.upper() in yesOptions:
 			system("make clean")
 		elif decision.upper() in noOptions:
-			exit()
+			pass
 		else:
 			print "Wrong answer!"
 			exit()
@@ -50,7 +50,8 @@ except:
 
 		alias_file = open(path.expanduser("~") + "/" + alias_file_name, "r")
 		lines = alias_file.readlines()
-		lines = lines[-1]
+		if len(lines) != 0:
+			lines = lines[-1]
 		alias_file.close()
 
 		if lines != alias_command:
