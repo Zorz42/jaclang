@@ -6,7 +6,7 @@ incldir = include
 
 cc = g++ $(incldir:%=-I%)
 flags = $W -o $@ -m64 -std=gnu++11
-objs = astPrinter.o equation.o equationGenerator.o error.o functionParser.o generator.o keywords.o lexer.o main.o parser.o preprocessor.o scopes.o shortcuts.o functions.o variableDeclaration.o variableDeclarationParser.o
+objs = astPrinter.o equationParser.o equationGenerator.o error.o functionParser.o generator.o keywords.o lexer.o main.o parser.o preprocessor.o scopeParser.o shortcuts.o functionGenerator.o variableGenerator.o variableParser.o
 fullnameobjs = $(patsubst %,$(objdir)/%,$(objs))
 
 all: install
