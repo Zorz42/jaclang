@@ -1,5 +1,6 @@
-import sys
-from os import *
+import sys.argv
+from os import popen, system
+from platform import system
 
 try:
 	sys.argv[1]
@@ -36,11 +37,24 @@ except:
 			print("Wrong answer!")
 			exit()
 	elif sys.argv[1] == "dependencies":
-		print("Checking for dependencies: nasm")
-		if popen("whereis nasm").read() == "nasm:\n":
-			system("sudo apt install nasm")
-			print("Installed dependency nasm")
+		if platform.system() == 'Linux':
+			print("Checking for dependencies: nasm")
+			if popen("whereis nasm").read() == "nasm:\n":
+				system("sudo apt install nasm")
+				print("Installed dependency nasm")
+			else:
+				print("Nasm is already installed!")
+		elif platform.system() == 'Darwin':
+			print("Checking for dependencies: brew, nasm")
+			if popen("brew").read() == "-bash: brew: command not found\n"
+				system('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+			else:
+				print("brew is already installed!")
+			if popen("ls /usr/local/bin/nasm").read() == "ls: /usr/local/bin/nasm: No such file or directory\n":
+				system("brew install nasm")
+			else:
+				print("nasm is already installed")
 		else:
-			print("Nasm is already installed!")
+			print("unsuported os")
 	else:
 		print("Invalid argument: " + sys.argv[1])

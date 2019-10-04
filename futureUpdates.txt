@@ -16,3 +16,4 @@
  - (NOT PLANNED) errors go in cerr instead of cout
  - (NOT PLANNED) fixed error bug
  - (NOT PLANNED) renamed files
+ - (NOT PLANNED) added installation support for macos

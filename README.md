@@ -25,7 +25,7 @@ jaclang is like C programming language very fast and light
  * - execution time of compiled code is more important than compilation time,
  * - hirearhical is better than flat,
  * - purity is imortant
- * - practicality beats purity (from python, I agree)
+ * - practicality beats purity
  * - size of compiled binaries should be as small as possible
  *
  * - HOW TO USE

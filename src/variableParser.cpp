@@ -21,7 +21,7 @@ bool parser::e::variableDeclaration()
 		if(current.text != "=")
 			error::syntaxError("Expected '=' after keyword in variable declaration");
 		parser::tokCount++;
-		branch equationBranch = parser::equation(";", "\\n", true);
+		branch equationBranch = parser::equation(true);
 		appendBranch(equationBranch, currentBranch);
 		
 		appendBranch(currentBranch, *currentBranchScope);

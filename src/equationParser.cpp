@@ -18,7 +18,7 @@ void insertBranchAtBegin(branch source, branch& target)
 	target.sub.insert(target.sub.begin(), source);
 }
 
-branch parser::equation(std::string end, std::string end2, bool nested) // parse equation
+branch parser::equation(bool nested) // parse equation
 {
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
@@ -45,7 +45,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 	else if(current.text == "(") // if its nested with () then its equation within equation
 	{
 		parser::tokCount++;
-		branch obj = parser::equation(")");
+		branch obj = parser::equation();
 		parser::tokCount++;
 		timeForValue = false;
 		insertBranchAtBegin(obj.sub.at(0).name, currentBranch);
@@ -82,7 +82,7 @@ branch parser::equation(std::string end, std::string end2, bool nested) // parse
 				break;
 			timeForValue = false;
 			parser::tokCount++;
-			branch obj = parser::equation(")", "\n", true); // make eqution until ')'
+			branch obj = parser::equation(true); // make eqution until ')'
 			appendBranch(obj, currentBranch);
 		}
 		else if(current.type == TYPE_INDENT)
@@ -181,3 +181,4 @@ branch optimize(branch currentBranch, bool nested)
 	
 	return currentBranch;
 }
+
