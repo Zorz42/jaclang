@@ -1,6 +1,6 @@
-import sys.argv
+import sys
 from os import popen, system
-from platform import system
+import platform
 
 try:
 	sys.argv[1]
@@ -46,11 +46,11 @@ except:
 				print("Nasm is already installed!")
 		elif platform.system() == 'Darwin':
 			print("Checking for dependencies: brew, nasm")
-			if popen("brew").read() == "-bash: brew: command not found\n"
+			if popen("brew").read() == '':
 				system('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
 			else:
 				print("brew is already installed!")
-			if popen("ls /usr/local/bin/nasm").read() == "ls: /usr/local/bin/nasm: No such file or directory\n":
+			if popen("ls /usr/local/bin/nasm").read() == '':
 				system("brew install nasm")
 			else:
 				print("nasm is already installed")
