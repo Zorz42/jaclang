@@ -15,7 +15,7 @@ except:
 	if sys.argv[1] == "install":
 		yesOptions = ["Y", "YES"]
 		noOptions  = ["N", "NO"]
-		if popen("whereis jaclang").read() == "jaclang: /usr/local/bin/jaclang\n":
+		if popen("which jaclang").read() == "/usr/local/bin/jaclang\n":
 			decision = raw_input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
 			if decision.upper() in yesOptions:
 				pass
@@ -63,14 +63,14 @@ except:
 	elif sys.argv[1] == "dependencies":
 		if platform.system() == 'Linux':
 			print "Checking for dependencies: nasm"
-			if popen("whereis nasm").read() == "nasm:\n":
+			if popen("which nasm").read() == "\n":
 				system("sudo apt install nasm")
 				print "Installed dependency nasm"
 			else:
 				print "Nasm is already installed!"
 		elif platform.system() == 'Darwin':
 			print "Checking for dependencies: brew, nasm"
-			if popen("brew").read() == '':
+			if popen("which brew").read() != "/usr/local/bin/brew\n":
 				system('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
 			else:
 				print "brew is already installed!"
