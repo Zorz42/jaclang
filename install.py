@@ -77,7 +77,7 @@ except:
 			if popen("ls /usr/local/bin/nasm").read() == '':
 				system("brew install nasm")
 			else:
-				print "nasm is already installed"
+				print "nasm is already installed!"
 		else:
 			print "Unsuported os!"
 	else:
