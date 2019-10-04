@@ -17,3 +17,4 @@
  - (NOT PLANNED) fixed error bug
  - (NOT PLANNED) renamed files
  - (NOT PLANNED) added installation support for macos
+ - (NOT PLANNED) added custom completion
