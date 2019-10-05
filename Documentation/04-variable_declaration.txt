@@ -1,0 +1,58 @@
+- You can declare variable, like:
+	int a = 0
+(no semicolon)
+    
+For now you can not declare more variables in a sigle expression, or leave them undefined.
+- You do not need semicolon for terminating expression. Expression will terminate when invalid token appears
+int a = 1 +
+1 + 2 +
+1 int b =
+10 + 2
++ 2
+
+You can fix that, because the expression will not be valid with open brace, therefore it cannot end.
+This will not take performance, because if compiler seen plain braces in equation, that do't have an advantage over anything, then it will remove those, but expression will stay.
+
+Equations will have +, -, *, /  and braces.
+
+in this situation:
+
+int a = 10
+
+-10 + 20
+
+you meant two expressions: var declaration and naked equation, but compiler recognizes it as one expression, because of the minus in equation, so a will be 20, not 10.
+
+you can corrent this by:
+
+int a = 10
+
+(-10) + 20
+
+or
+
+int a = 10
+
+0-10 + 20
+
+None will take performance, because if compiler sees minus in the beggining of the equation, it adds zero to beggining: -10 + 20 -> 0-10 + 20
+Neither will the braces, because if compiler sees two constants, it calculates them and removes braces with single element.
+
+(space separates tokens)
+
+( - 10 ) + 20
+
+|
+V
+
+( 0 - 10 ) + 20
+
+|
+V
+
+( -10 ) + 20 ; -10 is now a single token, instead of two
+
+|
+V
+
+-10 + 20
