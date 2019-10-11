@@ -11,6 +11,9 @@ jaclang is like C programming language very fast and light
  * the core data. You can enable to track execution time, because if you do 
  * not need it, it will only take performance.  
  * 
+ * I really care about the binary code of being small and fast, suitable for slower computers. I want compilation times 
+ * to be as slow as needed, to make the maximum efficiency. I am thinking about a minute, compared to ten seconds. 
+ * You could also do option to fast compile, for testing.
  * Support:
  * 
  * - 64 bit computers,
@@ -27,24 +30,6 @@ jaclang is like C programming language very fast and light
  * - purity is imortant
  * - practicality beats purity
  * - size of compiled binaries should be as small as possible
- *
- * - HOW TO USE
- * 
- * - jaclang [input file] [output file] [options]
- * -
- * - options:
- * -> -d : enable debug mode (see tokens, ast)
- * -> -k : keep the assembly file
- * 
- * - jaclang
- * - this will display help
- * 
- * - jaclang [option]
- * - options:
- * -> version    : check version
- * -> versionid  : check version id
- * -> versionstr : check version name
- * -> uninstall  : uninstall jaclang
  *
  * Version tags are stable versions. 
  * Master branch is the latest version in development. Might be unstable and full of bugs.
