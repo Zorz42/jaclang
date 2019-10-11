@@ -47,7 +47,9 @@ except:
 			exit()
 
 		alias_command = "complete -o default -W \"uninstall version versionid versionstr\" 'jaclang'\n"
-
+		
+		system("touch " + path.expanduser("~") + "/" + alias_file_name)
+		
 		alias_file = open(path.expanduser("~") + "/" + alias_file_name, "r")
 		lines = alias_file.readlines()
 		if len(lines) != 0:
