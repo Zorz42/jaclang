@@ -1,3 +1,10 @@
+ifeq ($(shell uname),Darwin)
+    PYTHON := python
+endif
+ifeq ($(shell uname),Linux)
+    PYTHON := python3
+endif
+
 W = -Wall -Wextra -Wshadow -pedantic
 
 objdir  = build
@@ -14,20 +21,20 @@ all: install
 .PHONY: clean install
 
 ./jaclang: $(fullnameobjs) | .
-	$(cc) $(flags) $(fullnameobjs)
+	sudo $(cc) $(flags) $(fullnameobjs)
 
 $(objdir)/%.o: $(srcdir)/%.cpp | $(objdir)
-	$(cc) $(flags) -c $<
+	sudo $(cc) $(flags) -c $<
 
 $(objdir):
-	mkdir $@
+	sudo mkdir $@
 
 clean:
-	rm -rf $(objdir)
+	sudo rm -rf $(objdir)
 
 install: install.py
-	python install.py install
-	python install.py dependencies
+	sudo $(PYTHON) install.py install
+	sudo $(PYTHON) install.py dependencies
 
 uninstall: install.py
-	jaclang uninstall
+	sudo jaclang uninstall
