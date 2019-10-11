@@ -1,4 +1,4 @@
-2.0 IN PROGRESS
+2.0 BETA IN PROGRESS
  - (DONE) function implementation:
 	-function declaration
 	-function call only int used in equations
