@@ -5,8 +5,15 @@ jaclang is like C programming language very fast and light
 // PROJECT MADE BY JAKOB
 // --------------------------
 
- *
- * It is trying to achieve as small compiled binaries as possible. Predefined variables, are not defined by default, 
+INSTALLATION PROCESS:
+1. Download zip and unzip it.
+2. Open terminal and go to unzipped folder.
+3. Type make (you will need sudo).
+4. Jaclang is installed at /usr/local/bin
+
+
+
+ * Jaclang is trying to achieve as small compiled binaries as possible. Predefined variables, are not defined by default, 
  * you have to enable them, because you might not use them. Defined will be 
  * the core data. You can enable to track execution time, because if you do 
  * not need it, it will only take performance.  
