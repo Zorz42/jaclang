@@ -28,23 +28,23 @@ std::vector<std::string> file::outputVector = { // prefix for asm file
 	""
 	};
 
-const std::string helpText = // help text (if no argumets provided)
-"Jaclang help: \n"
-"usage:\n"
-"	jaclang - for help\n"
-"	jaclang [option] - for misc\n"
-"	jaclang [input file] [output file] - for compilation\n"
-"\n"
-"options:\n"
-"	-d - debug - get more detailed compilation (for nerds)\n"
-"	-k - keep  - keep the assembly file\n"
-"\n"
-"misc options:\n"
-"	version    - check the version name and id\n"
-"	versionid  - show only version id\n"
-"	versionstr - show only version name\n"
-"	uninstall  - remove jaclang"
-;
+// help text (if no argumets provided
+#define HELP_TEXT \ 
+"Jaclang help: \n"\
+"usage:\n"\
+"	jaclang - for help\n"\
+"	jaclang [option] - for misc\n"\
+"	jaclang [input file] [output file] - for compilation\n"\
+"\n"\
+"options:\n"\
+"	-d - debug - get more detailed compilation (for nerds)\n"\
+"	-k - keep  - keep the assembly file\n"\
+"\n"\
+"misc options:\n"\
+"	version    - check the version name and id\n"\
+"	versionid  - show only version id\n"\
+"	versionstr - show only version name\n"\
+"	uninstall  - remove jaclang"\
 
 int main(int argc, char **argv)
 {
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 	
 	if(args.size() == 0) // if there are no arguments
 	{
-		std::cout << helpText << std::endl; // print help text
+		std::cout << HELP_TEXT << std::endl; // print help text
 		return 0;
 	}
 	
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 	
 	#define find(x) find(file::outputVector, x)
 	
-	file::asm_data = find("section .data")     + 1;
+	file::asm_data = find("section .data")     + 1; // locate each section
 	file::asm_bss  = find("section .bss")      + 1;
 	file::asm_text = find("section .text")     + 4;
 	file::asm_func = file::outputVector.size() - 1;
@@ -174,34 +174,34 @@ int main(int argc, char **argv)
 	
 	std::cout << "\033[1;32mCompilation sucsessful!\033[0m" << std::endl; // compilation sucsessful!
 	
-	long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-	std::string ms = std::to_string((end - start) % 1000);
-	int len = ms.length();
+	long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // end timer
+	std::string ms = std::to_string((end - start) % 1000); // get miliseconds time difference
+	int len = ms.length(); // add zeros to have 4 char string for miliseconds
 	for(int i = 4; i > len; i--)
-		ms.insert(ms.begin(), '0');
+		ms.insert(ms.begin(), '0'); // insert zeros
 	
-	std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl;
+	std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl; // tell compilation time
 	
-	return 0;
+	return 0; // exit sucess
 }
 
-void file::read(std::string text)
+void file::read(std::string text) // read file
 {
-	preprocessor::main(text);
+	preprocessor::main(text); // call preprocessor
 }
 
-void file::write(std::string output)
+void file::write(std::string output) // write to file
 {
-	std::string command = "touch ";
+	std::string command = "touch "; // create file (if not existing)
 	command += output;
 	command += ".asm";
 	system(command.c_str()); // create file
-	std::ofstream outputFileObj(output + ".asm"); // Open file (or create)
-	if (outputFileObj.is_open()) // If file was opened (or created)
-		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
-			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line
+	std::ofstream outputFileObj(output + ".asm"); // open file (or create)
+	if (outputFileObj.is_open()) // if file was opened (or created)
+		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // add line from vector 
+			outputFileObj << *t << "\n"; // add new line so that the code wont be in the same line
 	
-	outputFileObj.close(); // Close file, c++ code has been written
+	outputFileObj.close(); // close file, c++ code has been written
 }
 
 void file::append_data(std::string line)
@@ -237,12 +237,12 @@ void file::append_func(std::string line)
 
 void file::add(std::string line, int position)
 {
-	file::outputVector.insert(file::outputVector.begin() + position, line); // Insert line of code into asm file
+	file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
 }
 
 void file::add(std::string line)
 {
-	file::outputVector.push_back(line); // Insert line of code into asm file
+	file::outputVector.push_back(line); // append line of code into asm file
 }
 
 std::string file::getLine(int LINE) // get line of code
@@ -275,7 +275,7 @@ void file::append_instruction(std::string instruction, std::string arg1, std::st
 
 void file::append(std::string line)
 {
-	if(generator::inFunction)
+	if(generator::inFunction) // if code should be in function append it to function section
 		file::append_func(line);
 	else
 		file::append_text(line);

@@ -79,7 +79,7 @@ except:
 	elif sys.argv[1] == "dependencies":
 		if platform.system() == 'Linux':
 			print("Checking for dependencies: nasm")
-			if popen("which nasm").read() == "\n":
+			if popen("which nasm").read() == "":
 				system("sudo apt install nasm")
 				print("Installed dependency nasm")
 			else:
