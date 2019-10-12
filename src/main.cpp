@@ -2,21 +2,17 @@
 
 // the main file, where the main loop is happening, and also where the file members are defined
 
-int file::inputLineCount = 0;
+unsigned int file::inputLineCount = 0; // number of lines in input file
 
-bool debug = false;
-std::streambuf* orig_buf;
+bool debug = false; // if compilation is being debugged (default: false)
 
-int file::asm_data; 
-int file::asm_bss;  
-int file::asm_text;
-int file::asm_func;
+unsigned int file::asm_data; // integers for tracking sections in asm file
+unsigned int file::asm_bss;  
+unsigned int file::asm_text;
+unsigned int file::asm_func;
 
-std::string file::input;
-std::string file::output;
-
-std::string file::inputText;
-std::vector<std::string> file::outputVector = {
+std::string file::inputText; // input file
+std::vector<std::string> file::outputVector = { // prefix for asm file
 	"section .data", // data section
 	"",
 	"section .bss",  // bss section
@@ -32,7 +28,7 @@ std::vector<std::string> file::outputVector = {
 	""
 	};
 
-const std::string helpText =
+const std::string helpText = // help text (if no argumets provided)
 "Jaclang help: \n"
 "usage:\n"
 "	jaclang - for help\n"
@@ -53,42 +49,42 @@ const std::string helpText =
 int main(int argc, char **argv)
 {
 	using namespace std::chrono;
-	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // get current time in miliseconds for timing compilation
 	
-	std::vector<std::string> args;
-	std::vector<char> ops;
-	const char allowedOptions[] = {
+	std::vector<std::string> args; // vector of command line arguments
+	std::vector<char> ops;         // vector of command line options
+	const char allowedOptions[] = { // all allowed options
 		'd', // debug
 		'k', // keep
 	};
 	
-	for(int i = 1; i < argc; i++)
+	for(int i = 1; i < argc; i++) // go through arguments
 	{
-		if(argv[i][0] == '-')
+		if(argv[i][0] == '-') // if option
 		{
-			for(int i2 = 1; argv[i][i2] != 0; i2++)
+			for(int i2 = 1; argv[i][i2] != 0; i2++) // go through options
 			{
-				if(find(allowedOptions, argv[i][i2]) == 3)
+				if(find(allowedOptions, argv[i][i2]) == 3) // if option is not valid
 				{
-					std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl;
+					std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl; // error
 					error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
 				}
-				ops.push_back(argv[i][i2]);
+				ops.push_back(argv[i][i2]); // else append option
 			}
 		}
-		else
-			args.push_back(argv[i]);
+		else // if not option
+			args.push_back(argv[i]); // append it to args
 	}
 	
-	if(args.size() == 0)
+	if(args.size() == 0) // if there are no arguments
 	{
-		std::cout << helpText << std::endl;
+		std::cout << helpText << std::endl; // print help text
 		return 0;
 	}
 	
-	else if(args.size() == 1)
+	else if(args.size() == 1) // if there is misc option
 	{
-		if(args.at(0) == "version")
+		if(args.at(0) == "version") // check for every misc option
 			std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
 		else if(args.at(0) == "uninstall")
 		{
@@ -106,22 +102,18 @@ int main(int argc, char **argv)
 		}
 		return 0;
 	}
-	else if (args.size() > 2)
+	else if (args.size() > 2) // if there is more args than 2
 	{
 		std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
 		error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
 	}
 	
-	
-	file::input = args.at(0); 
-	file::output = args.at(1);
-	
-	if(file::input.length() > 3)
+	if(args.at(0).length() > 3)
 	{
 		if( !(
-			file::input[file::input.length()-3] == '.' &&
-			file::input[file::input.length()-2] == 'j' &&
-			file::input[file::input.length()-1] == 'l'
+			args.at(0)[args.at(0).length()-3] == '.' &&
+			args.at(0)[args.at(0).length()-2] == 'j' &&
+			args.at(0)[args.at(0).length()-1] == 'l'
 		) )
 		{
 			std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
@@ -137,7 +129,7 @@ int main(int argc, char **argv)
 	if(contains(ops, 'd'))
 		debug = true;
 	
-	file::read(); // Read file
+	file::read(args.at(0)); // Read file
 	
 	#define find(x) find(file::outputVector, x)
 	
@@ -157,26 +149,26 @@ int main(int argc, char **argv)
 	file::write(); // Writes to file
 	
 	std::string command = "nasm -w-all -f elf64 "; // compile assembly code
-	command += file::output;
+	command += args.at(1);
 	command += ".asm";
 	command += " && ";
 	command += "ld -m elf_x86_64 -s -o "; // link assembly code
-	command += file::output;
+	command += args.at(1);
 	command += " ";
-	command += file::output;
+	command += args.at(1);
 	command += ".o";
 	system(command.c_str());
 	
 	if(!contains(ops, 'k')) // remove asm file if needed
 	{
 		command = "rm ";
-		command += file::output;
+		command += args.at(1);
 		command += ".asm";
 		system(command.c_str());
 	}
 	
 	command = "rm "; // remove object file
-	command += file::output;
+	command += args.at(1);
 	command += ".o";
 	system(command.c_str());
 	
@@ -193,18 +185,18 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-void file::read()
+void file::read(std::string text)
 {
-	preprocessor::main(file::input);
+	preprocessor::main(text);
 }
 
 void file::write()
 {
 	std::string command = "touch ";
-	command += file::output;
+	command += args.at(1);
 	command += ".asm";
 	system(command.c_str()); // create file
-	std::ofstream outputFileObj(file::output + ".asm"); // Open file (or create)
+	std::ofstream outputFileObj(args.at(1) + ".asm"); // Open file (or create)
 	if (outputFileObj.is_open()) // If file was opened (or created)
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
 			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line

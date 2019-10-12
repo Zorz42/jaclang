@@ -13,7 +13,7 @@ branch mainBranch;
 void parser::main()
 {
 	currentBranchScope = &mainBranch;
-	mainBranch.name = file::input; // root name is input file name
+	mainBranch.name = args.at(0); // root name is input file name
 	
 	for(;parser::tokCount < lexer::toks.size(); parser::tokCount++) // go through all tokens
 	{

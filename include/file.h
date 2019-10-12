@@ -2,18 +2,18 @@
 
 namespace file
 {
-	extern int asm_data;
-	extern int asm_bss;
-	extern int asm_text;
-	extern int asm_func;
+	extern unsigned int asm_data;
+	extern unsigned int asm_bss;
+	extern unsigned int asm_text;
+	extern unsigned int asm_func;
 	
 	extern std::string inputText; // Text of the input file
-	extern int inputLineCount; // How many lines does the input file have
+	extern unsigned int inputLineCount; // How many lines does the input file have
 	extern std::string input;  // Path to input file
 	extern std::string output; // Path to output file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
 	
-	void read(); // Read input file and put result in inputFileVector
+	void read(std::string text); // Read input file and put result in inputFileVector
 	void write(); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
 
 	std::string getLine(int LINE); // Get text of line

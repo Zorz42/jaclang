@@ -3,10 +3,6 @@ from os import popen, system, path
 import platform
 
 python3 = sys.version_info.major == 3
-if(python3):
-	print("using python3")
-else:
-	print("using python2")
 
 try:
 	sys.argv[1]
@@ -36,10 +32,8 @@ except:
 			else:
 				print("Wrong answer!")
 				exit()
-		system("make build/*.o")
 		system("make jaclang")
 		system("sudo mv jaclang /usr/local/bin/jaclang")
-		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 		try:
 			if(python3):
 				decision = input("Would you like to clean up object files[y,n]:")
@@ -81,6 +75,7 @@ except:
 			print("Created alias!")
 		else:
 			print("Alias already created!")
+		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 	elif sys.argv[1] == "dependencies":
 		if platform.system() == 'Linux':
 			print("Checking for dependencies: nasm")

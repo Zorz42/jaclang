@@ -5,7 +5,8 @@ ifeq ($(shell uname),Linux)
     PYTHON := python3
 endif
 
-W = -Wall -Wextra -Wshadow -pedantic
+#W = -Wall -Wextra -Wshadow -pedantic
+W = -w
 
 objdir  = build
 srcdir  = src
@@ -21,20 +22,22 @@ all: install
 .PHONY: clean install
 
 ./jaclang: $(fullnameobjs) | .
-	sudo $(cc) $(flags) $(fullnameobjs)
+	@sudo $(cc) $(flags) $(fullnameobjs)
 
 $(objdir)/%.o: $(srcdir)/%.cpp | $(objdir)
-	sudo $(cc) $(flags) -c $<
+	@echo '[COMPILING] [-o] $< -> $@'
+	@sudo $(cc) $(flags) -c $<
 
 $(objdir):
-	sudo mkdir $@
+	@sudo mkdir $@
+	@touch $@/*.o
 
 clean:
-	sudo rm -rf $(objdir)
+	@sudo rm -rf $(objdir)
 
 install: install.py
-	sudo $(PYTHON) install.py install
-	sudo $(PYTHON) install.py dependencies
+	@sudo $(PYTHON) install.py dependencies
+	@sudo $(PYTHON) install.py install
 
 uninstall: install.py
-	sudo jaclang uninstall
+	@sudo jaclang uninstall

@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-void preprocessor::main(std::string& text)
+void preprocessor::main(std::string text)
 {
 	std::ifstream inputFileObj(text); // Open file and store it in std::ifstream object
 	if(!inputFileObj.is_open()) // If didnt open (file missing,...)
