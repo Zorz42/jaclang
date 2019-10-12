@@ -18,3 +18,4 @@
  - (NOT PLANNED) renamed files
  - (NOT PLANNED) added installation support for macos
  - (NOT PLANNED) added custom completion
+ - (NOT PLANNED) made cleaner installation
