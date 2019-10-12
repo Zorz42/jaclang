@@ -14,7 +14,7 @@ namespace file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
 	
 	void read(std::string text); // Read input file and put result in inputFileVector
-	void write(); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
+	void write(std::string output); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
 
 	std::string getLine(int LINE); // Get text of line
 	

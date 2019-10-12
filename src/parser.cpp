@@ -10,7 +10,7 @@ branch mainBranch;
 
 #define current lexer::toks.at(parser::tokCount)
 
-void parser::main()
+void parser::main(std::vector<std::string> args)
 {
 	currentBranchScope = &mainBranch;
 	mainBranch.name = args.at(0); // root name is input file name

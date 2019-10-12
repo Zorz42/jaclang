@@ -141,12 +141,12 @@ int main(int argc, char **argv)
 	#undef find
 	
 	lexer::main(); // convert code into tokens
-	parser::main(); // convert tokens into syntax tree
+	parser::main(args); // convert tokens into syntax tree
 	if(debug)
 		printAST(mainBranch);
 	generator::main(); // generate assembly code out of syntax tree
 	
-	file::write(); // Writes to file
+	file::write(args.at(1)); // Writes to file
 	
 	std::string command = "nasm -w-all -f elf64 "; // compile assembly code
 	command += args.at(1);
@@ -190,13 +190,13 @@ void file::read(std::string text)
 	preprocessor::main(text);
 }
 
-void file::write()
+void file::write(std::string output)
 {
 	std::string command = "touch ";
-	command += args.at(1);
+	command += output;
 	command += ".asm";
 	system(command.c_str()); // create file
-	std::ofstream outputFileObj(args.at(1) + ".asm"); // Open file (or create)
+	std::ofstream outputFileObj(output + ".asm"); // Open file (or create)
 	if (outputFileObj.is_open()) // If file was opened (or created)
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // Add line from vector 
 			outputFileObj << *t << "\n"; // Add new line so that the code wont be in the same line

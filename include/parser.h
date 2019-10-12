@@ -15,7 +15,7 @@ void appendBranch(std::string source, branch& target);
 
 namespace parser
 {
-	void main();
+	void main(std::vector<std::string> args);
 	branch equation(bool nested=false);
 	
 	extern int tokCount;
