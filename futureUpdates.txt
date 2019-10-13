@@ -19,3 +19,4 @@
  - (NOT PLANNED) added installation support for macos
  - (NOT PLANNED) added custom completion
  - (NOT PLANNED) made cleaner installation
+ - (NOT PLANNED) added os detection header

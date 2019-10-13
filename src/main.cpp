@@ -148,7 +148,8 @@ int main(int argc, char **argv)
 	
 	file::write(args.at(1)); // Writes to file
 	
-	std::string command = "nasm -w-all -f elf64 "; // compile assembly code
+	std::string command = OS_NASM;
+	command += "-w-all -f elf64 "; // compile assembly code
 	command += args.at(1);
 	command += ".asm";
 	command += " && ";
