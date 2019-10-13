@@ -21,3 +21,4 @@
  - (NOT PLANNED) made cleaner installation
  - (NOT PLANNED) added os detection header
  - (NOT PLANNED) improved install.py
+ - (NOT PLANNED) added theoretical support for other linux distros

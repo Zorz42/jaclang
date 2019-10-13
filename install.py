@@ -77,9 +77,27 @@ elif len(sys.argv) == 2:
 	elif sys.argv[1] == "dependencies":
 
 		if platform.system() == 'Linux':
-
+			current_package_manager = ''
+			package_managers = ['apt', 'yum', 'emerge', 'pacman', 'zypper']
+			for package_manager in package_managers:
+				if popen("which " + package_manager).read() != "":
+					if package_manager == 'apt':
+						current_package_manager = 'apt install'
+					elif package_manager == 'yum':
+						current_package_manager = 'yum install'
+					elif package_manager == 'emerge':
+						current_package_manager = 'emerge'
+					elif package_manager == 'pacman':
+						current_package_manager = 'pacman -S'
+					elif package_manager == 'zypper':
+						current_package_manager = 'zypper in'
+					break
+			if current_package_manager == '':
+				print('Could not find package manager!')
+				exit(1)
+			
 			print("Checking for dependencies:")
-			check_for_package("nasm", "sudo apt install nasm")
+			check_for_package("nasm", "sudo " + current_package_manager + " nasm")
 
 		elif platform.system() == 'Darwin':
 

@@ -26,7 +26,7 @@ INSTALLATION PROCESS:
  * Support:
  * 
  * - 64 bit computers,
- * - linux and macos (linux distros with apt)
+ * - linux and macos (most linux distros, tested on Ubuntu)
  * 
  * This language is not begginer friendly.
  * Syntax will be almost the same as C++. Some 
