@@ -23,7 +23,6 @@ all: install
 
 ./jaclang: $(fullnameobjs) | .
 	@sudo $(cc) $(flags) $(fullnameobjs)
-	@echo Jaclang has builded sucsessfully!
 
 $(objdir)/%.o: $(srcdir)/%.cpp | $(objdir)
 	@echo '[COMPILING] [-o] $< -> $@'
