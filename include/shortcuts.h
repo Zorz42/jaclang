@@ -15,4 +15,3 @@ bool isDec(std::string text);
 
 int find(std::vector<std::string>& source, std::string target);
 int find(std::string source, char target);
-int find(std::vector<char>& source, char& target);

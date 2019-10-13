@@ -52,7 +52,7 @@ int main(int argc, char **argv)
 	long start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // get current time in miliseconds for timing compilation
 	
 	std::vector<std::string> args; // vector of command line arguments
-	std::vector<char> ops;         // vector of command line options
+	std::string ops;         // vector of command line options
 	const char allowedOptions[] = { // all allowed options
 		'd', // debug
 		'k', // keep

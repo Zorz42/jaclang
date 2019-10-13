@@ -21,7 +21,7 @@ extern bool debug;
 #include "os-detection.h" // detects os during compile-time
 #include "constants.h"    // constants
 #include "shortcuts.h"    // shortcut functions
-#include "error.h"        // arror module
+#include "error.h"        // error module
 #include "file.h"         // opens file
 #include "preprocessor.h" // preprocesses file
 #include "lexer.h"        // breaks it into tokens
