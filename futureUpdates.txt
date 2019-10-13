@@ -20,3 +20,4 @@
  - (NOT PLANNED) added custom completion
  - (NOT PLANNED) made cleaner installation
  - (NOT PLANNED) added os detection header
+ - (NOT PLANNED) improved install.py
