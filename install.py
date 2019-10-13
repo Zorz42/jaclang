@@ -4,50 +4,47 @@ import platform
 
 python3 = sys.version_info.major == 3
 
-try:
-	sys.argv[1]
-except:
-	print("Input an argument such as install, uninstall, dependencies!")
-	exit()
+def decision(question):
+	yesOptions = ["Y", "YES"]
+	noOptions  = ["N", "NO"]
+	try:
+		if(python3):
+			decision = input(question + " [y,n]:")
+		else:
+			decision = raw_input(question + " [y,n]:")
+	except:
+		pass
+	
+	if decision.upper() in yesOptions:
+		return True
+	elif decision.upper() in noOptions:
+		return False
+	else:
+		print("Wrong answer!")
+		exit(1)
 
-try:
-	sys.argv[2]
-	print("Only one argument allowed!")
-except:
+def check_for_package(name, install_command):
+	print(name.upper() + " ... ", end="")
+	if popen("which " + name).read() == "":
+		print("FAILED")
+		if(decision("Do you want me to install " + name + "?")):
+			system(install_command)
+		else:
+			exit(1)
+	else:
+		print("OK")
+
+if len(sys.argv) == 1:
+	print("Input an argument such as install, uninstall, dependencies!")
+
+elif len(sys.argv) == 2:
 	if sys.argv[1] == "install":
-		yesOptions = ["Y", "YES"]
-		noOptions  = ["N", "NO"]
-		if popen("which jaclang").read() == "/usr/local/bin/jaclang\n":
-			try:
-				if(python3):
-					decision = input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
-				else:
-					decision = raw_input("Jaclang already installed! Do you want to reinstall / update [y,n]:")
-			except:
-				pass
-			if decision.upper() in yesOptions:
-				pass
-			elif decision.upper() in noOptions:
-				exit()
-			else:
-				print("Wrong answer!")
-				exit()
 		system("make jaclang")
 		system("sudo mv jaclang /usr/local/bin/jaclang")
-		try:
-			if(python3):
-				decision = input("Would you like to clean up object files[y,n]:")
-			else:
-				decision = raw_input("Would you like to clean up object files[y,n]:")
-		except:
-			pass
-		if decision.upper() in yesOptions:
+		
+		if decision("Would you like to clean up object files?"):
 			system("make clean")
-		elif decision.upper() in noOptions:
-			pass
-		else:
-			print("Wrong answer!")
-			exit()
+		
 		print("Creating alias...")
 		alias_file_name = ""
 		if platform.system() == 'Linux':
@@ -56,7 +53,7 @@ except:
 			alias_file_name = ".bash_profile"
 		else:
 			print("unsuported os")
-			exit()
+			exit(1)
 
 		alias_command = "complete -o default -W \"uninstall version versionid versionstr\" 'jaclang'\n"
 		
@@ -76,25 +73,23 @@ except:
 		else:
 			print("Alias already created!")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
+	
 	elif sys.argv[1] == "dependencies":
+
 		if platform.system() == 'Linux':
-			print("Checking for dependencies: nasm")
-			if popen("which nasm").read() == "":
-				system("sudo apt install nasm")
-				print("Installed dependency nasm")
-			else:
-				print("Nasm is already installed!")
+
+			print("Checking for dependencies:")
+			check_for_package("nasm", "sudo apt install nasm")
+
 		elif platform.system() == 'Darwin':
-			print("Checking for dependencies: brew, nasm")
-			if popen("which brew").read() != "/usr/local/bin/brew\n":
-				system('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
-			else:
-				print("brew is already installed!")
-			if popen("ls /usr/local/bin/nasm").read() == '':
-				system("brew install nasm")
-			else:
-				print("nasm is already installed!")
+
+			print("Checking for dependencies:")
+			check_for_package("brew", '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+			check_for_package("nasm", "brew install nasm")
+
 		else:
 			print("Unsuported os!")
 	else:
 		print("Invalid argument: " + sys.argv[1])
+else:
+	print("Only one argument allowed!")

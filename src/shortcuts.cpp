@@ -38,8 +38,5 @@ int find(std::vector<std::string>& source, std::string target) // find string in
 
 int find(std::string source, char target) // find character in string
 {
-	for(int i = 0; i < source.size(); i++)
-		if(source.at(i) == target)
-			return i;
-	return source.size();
+	return source.find(target);
 }
