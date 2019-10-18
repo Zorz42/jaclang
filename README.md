@@ -35,7 +35,6 @@ INSTALLATION PROCESS:
  *  THE ZEN OF JACLANG:
  * 
  * - execution time of compiled code is more important than compilation time,
- * - hirearhical is better than flat,
  * - purity is imortant
  * - practicality beats purity
  * - size of compiled binaries should be as small as possible
