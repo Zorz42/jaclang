@@ -15,27 +15,22 @@ INSTALLATION PROCESS:
 
 
 
- * Jaclang is trying to achieve as small compiled binaries as possible. Predefined variables, are not defined by default, 
- * you have to enable them, because you might not use them. Defined will be 
- * the core data. You can enable to track execution time, because if you do 
- * not need it, it will only take performance.  
+ * Jaclang is trying to achieve as small compiled binaries as possible.
  * 
  * I really care about the binary code of being small and fast, suitable for slower computers. I want compilation times 
- * to be as slow as needed, to make the maximum efficiency. I am thinking about a minute, compared to ten seconds. 
- * You could also do option to fast compile, for testing.
+ * to be as slow as needed, to make the maximum efficiency. You could also do option to fast compile, for testing.
+ * 
  * Support:
  * 
  * - 64 bit computers,
  * - linux and macos (most linux distros, tested on Ubuntu)
  * 
- * This language is not begginer friendly.
- * Syntax will be almost the same as C++. Some 
- * unnecessary tokens will be removed.
+ * Syntax will be almost the same as C++.
  * 
  *  THE ZEN OF JACLANG:
  * 
  * - execution time of compiled code is more important than compilation time,
- * - purity is imortant
+ * - syntax should be pure
  * - practicality beats purity
  * - size of compiled binaries should be as small as possible
  *
