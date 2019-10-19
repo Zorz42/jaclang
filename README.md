@@ -3,9 +3,9 @@ jaclang is like C programming language very fast and light
 
 JOIN THE DISCORD SERVER: https://discord.gg/33JfcgE
 
-// --------------------------
-// PROJECT MADE BY JAKOB
-// --------------------------
+// -------------------------- //
+ PROJECT MADE BY JAKOB
+// -------------------------- //
 
 INSTALLATION PROCESS:
 1. Download zip and unzip it.
