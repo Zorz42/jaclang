@@ -10,7 +10,7 @@ JOIN THE DISCORD SERVER: https://discord.gg/33JfcgE
 INSTALLATION PROCESS:
 1. Download zip and unzip it.
 2. Open terminal and go to unzipped folder.
-3. Type make (you will need sudo).
+3. Execute command make (you will need sudo).
 4. Jaclang is installed at /usr/local/bin
 
 
