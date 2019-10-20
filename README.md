@@ -1,7 +1,8 @@
 # jaclang beta
 jaclang is like C programming language very fast and light
 
-JOIN THE DISCORD SERVER: https://discord.gg/33JfcgE 
+JOIN THE DISCORD SERVER: https://discord.gg/33JfcgE
+
 CHECKOUT OUR NEW WEBSITE: play.zorz.si
 
 Website will be migrated to jaclang.zorz.si very soon.
