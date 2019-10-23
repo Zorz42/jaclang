@@ -1,4 +1,4 @@
-// this file parses function calls, equation calls that file too
+// this file parses function calls, calculation calls that file too
 
 #include "jaclang.h"
 

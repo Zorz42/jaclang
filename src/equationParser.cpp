@@ -4,7 +4,7 @@
 
 #define current lexer::toks.at(parser::tokCount)
 
-std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in equation
+std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 branch optimize(branch currentBranch, bool nested);
 
 void insertBranchAtBegin(std::string name, branch& target)
@@ -18,11 +18,11 @@ void insertBranchAtBegin(branch source, branch& target)
 	target.sub.insert(target.sub.begin(), source);
 }
 
-branch parser::equation(bool nested) // parse equation
+branch parser::calculation(bool nested) // parse calculation
 {
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
-	currentBranch.name = "/equation"; // sets current branch to equation
+	currentBranch.name = "calc"; // sets current branch to calculation
 	if(current.text == "-")
 	{
 		appendBranch("0", currentBranch);
@@ -42,10 +42,10 @@ branch parser::equation(bool nested) // parse equation
 		else
 			insertBranchAtBegin("int", currentBranch); // else its integer
 	}
-	else if(current.text == "(") // if its nested with () then its equation within equation
+	else if(current.text == "(") // if its nested with () then its calculation within calculation
 	{
 		parser::tokCount++;
-		branch obj = parser::equation();
+		branch obj = parser::calculation();
 		parser::tokCount++;
 		timeForValue = false;
 		insertBranchAtBegin(obj.sub.at(0).name, currentBranch);
@@ -82,7 +82,7 @@ branch parser::equation(bool nested) // parse equation
 				break;
 			timeForValue = false;
 			parser::tokCount++;
-			branch obj = parser::equation(true); // make eqution until ')'
+			branch obj = parser::calculation(true); // make eqution until ')'
 			appendBranch(obj, currentBranch);
 		}
 		else if(current.type == TYPE_INDENT)
@@ -97,7 +97,7 @@ branch parser::equation(bool nested) // parse equation
 		
 		if(parser::tokCount + 1 == lexer::toks.size())
 			if(timeForValue)
-				error::syntaxError("Equation has no end"); // if equation has come to the end of file without ending itself
+				error::syntaxError("Equation has no end"); // if calculation has come to the end of file without ending itself
 			else
 			{
 				timeForValue = false;
@@ -122,7 +122,7 @@ branch parser::equation(bool nested) // parse equation
 		if(current(i) == "*" || current(i) == "/")
 		{
 			branch obj;
-			obj.name = "/equation";
+			obj.name = "calc";
 			appendBranch("int", obj);
 			appendBranch(currentObj(i - 1), obj);
 			eraseEl(i - 1);

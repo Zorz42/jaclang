@@ -22,7 +22,7 @@ namespace generator
 		void systemFunctionCall();
 		void functionDeclaration();
 		void variableDeclaration(int scopeOnStack);
-		void equation(branch& equation);
+		void calculation(branch& calculation);
 		void functionCall();
 	}
 	

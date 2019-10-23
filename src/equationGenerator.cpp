@@ -1,4 +1,4 @@
-// this generates tree equation into asm code
+// this generates tree calculation into asm code
 
 #include "jaclang.h"
 
@@ -20,82 +20,81 @@ std::vector<std::string> generator::availableRegisters32 =  // all registers tha
 	"r15d"
 };
 
-void generator::e::equation(branch& equation)
+void generator::e::calculation(branch& calculation)
 {
-	if(equation.name == "/equation") // if branch is equation
+	if(calculation.name == "calc") // if branch is calculation
 	{
-		if(equation.sub.at(0).name != "int") // for now equations only support int
-			error::treeError("equation must be int");
-		if(equation.sub.at(1).name == "functionCall")
+		if(calculation.sub.at(0).name != "int") // for now equations only support int
+			error::treeError("calculation must be int");
+		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
 		{
-			bool funcExists = false;
+			bool funcExists = false; // go through existing functions and check if it exists
 			for(function iter : generator::functionVector)
-				if(iter.name == equation.sub.at(1).sub.at(0).name)
+				if(iter.name == calculation.sub.at(1).sub.at(0).name)
 				{
 					funcExists = true;
 					break;
 				}
 			if(!funcExists)
 				error::treeError("Function does not exist!");
-			file::append_instruction("call", equation.sub.at(1).sub.at(0).name + ".");
+			file::append_instruction("call", calculation.sub.at(1).sub.at(0).name + "."); // call function
 		}
 		
-		else if(equation.sub.at(1).name != "/equation")
+		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beggining
 		{
-			std::string value = equation.sub.at(1).name;
-			if(value.at(0) == ':')
-			{
-				value.erase(value.begin());
-				bool varExists = false;
-				for(variable iter : generator::stack) // go through stack
-					if(iter.indent == value)
-					{
-						varExists = true;
-						value = onStack(iter.position);
-						break;
-					}
-				if(!varExists)
-					error::treeError("Variable does not exist!");
-			}
+			std::string value = calculation.sub.at(1).name; // variable name
+			
+			value.erase(value.begin()); // remove :
+			bool varExists = false; // go through stack and check if variable exists
+			for(variable iter : generator::stack)
+				if(iter.indent == value)
+				{
+					varExists = true;
+					value = onStack(iter.position);
+					break;
+				}
+			if(!varExists)
+				error::treeError("Variable does not exist!");
+				
 			file::append_instruction("mov", generator::availableRegister32(), value); // mov first value to register
 		}
 		else
 		{
-			generator::nextRegister();
-			generator::e::equation(equation.sub.at(1));
+			generator::nextRegister(); // else its just nested calculation
+			generator::e::calculation(calculation.sub.at(1));
 			file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
 			generator::currentRegister32--;
 		}
 		
 		
-		#define currentValue equation.sub.at(i).name
-		#define currentOperator equation.sub.at(i - 1).name
+		#define currentValue calculation.sub.at(i).name
+		#define currentOperator calculation.sub.at(i - 1).name
 		
-		for(int i = 3; i <= equation.sub.size(); i += 2)
+		for(int i = 3; i <= calculation.sub.size(); i += 2)
 		{
 			std::string currentValueAsm = currentValue;
-			if(currentValueAsm.at(0) == ':')
+			if(currentValueAsm.at(0) == ':') // if its variable
 			{
-				currentValueAsm.erase(currentValueAsm.begin());
-				bool varExists = false;
-				for(variable iter : generator::stack) // go through stack
+				currentValueAsm.erase(currentValueAsm.begin()); // remove : at the beggining
+				bool varExists = false; // check if variable exists
+				for(variable iter : generator::stack)
 					if(iter.indent == currentValueAsm)
 					{
 						varExists = true;
-						currentValueAsm = onStack(iter.position);
+						currentValueAsm = onStack(iter.position); // if exists set current value to variable on stack
 						break;
 					}
 				if(!varExists)
 					error::treeError("Variable does not exist!");
 			}
-			if(currentValue.at(0) == '.')
+			if(currentValue.at(0) == '.') // if current value is string
 				error::treeError("int cannot add string");
-			else if(currentValue == "/equation")
+			else if(currentValue == "calc") // if value is calculation
 			{
 				generator::nextRegister();
-				generator::e::equation(equation.sub.at(i));
+				generator::e::calculation(calculation.sub.at(i));
 				
-				if(currentOperator == "+")
+				if(currentOperator == "+") // cases for opeartors
 					file::append_instruction("add", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
 				else if(currentOperator == "-")
 					file::append_instruction("sub", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
@@ -115,7 +114,7 @@ void generator::e::equation(branch& equation)
 					error::treeError("unrecognized operator");
 				generator::currentRegister32--;
 			}
-			else if(currentOperator == "+")
+			else if(currentOperator == "+") // cases for operators default
 				file::append_instruction("add", generator::availableRegister32(), currentValueAsm);
 			else if(currentOperator == "-")
 				file::append_instruction("sub", generator::availableRegister32(), currentValueAsm);

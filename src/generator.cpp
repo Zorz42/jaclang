@@ -22,23 +22,23 @@ void generator::main()
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
 			generator::e::variableDeclaration(currentScopeOnStack);
-		else if(current.name == "/equation")
-			generator::e::equation(current);
-		else if(current.name == "scope")
+		else if(current.name == "calc")
+			generator::e::calculation(current);
+		else if(current.name == "scope") // if branch is scope
 		{
-			branch* prevScope = currentBranchScope;
-			currentBranchScope = &(current);
-			int stackLength = generator::stack.size();
-			int prevScopeStack = currentScopeOnStack;
-			currentScopeOnStack = stackLength;
+			branch* prevScope = currentBranchScope; // save current scope
+			currentBranchScope = &(current);        // move to new scope
+			int stackLength = generator::stack.size();  // save stack length
+			int prevScopeOnStack = currentScopeOnStack; // save scope on stack
+			currentScopeOnStack = stackLength;  // set scope on stack
 			generator::main();
-			currentScopeOnStack = prevScopeStack;
-			while(generator::stack.size() > stackLength)
+			currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
+			while(generator::stack.size() > stackLength) // remove elemets from stack that were in scope
 			{
 				stackPointer -= generator::stack.at(generator::stack.size() - 1).size;
 				generator::stack.pop_back();
 			}
-			currentBranchScope = prevScope;
+			currentBranchScope = prevScope; // retrieve current branch scope
 		}
 		else if(current.name == "functionDeclaration" && !generator::inFunction)
 			generator::e::functionDeclaration();

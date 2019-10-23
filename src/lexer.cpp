@@ -68,16 +68,16 @@ void lexer::main() // main lexer function
 		{
 			bool special = false;
 			const int OPERATOR = lexer::operators.find(CHAR); // OPERATOR indicates position in operators
-			if( !(CHAR == '.' && isInt(currentToken)) ) // '.' charater is used also in decimals and should be interpreted as part of constant
-			{ // if current token was not integer then its not decimal point
-				newToken(); // it is symbol and cut the previous token
-				currentToken = CHAR; // set token to symbols since all (except one) are single character
-			} // if not just append it to the token since its constant
-			else
+			if(CHAR == '.' && isInt(currentToken))
 			{
 				currentToken += CHAR;
 				special = true;
 			}
+			else // '.' charater is used also in decimals and should be interpreted as part of constant
+			{ // if current token was not integer then its not decimal point
+				newToken(); // it is symbol and cut the previous token
+				currentToken = CHAR; // set token to symbols since all (except one) are single character
+			} // if not just append it to the token since its constant
 			if(CHAR == '*' || CHAR == '&') // symbols and operators share two symbols '*' and '&'
 			{
 				nextChar;
@@ -144,10 +144,10 @@ void lexer::main() // main lexer function
 		}
 		else
 			currentToken += CHAR; // else just append character to token
-		if(CHAR == '\n')
+		if(CHAR == '\n')// if character is newline
 		{
-			currentLine++;
-			prevC = c + 1;
+			currentLine++; // new line
+			prevC = c + 1; // and update offset
 		}
 	}
 	#undef CHAR

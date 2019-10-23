@@ -22,12 +22,12 @@ void generator::e::variableDeclaration(int scopeOnStack)
 	
 	generator::pushToStack(obj); // push to stack
 	
-	if(current.sub.at(1).name == "/equation")
+	if(current.sub.at(1).name == "calc")
 	{
-		if(current.sub.at(1).sub.at(0).name != "int") // if equation type is not int report error
+		if(current.sub.at(1).sub.at(0).name != "int") // if calculation type is not int report error
 			error::treeError("Int declaration must be type int");
 		
-		generator::e::equation(current.sub.at(1)); // do equation
+		generator::e::calculation(current.sub.at(1)); // do calculation
 		
 		file::append_instruction("mov", "DWORD " + onStack(generator::stackPointer), generator::availableRegister32()); // set variable on stack
 	}

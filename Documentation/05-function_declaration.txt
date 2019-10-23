@@ -5,6 +5,6 @@ int function_name()
 	;function body
 }
 
-functions can be only int and cannot have any arguments. functions will be called when used in equations but they will not effect value in equation (no return statement)
+functions can be only int and cannot have any arguments. functions will be called when used in calculations but they will not effect value in caluclation (no return statement)
 
 in function body you can write what will happen, after function is called

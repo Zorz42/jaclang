@@ -24,8 +24,8 @@ void parser::main(std::vector<std::string> args)
 		else if(parser::e::endScope());
 		else
 		{
-			branch equation = parser::equation(); // else parse equation
-			appendBranch(equation, *currentBranchScope);
+			branch calculation = parser::calculation(); // else parse calculation
+			appendBranch(calculation, *currentBranchScope);
 		}
 	}
 }
