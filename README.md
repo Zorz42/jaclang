@@ -3,6 +3,10 @@ jaclang is like C programming language very fast and light
 
 JOIN THE DISCORD SERVER: https://discord.gg/33JfcgE
 
+CHECKOUT OUR NEW WEBSITE: https://jaclang.zorz.si
+
+Website is still in development. I am trying to make it feel more alive.
+
 // -------------------------- //
  PROJECT MADE BY JAKOB
 // -------------------------- //
