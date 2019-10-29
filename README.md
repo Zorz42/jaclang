@@ -29,7 +29,7 @@ INSTALLATION PROCESS:
  * - 64 bit computers,
  * - linux and macos (most linux distros, tested on Ubuntu)
  * 
- * Syntax will be almost the same as C++.
+ * Syntax is almost the same as C++.
  * 
  *  THE ZEN OF JACLANG:
  * 
