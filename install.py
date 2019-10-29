@@ -23,16 +23,16 @@ def decision(question):
 		print("Wrong answer!")
 		exit(1)
 
-def check_for_package(name, install_command):
-	print(name.upper() + " ... ", end="")
+def check_for_package(name, binary, install_command):
+	prefix = name.upper() + " ... "
 	if popen("which " + name).read() == "":
-		print("FAILED")
+		print(prefix + "FAILED")
 		if(decision("Do you want me to install " + name + "?")):
 			system(install_command)
 		else:
 			exit(1)
 	else:
-		print("OK")
+		print(prefix + "OK")
 
 if len(sys.argv) == 1:
 	print("Input an argument such as install, uninstall, dependencies!")
@@ -97,13 +97,17 @@ elif len(sys.argv) == 2:
 				exit(1)
 			
 			print("Checking for dependencies:")
-			check_for_package("nasm", "sudo " + current_package_manager + " nasm")
+			check_for_package("nasm", "nasm", "sudo " + current_package_manager + " nasm")
+			check_for_package("gcc", "gcc", "sudo " + current_package_manager + " gcc")
+			check_for_package("binutils", "ld", "sudo " + current_package_manager + " binutils")
 
 		elif platform.system() == 'Darwin':
 
 			print("Checking for dependencies:")
-			check_for_package("brew", '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
-			check_for_package("nasm", "brew install nasm")
+			check_for_package("brew", "brew" '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
+			check_for_package("nasm", "nasm", "brew install nasm")
+			check_for_package("gcc", "gcc", "sudo " + current_package_manager + " gcc")
+			check_for_package("binutils", "ld", "sudo " + current_package_manager + " binutils")
 
 		else:
 			print("Unsuported os!")
