@@ -1,3 +1,26 @@
+30.10 2019, BETA 1.2.0
+ - function implementation:
+	-function declaration
+	-function call only int used in equations
+ - documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
+ - new and improved makefile
+ - remove useless optimization
+ - coutd improved
+ - coutn removed
+ - equations - at the begining indicating negative number
+ - improve performance,  in var declaration by counting as nested
+ - new options: versionid, versionstr
+ - removed norun option and do not made it so that it doesn't run file automatically
+ - made support for macos
+ - errors go in cerr instead of cout
+ - fixed error bug
+ - renamed files
+ - added custom completion
+ - made cleaner installation
+ - added os detection header
+ - improved install.py
+ - added theoretical support for other linux distros
+
 21.9 2019, BETA 1.5.1
  - Added optimisation to equations,
  - Fixed single-element equation bug

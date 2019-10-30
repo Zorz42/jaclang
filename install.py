@@ -69,9 +69,6 @@ elif len(sys.argv) == 2:
 			alias_file = open(path.expanduser("~") + "/" + alias_file_name, "a")
 			alias_file.write(alias_command)
 			alias_file.close()
-			print("Created alias!")
-		else:
-			print("Alias already created!")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 	
 	elif sys.argv[1] == "dependencies":
