@@ -1,24 +1,17 @@
-2.0 BETA IN PROGRESS
- - (DONE) function implementation:
-	-function declaration
-	-function call only int used in equations
- - (DONE) documentation (comments) renew, syntax revamp, Documentation (text in ./Documentation) renew
- - (DONE) new and improved makefile
- - (DONE) remove useless optimization
- - (DONE) coutd improve
- - (DONE) coutn remove
- - (DONE) equations - at the begining indicating negative number
- - (DONE) improve performance,  in var declaration by counting as nested
- - (DONE) new options: versionid, versionstr
- - (DONE) remove norun option and do not automatically run program
- - (DONE) fixed some bugs
- - (NOT PLANNED) made support for macos
- - (NOT PLANNED) errors go in cerr instead of cout
- - (NOT PLANNED) fixed error bug
- - (NOT PLANNED) renamed files
- - (NOT PLANNED) added installation support for macos
- - (NOT PLANNED) added custom completion
- - (NOT PLANNED) made cleaner installation
- - (NOT PLANNED) added os detection header
- - (NOT PLANNED) improved install.py
- - (NOT PLANNED) added theoretical support for other linux distros
+BETA 1.2.1
+  - jpm: Jaclang Package Manager
+     -> it will come default with jaclang
+     -> it will be written in python
+     -> options:
+     	install - installs library
+	remove  - removes library
+	list    - lists all installed libraries
+	search  - searches for libraries in https://jaclang.zorz.si/repository
+	clean   - cleans all unneeded dependencies
+BETA 1.2.2
+ - you can set variable after declaring it
+ - output format recognition:
+ 	binary executable -> full compilation
+	object file -> skips linker
+	asm file -> skips linker and nasm
+	jl file -> only preprocesses it
