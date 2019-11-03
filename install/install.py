@@ -112,9 +112,8 @@ elif len(sys.argv) == 2:
 			check_for_package("binutils", "ld", "brew install binutils")
 			check_for_package("unzip", "unzip", "brew install unzip")
 			check_for_package("python3", "python3", "brew install python3")
-			check_for_package("python3-pip3", "python3-pip3", "brew install python3-pip")
-			from checkforwget import *
-			check_for_package("jpm", "jpm", "python3 installjpm.py")
+			system("python3 install/checkforwget.py")
+			check_for_package("jpm", "jpm", "python3 install/installjpm.py")
 		else:
 			print("Unsuported os!")
 	else:

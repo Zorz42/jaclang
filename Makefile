@@ -22,22 +22,22 @@ all: install
 .PHONY: clean install
 
 ./jaclang: $(fullnameobjs) | .
-	@sudo $(cc) $(flags) $(fullnameobjs)
+	@$(cc) $(flags) $(fullnameobjs)
 
 $(objdir)/%.o: $(srcdir)/%.cpp | $(objdir)
 	@echo '[COMPILING] [-o] $< -> $@'
-	@sudo $(cc) $(flags) -c $<
+	@$(cc) $(flags) -c $<
 
 $(objdir):
-	@sudo mkdir $@
+	@mkdir $@
 	@touch $@/*.o
 
 clean:
-	@sudo rm -rf $(objdir)
+	@rm -rf $(objdir)
 
 install: install/install.py
-	@sudo $(PYTHON) install/install.py dependencies
-	@sudo $(PYTHON) install/install.py install
+	@$(PYTHON) install/install.py dependencies
+	@$(PYTHON) install/install.py install
 
 uninstall: install/install.py
-	@sudo jaclang uninstall
+	@jaclang uninstall
