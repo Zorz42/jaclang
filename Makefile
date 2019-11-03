@@ -35,9 +35,9 @@ $(objdir):
 clean:
 	@sudo rm -rf $(objdir)
 
-install: install.py
-	@sudo $(PYTHON) install.py dependencies
-	@sudo $(PYTHON) install.py install
+install: install/install.py
+	@sudo $(PYTHON) install/install.py dependencies
+	@sudo $(PYTHON) install/install.py install
 
-uninstall: install.py
+uninstall: install/install.py
 	@sudo jaclang uninstall
