@@ -100,7 +100,7 @@ elif len(sys.argv) == 2:
 			check_for_package("unzip", "unzip", "sudo " + current_package_manager + " unzip")
 			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")
 			check_for_package("python3-pip", "pip3", "sudo " + current_package_manager + " python3-pip")
-			from checkforwget import *
+			from checkforpippackages import *
 			check_for_package("jpm", "jpm", "python3 installjpm.py")
 
 		elif platform.system() == 'Darwin':
@@ -112,7 +112,7 @@ elif len(sys.argv) == 2:
 			check_for_package("binutils", "ld", "brew install binutils")
 			check_for_package("unzip", "unzip", "brew install unzip")
 			check_for_package("python3", "python3", "brew install python3")
-			system("python3 install/checkforwget.py")
+			system("python3 install/checkforpippackages.py")
 			check_for_package("jpm", "jpm", "python3 install/installjpm.py")
 		else:
 			print("Unsuported os!")
