@@ -27,7 +27,7 @@ def check_for_package(name, binary, install_command):
 	prefix = name.upper() + " ... "
 	if popen("which " + binary).read() == "":
 		print(prefix + "FAILED")
-		if(decision("Do you want me to install " + name + "?")):
+		if(decision("Do you want me to install " + str(name) + "?")):
 			system(install_command)
 		else:
 			exit(1)
@@ -101,7 +101,7 @@ elif len(sys.argv) == 2:
 			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")
 			check_for_package("python3-pip", "pip3", "sudo " + current_package_manager + " python3-pip")
 			from checkforpippackages import *
-			check_for_package("jpm", "jpm", "python3 installjpm.py")
+			check_for_package("jpm", "jpm", "python3 install/installjpm.py")
 
 		elif platform.system() == 'Darwin':
 
