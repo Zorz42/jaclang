@@ -39,6 +39,7 @@ if len(sys.argv) == 1:
 
 elif len(sys.argv) == 2:
 	if sys.argv[1] == "install":
+		system("sudo echo")
 		system("make jaclang")
 		system("sudo mv jaclang /usr/local/bin/jaclang")
 		
@@ -48,7 +49,7 @@ elif len(sys.argv) == 2:
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 	
 	elif sys.argv[1] == "dependencies":
-
+		system("sudo echo")
 		if platform.system() == 'Linux':
 			current_package_manager = ''
 			package_managers = ['apt', 'yum', 'emerge', 'pacman', 'zypper']
