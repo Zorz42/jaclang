@@ -1,7 +1,7 @@
 09.11 2019, BETA 1.2.1
  - more reliable install
  - jpm installs alongside as dependency
- - install tested on: ubuntu
+ - install tested on: UBUNTU, ELEMENTARY OS, LINUX MINT (all tested on virtual machines, except for ubuntu)
 
 30.10 2019, BETA 1.2.0
  - function implementation:
