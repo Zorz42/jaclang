@@ -27,7 +27,7 @@ def check_for_package(name, binary, install_command):
 	prefix = name.upper() + " ... "
 	if popen("which " + binary).read() == "":
 		print(prefix + "FAILED")
-		if(decision("Do you want me to install " + str(name) + "?")):
+		if decision("Do you want me to install " + str(name) + "?"):
 			system(install_command)
 		else:
 			exit(1)
