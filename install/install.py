@@ -52,7 +52,7 @@ elif len(sys.argv) == 2:
 		system("sudo echo")
 		if platform.system() == 'Linux':
 			current_package_manager = ''
-			package_managers = ['apt', 'yum', 'emerge', 'pacman', 'zypper']
+			package_managers = ['zypper', 'apt', 'yum', 'emerge', 'pacman']
 			for package_manager in package_managers:
 				if popen("which " + package_manager).read() != "":
 					if package_manager == 'apt':
