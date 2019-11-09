@@ -27,10 +27,16 @@ def check_for_package(name, binary, install_command):
 	prefix = name.upper() + " ... "
 	if popen("which " + binary).read() == "":
 		print(prefix + "FAILED")
-		if decision("Do you want me to install " + str(name) + "?"):
-			system(install_command)
-		else:
-			exit(1)
+		try:
+			if decision("Do you want me to install " + str(name) + "?"):
+				system(install_command)
+			else:
+				exit(1)
+		except:
+			if decision("Do you want me to install " + str(name) + "?"):
+				system(install_command)
+			else:
+				exit(1)
 	else:
 		print(prefix + "OK")
 

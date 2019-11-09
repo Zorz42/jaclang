@@ -1,13 +1,3 @@
-BETA 1.2.1
-  - jpm: Jaclang Package Manager
-     -> it will come default with jaclang
-     -> it will be written in python
-     -> options:
-     	install - installs library
-	remove  - removes library
-	list    - lists all installed libraries
-	search  - searches for libraries in https://jaclang.zorz.si/repository
-	clean   - cleans all unneeded dependencies
 BETA 1.2.2
  - you can set variable after declaring it
  - output format recognition:
