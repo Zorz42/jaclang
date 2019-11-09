@@ -27,7 +27,7 @@ def check_for_package(name, binary, install_command):
 	prefix = name.upper() + " ... "
 	if popen("which " + binary).read() == "":
 		print(prefix + "FAILED")
-		if decision(f"Do you want me to install {name}?"):
+		if decision("Do you want me to install" + name + "?"):
 			system(install_command)
 		else:
 			exit(1)
@@ -72,7 +72,7 @@ elif len(sys.argv) == 2:
 			
 			print("Checking for dependencies:")
 			check_for_package("nasm", "nasm", "sudo " + current_package_manager + " nasm")
-			check_for_package("gcc", "gcc", "sudo " + current_package_manager + " gcc")
+			check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
 			check_for_package("binutils", "ld", "sudo " + current_package_manager + " binutils")
 			check_for_package("unzip", "unzip", "sudo " + current_package_manager + " unzip")
 			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")
