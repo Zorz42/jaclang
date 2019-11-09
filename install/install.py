@@ -72,7 +72,10 @@ elif len(sys.argv) == 2:
 			
 			print("Checking for dependencies:")
 			check_for_package("nasm", "nasm", "sudo " + current_package_manager + " nasm")
-			check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
+			if package_manager == 'zypper in':
+				check_for_package("g++", "g++", "sudo " + current_package_manager + " gcc-c++")
+			else:
+				check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
 			check_for_package("binutils", "ld", "sudo " + current_package_manager + " binutils")
 			check_for_package("unzip", "unzip", "sudo " + current_package_manager + " unzip")
 			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")

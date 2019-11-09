@@ -1,7 +1,8 @@
 09.11 2019, BETA 1.2.1
  - more reliable install
  - jpm installs alongside as dependency
- - install tested on: UBUNTU, ELEMENTARY OS, LINUX MINT (all tested on virtual machines, except for ubuntu)
+ - install tested on: MACOS, UBUNTU, ELEMENTARY OS, LINUX MINT, DEBIAN (all tested on virtual machines, except for ubuntu and macos)
+ - install will throw an error first time executed, if that occurs, just run it again and it should be fine (in most cases). I will fix this in the future, but now i have no idea what causes this. Maybe a python expert can figure that out.
 
 30.10 2019, BETA 1.2.0
  - function implementation:
