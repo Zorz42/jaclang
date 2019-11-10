@@ -3,32 +3,22 @@ import os
 yesOptions = ["Y", "YES"]
 noOptions  = ["N", "NO"]
 
-print("Checking for pip3-wget ... ", end='')
+def check_for_pip_package(name):
+	print("Checking for pip3-" + name + " ... ", end='')
 
-try:
-	import wget
-	print("OK")
-except:
-	print("FAILED")
-	while True:
-		decision = input("Do you want me to install pip3-wget?[y,n]")
-		if decision.upper() in yesOptions:
-			os.system("sudo pip3 install wget")
-			break
-		elif decision.upper() in noOptions:
-			exit(1)
+	try:
+		__import__(name)
+		print("OK")
+	except:
+		print("FAILED")
+		while True:
+			decision = input("Do you want me to install pip3-" + name + "? [y,n]")
+			if decision.upper() in yesOptions:
+				os.system("sudo pip3 install " + name)
+				break
+			elif decision.upper() in noOptions:
+				exit(1)
 
-print("Checking for pip3-httplib2 ... ", end='')
-
-try:
-        import httplib2
-        print("OK")
-except:
-        print("FAILED")
-        while True:
-                decision = input("Do you want me to install pip3-httplib2?[y,n]")
-                if decision.upper() in yesOptions:
-                        os.system("sudo pip3 install httplib2")
-                        break
-                elif decision.upper() in noOptions:
-                        exit(1)
+check_for_pip_package("setuptools")
+check_for_pip_package("wget")
+check_for_pip_package("httplib2")
