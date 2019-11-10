@@ -1,7 +1,7 @@
 09.11 2019, BETA 1.2.1
  - more reliable install
  - jpm installs alongside as dependency
- - install tested on: MACOS, UBUNTU, ELEMENTARY OS, LINUX MINT, DEBIAN, OPENSUSE, FEDORA, POP!_OS, MX-LINUX  
+ - install tested on: MACOS, UBUNTU, ELEMENTARY OS, LINUX MINT, DEBIAN, OPENSUSE, FEDORA, POP!_OS, MX-LINUX, ZORIN_OS
 (all tested on virtual machines, except for ubuntu and macos)
  - install will throw an error first time executed, if that occurs, just run it again and it should be fine (in most cases). I will fix this in the future, but now i have no idea what causes this. Maybe a python expert can figure that out.
  - install is still not 100% reliable, even on tested distros (but they are much more reliable than the untested ones) and it's much more reliable than before. 
