@@ -1,8 +1,4 @@
-#define OS_TYPE unknown
 // this is the file that recognizes compilers.
-
-// the nasm compiler (macos: /usr/local/bin/nasm, linux: /usr/bin/nasm)
-#define OS_NASM
 
 #ifdef _WIN32
 	#ifdef _WIN64
@@ -30,6 +26,8 @@
 #else
 	#error "Jaclang does not recognize this compiler!"
 #endif
+
+// the nasm compiler (macos: /usr/local/bin/nasm, linux: /usr/bin/nasm)
 
 #if OS_TYPE == Linux
 	#define OS_NASM "/usr/bin/nasm"
