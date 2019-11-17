@@ -1,4 +1,4 @@
-09.11 2019, BETA 1.2.1
+17.11 2019, BETA 1.2.1
  - more reliable install
  - jpm installs alongside as dependency
  - install tested on: MACOS, UBUNTU, ELEMENTARY OS, LINUX MINT, DEBIAN, OPENSUSE, FEDORA, POP!_OS, MX-LINUX, ZORIN_OS
