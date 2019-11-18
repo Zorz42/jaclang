@@ -7,7 +7,7 @@ std::vector<variable> generator::stack; // the stack, not actual just for alloca
 std::vector<function> generator::functionVector;
 bool generator::inFunction = false;
 
-int currentScopeOnStack = 0;
+unsigned long currentScopeOnStack = 0;
 
 void generator::main()
 {
@@ -28,8 +28,8 @@ void generator::main()
 		{
 			branch* prevScope = currentBranchScope; // save current scope
 			currentBranchScope = &(current);        // move to new scope
-			int stackLength = generator::stack.size();  // save stack length
-			int prevScopeOnStack = currentScopeOnStack; // save scope on stack
+			unsigned long stackLength = generator::stack.size();  // save stack length
+			unsigned long prevScopeOnStack = currentScopeOnStack; // save scope on stack
 			currentScopeOnStack = stackLength;  // set scope on stack
 			generator::main();
 			currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack

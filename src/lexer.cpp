@@ -28,8 +28,8 @@ double toDec(std::string text); // convert string to float or int
 bool isInt(std::string text); // check if int if float then returns false
 bool isDec(std::string text); // the same but says yes to floats
 
-long unsigned int prevC = 0;
-long unsigned int c = 0;
+unsigned long prevC = 0;
+unsigned long c = 0;
 
 void lexer::main() // main lexer function
 {
@@ -67,7 +67,7 @@ void lexer::main() // main lexer function
 		else if(contains(lexer::symbols, CHAR) && !IN_STRING) // if character is symbol (and not in string)
 		{
 			bool special = false;
-			const int OPERATOR = lexer::operators.find(CHAR); // OPERATOR indicates position in operators
+			const unsigned long OPERATOR = lexer::operators.find(CHAR); // OPERATOR indicates position in operators
 			if(CHAR == '.' && isInt(currentToken))
 			{
 				currentToken += CHAR;
@@ -99,7 +99,7 @@ void lexer::main() // main lexer function
 		}
 		else if(contains(lexer::operators, CHAR) && !IN_STRING) // operators are the same, but multi-char
 		{
-			const int OPERATOR = lexer::operators.find(CHAR); // finds in operators
+			const unsigned long OPERATOR = lexer::operators.find(CHAR); // finds in operators
 			newToken(); // dumps the token
 			currentToken = CHAR; // sets token to that operator
 			if(CHAR == ':' && file::inputText.at(c + 1) == ':') // there is operator ':' and symbol '::'
@@ -227,7 +227,7 @@ double toDec(std::string text) // not going to explain it is a little too comple
 			char* p2;
 			char temp = text.at(i + c);
 			std::string oneDec(1, temp);
-			int res = strtol(oneDec.c_str(), &p2, 10);
+			long res = strtol(oneDec.c_str(), &p2, 10);
 			converted += res / c*c*c*c*c*c*c*c*c*c; // pow(10, c)
 		}
 		return converted;

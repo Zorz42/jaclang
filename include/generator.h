@@ -21,7 +21,7 @@ namespace generator
 	{
 		void systemFunctionCall();
 		void functionDeclaration();
-		void variableDeclaration(int scopeOnStack);
+		void variableDeclaration(unsigned long scopeOnStack);
 		void calculation(branch& calculation);
 		void functionCall();
 	}

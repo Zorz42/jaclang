@@ -28,7 +28,7 @@ std::string onStack(int offset) // output asm value of offset on stack example: 
 	return "[rbp-" + std::to_string(offset) + "]"; // returns position on stack: [rbp-offset]
 }
 
-int find(std::vector<std::string>& source, std::string target) // find string in vector of strings
+unsigned long find(std::vector<std::string>& source, std::string target) // find string in vector of strings
 {
 	for(int i = 0; i < source.size(); i++)
 		if(source.at(i) == target)
@@ -36,7 +36,7 @@ int find(std::vector<std::string>& source, std::string target) // find string in
 	return source.size();
 }
 
-int find(std::string source, char target) // find character in string
+unsigned long find(std::string source, char target) // find character in string
 {
 	return source.find(target);
 }

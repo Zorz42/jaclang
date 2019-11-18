@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-void generator::e::variableDeclaration(int scopeOnStack)
+void generator::e::variableDeclaration(unsigned long scopeOnStack)
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count)
 	

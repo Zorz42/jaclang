@@ -6,9 +6,9 @@ struct token
 	int8_t type;
 	std::string text;
 	int line;
-	int pos;
+	unsigned long pos;
 	
-	token(int TYPE , std::string TEXT) : type(TYPE), text(TEXT) {}
+	token(int8_t TYPE , std::string TEXT) : type(TYPE), text(TEXT) {}
 	token(std::string TEXT) : type(TYPE_UNDEF), text(TEXT) {}
 	token() : type(0), text("") {}
 };

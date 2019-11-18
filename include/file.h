@@ -2,13 +2,13 @@
 
 namespace file
 {
-	extern unsigned int asm_data;
-	extern unsigned int asm_bss;
-	extern unsigned int asm_text;
-	extern unsigned int asm_func;
+	extern unsigned long asm_data;
+	extern unsigned long asm_bss;
+	extern unsigned long asm_text;
+	extern unsigned long asm_func;
 	
 	extern std::string inputText; // Text of the input file
-	extern unsigned int inputLineCount; // How many lines does the input file have
+	extern unsigned long inputLineCount; // How many lines does the input file have
 	extern std::string input;  // Path to input file
 	extern std::string output; // Path to output file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
@@ -23,7 +23,7 @@ namespace file
 	void append_text(std::string line);
 	void append_func(std::string line);
 	void append(std::string line);
-	void add(std::string line, int position);
+	void add(std::string line, unsigned long position);
 	void add(std::string line);
 	
 	void append_instruction(std::string instruction, std::string arg1="", std::string arg2="");
