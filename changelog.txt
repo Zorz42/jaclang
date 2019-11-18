@@ -1,4 +1,4 @@
-18.11 2019, BETA 1.2.3
+18.11 2019, BETA 1.2.2
  - cleaner code, more reliable, lightweight and warning free
 
 17.11 2019, BETA 1.2.1
