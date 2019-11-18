@@ -1,3 +1,6 @@
+18.11 2019, BETA 1.2.3
+ - cleaner code, more reliable, lightweight and warning free
+
 17.11 2019, BETA 1.2.1
  - more reliable install
  - jpm installs alongside as dependency
