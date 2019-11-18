@@ -28,8 +28,8 @@ double toDec(std::string text); // convert string to float or int
 bool isInt(std::string text); // check if int if float then returns false
 bool isDec(std::string text); // the same but says yes to floats
 
-unsigned long prevC = 0;
-unsigned long c = 0;
+unsigned int prevC = 0;
+unsigned int c = 0;
 
 void lexer::main() // main lexer function
 {
@@ -176,7 +176,7 @@ void lexer::main() // main lexer function
 		{
 			coutd << int(iter.type) << ": " << iter.text;
 			if(iter.text.size() < 10)
-				for(int i = 0; i < 10 - iter.text.size(); i++)
+				for(unsigned int i = 0; i < 10 - iter.text.size(); i++)
 					coutd << " ";
 			coutd << " " << iter.line << ", " << iter.pos << std::endl;
 		}
@@ -222,13 +222,13 @@ double toDec(std::string text) // not going to explain it is a little too comple
 				break;
 			i++;
 		}
-		for(long unsigned int c = 1; c < text.size() - i; c++)
+		for(long unsigned int c2 = 1; c < text.size() - i; c++)
 		{
 			char* p2;
-			char temp = text.at(i + c);
+			char temp = text.at(i + c2);
 			std::string oneDec(1, temp);
 			long res = strtol(oneDec.c_str(), &p2, 10);
-			converted += res / c*c*c*c*c*c*c*c*c*c; // pow(10, c)
+			converted += res / c2*c2*c2*c2*c2*c2*c2*c2*c2*c2; // pow(10, c)
 		}
 		return converted;
 	}

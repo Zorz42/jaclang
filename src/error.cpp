@@ -10,7 +10,7 @@ void error::syntaxError(std::string error) // Print out syntax error
 	while(errorLine.at(0) == ' ' || errorLine.at(0) == '	')
 		errorLine.erase(errorLine.begin());
 	std::cerr << errorLine << std::endl; // find line of error
-	for(int i = 0; i < lexer::toks.at(parser::tokCount).pos; i++) // point to error token
+	for(unsigned int i = 0; i < lexer::toks.at(parser::tokCount).pos; i++) // point to error token
 		std::cerr << " ";
 	std::cerr << "^" << "\033[0m" << std::endl; // reset to white
 	

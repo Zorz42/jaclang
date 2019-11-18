@@ -118,7 +118,7 @@ branch parser::calculation(bool nested) // parse calculation
 	#define eraseEl(x) currentBranch.sub.erase(currentBranch.sub.begin() + x)
 	
 	// make that multiplication and division get calculated first
-	for(int i = 2; i < currentBranch.sub.size(); i += 2)
+	for(unsigned int i = 2; i < currentBranch.sub.size(); i += 2)
 	{
 		if(curr(i) == "*" || curr(i) == "/")
 		{
@@ -157,7 +157,7 @@ branch optimize(branch currentBranch, bool nested)
 		currentBranch = obj;
 	}
 	
-	for(int i = 1; i + 2 <= currentBranch.sub.size(); i += 2)
+	for(unsigned int i = 1; i + 2 <= currentBranch.sub.size(); i += 2)
 	{
 		if(isInt(currentBranch.sub.at(i).name) && isInt(currentBranch.sub.at(i + 2).name))
 		{

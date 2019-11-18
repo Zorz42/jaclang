@@ -30,7 +30,7 @@ std::string onStack(int offset) // output asm value of offset on stack example: 
 
 unsigned long find(std::vector<std::string>& source, std::string target) // find string in vector of strings
 {
-	for(int i = 0; i < source.size(); i++)
+	for(unsigned int i = 0; i < source.size(); i++)
 		if(source.at(i) == target)
 			return i;
 	return source.size();

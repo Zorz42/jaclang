@@ -32,7 +32,7 @@ namespace generator
 	
 	void pushToStack(variable source);
 
-	extern int currentRegister32;
+	extern unsigned int currentRegister32;
 	extern std::vector<std::string> availableRegisters32;
 
 	void nextRegister();
