@@ -96,14 +96,15 @@ branch parser::calculation(bool nested) // parse calculation
 			break;
 		
 		if(parser::tokCount + 1 == lexer::toks.size())
+        {
 			if(timeForValue)
 				error::syntaxError("Equation has no end"); // if calculation has come to the end of file without ending itself
-			else
+            else
 			{
 				timeForValue = false;
 				break;
 			}
-		
+        }
 		parser::tokCount++;
 	}
 	if(timeForValue) // if it was a time for value
@@ -112,14 +113,14 @@ branch parser::calculation(bool nested) // parse calculation
 	if(current.text != ")" && parser::tokCount + 1 != lexer::toks.size())
 		parser::tokCount--;
 	
-	#define current(x) currentBranch.sub.at(x).name
+	#define curr(x) currentBranch.sub.at(x).name
 	#define currentObj(x) currentBranch.sub.at(x)
 	#define eraseEl(x) currentBranch.sub.erase(currentBranch.sub.begin() + x)
 	
 	// make that multiplication and division get calculated first
 	for(int i = 2; i < currentBranch.sub.size(); i += 2)
 	{
-		if(current(i) == "*" || current(i) == "/")
+		if(curr(i) == "*" || curr(i) == "/")
 		{
 			branch obj;
 			obj.name = "calc";
@@ -127,7 +128,7 @@ branch parser::calculation(bool nested) // parse calculation
 			appendBranch(currentObj(i - 1), obj);
 			eraseEl(i - 1);
 			i--;
-			while(i < currentBranch.sub.size() && (current(i) == "*" || current(i) == "/"))
+			while(i < currentBranch.sub.size() && (curr(i) == "*" || curr(i) == "/"))
 			{
 				appendBranch(currentObj(i), obj);
 				appendBranch(currentObj(i + 1), obj);

@@ -29,7 +29,7 @@ std::vector<std::string> file::outputVector = { // prefix for asm file
 	};
 
 // help text (if no argumets provided
-#define HELP_TEXT \ 
+#define HELP_TEXT \
 "Jaclang help: \n"\
 "usage:\n"\
 "	jaclang - for help\n"\
