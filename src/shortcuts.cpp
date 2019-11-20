@@ -9,10 +9,10 @@ bool contains(const std::string& text, char character) // check if string contai
 	return text.find(character) != std::string::npos;
 }
 
-bool contains(std::vector<std::string>& list, const std::string& text) // check if vector of strings contains string
+/*bool contains(std::vector<std::string>& list, const std::string& text) // check if vector of strings contains string
 {
 	return find(list, text) != list.size();
-}
+}*/
 
 bool isSystemIndent(std::string indent) // check if string has __ at the beginning and at the end.
 {

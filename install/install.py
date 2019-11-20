@@ -5,9 +5,9 @@ import platform, subprocess
 python3 = sys.version_info.major == 3
 
 def decision(question):
-	yesOptions = ["Y", "YES"]
-	noOptions  = ["N", "NO"]
-	while True:
+    yesOptions = ["Y", "YES"]
+    noOptions  = ["N", "NO"]
+    while True:
         try:
             if(python3):
                 decision = input(question + " [y,n]:")

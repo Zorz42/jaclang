@@ -207,7 +207,7 @@ bool isKeyword(std::string text)
 	return find(lexer::keywords, std::move(text)) != lexer::keywords.size(); // check if vector keywords containg that string
 }
 
-unsigned long toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
+/*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
 {
 	char* p;
 	unsigned long converted = strtol(text.c_str(), &p, 10);
@@ -234,7 +234,7 @@ unsigned long toDec(std::string text) // not going to explain it is a little too
 		}
 		return converted;
 	}
-}
+}*/
 
 bool isInt(const std::string& text) // converts to integer
 {

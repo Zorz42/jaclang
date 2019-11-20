@@ -7,7 +7,7 @@ std::vector<std::string> lexer::keywords =
 	"int"
 };
 
-std::vector<std::string> keywordsDatatype =
+/*std::vector<std::string> keywordsDatatype =
 {
 	"int"
-};
+};*/

@@ -243,10 +243,10 @@ void file::add(const std::string& line, unsigned long position)
 	file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
 }
 
-void file::add(const std::string& line)
+/*void file::add(const std::string& line)
 {
 	file::outputVector.push_back(line); // append line of code into asm file
-}
+}*/
 
 std::string file::getLine(int LINE) // get line of code
 {

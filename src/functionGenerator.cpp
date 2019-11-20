@@ -60,10 +60,10 @@ void generator::e::functionDeclaration()
 	generator::stack = prevStack;
 }
 
-void generator::e::functionCall()
+/*void generator::e::functionCall()
 {
 	
-}
+}*/
 
 std::string generateAsmText() // generate text for inline assembly [text]  ;;__asm__
 {

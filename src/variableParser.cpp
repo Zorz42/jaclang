@@ -4,9 +4,6 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
-int stackPointer = 4;
-std::vector<variable> stack;
-
 bool parser::e::variableDeclaration()
 {
 	if(current.text == "int") // if first text is int - keyword
