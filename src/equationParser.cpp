@@ -1,5 +1,7 @@
 // this file parses equations
 
+#include <utility>
+
 #include "jaclang.h"
 
 #define current lexer::tokens.at(parser::tokCount)
@@ -10,10 +12,10 @@ branch optimize(branch currentBranch, bool nested);
 void insertBranchAtBegin(std::string name, branch& target)
 {
 	branch obj;
-	obj.name = name;
+	obj.name = std::move(name);
 	target.sub.insert(target.sub.begin(), obj);
 }
-void insertBranchAtBegin(branch source, branch& target)
+void insertBranchAtBegin(const branch& source, branch& target)
 {
 	target.sub.insert(target.sub.begin(), source);
 }
@@ -62,7 +64,7 @@ branch parser::calculation(bool nested) // parse calculation
 		}
 		else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if its constant or string or variable
 		{
-			if(!timeForValue) // if isnt time for value
+			if(!timeForValue) // if isn't time for value
 				break;
 			std::string currentText = current.type == TYPE_INDENT ? ":" : "";
 			currentText += current.text;
@@ -82,12 +84,12 @@ branch parser::calculation(bool nested) // parse calculation
 				break;
 			timeForValue = false;
 			parser::tokCount++;
-			branch obj = parser::calculation(true); // make eqution until ')'
+			branch obj = parser::calculation(true); // make equation until ')'
 			appendBranch(obj, currentBranch);
 		}
 		else if(current.type == TYPE_INDENT)
 		{
-			if(!timeForValue) // if isnt time for value
+			if(!timeForValue) // if isn't time for value
 				error::syntaxError("Operator expected");
 			appendBranch(current.text, currentBranch);
 			timeForValue = false;
@@ -97,13 +99,12 @@ branch parser::calculation(bool nested) // parse calculation
 		
 		if(parser::tokCount + 1 == lexer::tokens.size())
         {
-			if(timeForValue)
-				error::syntaxError("Equation has no end"); // if calculation has come to the end of file without ending itself
+            if (!timeForValue) {
+                timeForValue = false;
+                break;
+            } // if calculation has come to the end of file without ending itself
             else
-			{
-				timeForValue = false;
-				break;
-			}
+                error::syntaxError("Equation has no end");
         }
 		parser::tokCount++;
 	}
@@ -118,7 +119,7 @@ branch parser::calculation(bool nested) // parse calculation
 	#define eraseEl(x) currentBranch.sub.erase(currentBranch.sub.begin() + x)
 	
 	// make that multiplication and division get calculated first
-	for(unsigned int i = 2; i < currentBranch.sub.size(); i += 2)
+	for(unsigned long i = 2; i < currentBranch.sub.size(); i += 2)
 	{
 		if(curr(i) == "*" || curr(i) == "/")
 		{

@@ -7,21 +7,19 @@ python3 = sys.version_info.major == 3
 def decision(question):
 	yesOptions = ["Y", "YES"]
 	noOptions  = ["N", "NO"]
-	try:
-		if(python3):
-			decision = input(question + " [y,n]:")
-		else:
-			decision = raw_input(question + " [y,n]:")
-	except:
-		pass
-	
-	if decision.upper() in yesOptions:
-		return True
-	elif decision.upper() in noOptions:
-		return False
-	else:
-		print("Wrong answer!")
-		exit(1)
+	while True:
+        try:
+            if(python3):
+                decision = input(question + " [y,n]:")
+            else:
+                decision = raw_input(question + " [y,n]:")
+        except:
+            pass
+        
+        if decision.upper() in yesOptions:
+            return True
+        elif decision.upper() in noOptions:
+            return False
 
 def check_for_package(name, binary, install_command):
 	prefix = name.upper() + " ... "

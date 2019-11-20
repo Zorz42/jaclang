@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-void error::syntaxError(std::string error) // Print out syntax error
+void error::syntaxError(const std::string& error) // Print out syntax error
 {
 	std::cerr << "\033[1;31mSyntax error, line " << lexer::tokens.at(parser::tokCount).line << ": " // syntax error in red
 	<< error << std::endl << std::endl; // actual error
@@ -17,7 +17,7 @@ void error::syntaxError(std::string error) // Print out syntax error
 	terminate("SYNTAX ERROR", ERROR_SYNTAX_ERROR);
 }
 
-void error::treeError(std::string error) // print out syntax error
+void error::treeError(const std::string& error) // print out syntax error
 {
 	std::cerr << "\033[1;31mTree error: " // tree error in red
 	<< error << std::endl // actual error
@@ -26,7 +26,7 @@ void error::treeError(std::string error) // print out syntax error
 }
 
 
-void error::terminate(std::string reason, int exitCode) // exit if error
+void error::terminate(const std::string& reason, int exitCode) // exit if error
 {
 	std::cerr << "Jaclang terminated with exit code " << exitCode << "." << std::endl // Terminated
 	<< "Reason: " << reason << "." << std::endl; // reason

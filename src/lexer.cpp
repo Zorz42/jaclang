@@ -27,8 +27,8 @@ void newToken(int TYPE=TYPE_UNDEF); // pushes current token to token vector and 
 std::string currentToken; // current token in processing
 
 unsigned long toDec(std::string text); // convert string to float or int
-bool isInt(const std::string text); // check if int if float then returns false
-bool isDec(const std::string text); // the same but says yes to floats
+bool isInt(const std::string& text); // check if int if float then returns false
+bool isDec(const std::string& text); // the same but says yes to floats
 
 unsigned int prevC = 0;
 unsigned long c = 0;
@@ -75,7 +75,7 @@ void lexer::main() // main lexer function
 				currentToken += CHAR;
 				special = true;
 			}
-			else // '.' charater is used also in decimals and should be interpreted as part of constant
+			else // '.' character is used also in decimals and should be interpreted as part of constant
 			{ // if current token was not integer then its not decimal point
 				newToken(); // it is symbol and cut the previous token
 				currentToken = CHAR; // set token to symbols since all (except one) are single character
@@ -236,7 +236,7 @@ unsigned long toDec(std::string text) // not going to explain it is a little too
 	}
 }
 
-bool isInt(const std::string text) // converts to integer
+bool isInt(const std::string& text) // converts to integer
 {
 	char* p;
 	strtol(text.c_str(), &p, 10);
@@ -244,7 +244,7 @@ bool isInt(const std::string text) // converts to integer
 	return *p == 0;
 }
 
-bool isDec(const std::string text) // checks if its decimal
+bool isDec(const std::string& text) // checks if its decimal
 {
 	int dot = 0;
 	for(char i : text)

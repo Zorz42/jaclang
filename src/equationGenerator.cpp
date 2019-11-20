@@ -29,7 +29,7 @@ void generator::e::calculation(branch& calculation)
 		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
 		{
 			bool funcExists = false; // go through existing functions and check if it exists
-			for(function iter : generator::functionVector)
+			for(const function& iter : generator::functionVector)
 				if(iter.name == calculation.sub.at(1).sub.at(0).name)
 				{
 					funcExists = true;
@@ -40,13 +40,13 @@ void generator::e::calculation(branch& calculation)
 			file::append_instruction("call", calculation.sub.at(1).sub.at(0).name + "."); // call function
 		}
 		
-		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beggining
+		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
 		{
 			std::string value = calculation.sub.at(1).name; // variable name
 			
 			value.erase(value.begin()); // remove :
 			bool varExists = false; // go through stack and check if variable exists
-			for(variable iter : generator::stack)
+			for(const variable& iter : generator::stack)
 				if(iter.indent == value)
 				{
 					varExists = true;
@@ -70,14 +70,14 @@ void generator::e::calculation(branch& calculation)
 		#define currentValue calculation.sub.at(i).name
 		#define currentOperator calculation.sub.at(i - 1).name
 		
-		for(unsigned int i = 3; i <= calculation.sub.size(); i += 2)
+		for(unsigned long i = 3; i <= calculation.sub.size(); i += 2)
 		{
 			std::string currentValueAsm = currentValue;
 			if(currentValueAsm.at(0) == ':') // if its variable
 			{
-				currentValueAsm.erase(currentValueAsm.begin()); // remove : at the beggining
+				currentValueAsm.erase(currentValueAsm.begin()); // remove : at the beginning
 				bool varExists = false; // check if variable exists
-				for(variable iter : generator::stack)
+				for(const variable& iter : generator::stack)
 					if(iter.indent == currentValueAsm)
 					{
 						varExists = true;
@@ -94,7 +94,7 @@ void generator::e::calculation(branch& calculation)
 				generator::nextRegister();
 				generator::e::calculation(calculation.sub.at(i));
 				
-				if(currentOperator == "+") // cases for opeartors
+				if(currentOperator == "+") // cases for operators
 					file::append_instruction("add", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
 				else if(currentOperator == "-")
 					file::append_instruction("sub", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
@@ -143,7 +143,7 @@ void generator::nextRegister()
 {
 	generator::currentRegister32++;
 	if(generator::currentRegister32 == generator::availableRegisters32.size())
-		error::treeError("register owerflow");
+		error::treeError("register overflow");
 }
 
 std::string generator::availableRegister32()

@@ -28,7 +28,7 @@ void generator::e::functionDeclaration()
 {
 	function obj;
 	obj.name = currentName2;
-	for(function i : generator::functionVector)
+	for(const function& i : generator::functionVector)
 		if(i.name == obj.name)
 			error::treeError("Function already declared!");
 	generator::functionVector.push_back(obj);

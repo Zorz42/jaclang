@@ -16,7 +16,7 @@ void generator::main()
 		file::append_text("	mov rbp, rsp");
 	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
 	{
-		if(file::outputVector.at(file::asm_text - 1) != "")
+		if(!file::outputVector.at(file::asm_text - 1).empty())
 			file::append_text("");
 		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
 			generator::e::systemFunctionCall();

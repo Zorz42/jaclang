@@ -9,7 +9,7 @@ bool parser::e::functionCall(branch& target)
 	if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
 		branch currentBranch; // make branch for function
-		if(isSystemIndent(current.text))  // check if its system fucntion call or just function call
+		if(isSystemIndent(current.text))  // check if its system function call or just function call
 			return false;
 		else
 			currentBranch.name = "functionCall";

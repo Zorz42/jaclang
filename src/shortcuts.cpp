@@ -4,14 +4,14 @@
 
 #include "jaclang.h"
 
-bool contains(const std::string text, char character) // check if string contains character
+bool contains(const std::string& text, char character) // check if string contains character
 {
 	return text.find(character) != std::string::npos;
 }
 
-bool contains(std::vector<std::string>& list, std::string text) // check if vector of strings contains string
+bool contains(std::vector<std::string>& list, const std::string& text) // check if vector of strings contains string
 {
-	return find(list, std::move(text)) != list.size();
+	return find(list, text) != list.size();
 }
 
 bool isSystemIndent(std::string indent) // check if string has __ at the beginning and at the end.
@@ -30,7 +30,7 @@ std::string onStack(int offset) // output asm value of offset on stack example: 
 	return "[rbp-" + std::to_string(offset) + "]"; // returns position on stack: [rbp-offset]
 }
 
-unsigned long find(std::vector<std::string>& source, const std::string target) // find string in vector of strings
+unsigned long find(std::vector<std::string>& source, const std::string& target) // find string in vector of strings
 {
 	for(unsigned long i = 0; i < source.size(); i++)
 		if(source.at(i) == target)
@@ -38,7 +38,7 @@ unsigned long find(std::vector<std::string>& source, const std::string target) /
 	return source.size();
 }
 
-unsigned long find(const std::string source, char target) // find character in string
+unsigned long find(const std::string& source, char target) // find character in string
 {
 	return source.find(target);
 }
