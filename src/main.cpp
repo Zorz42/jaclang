@@ -6,10 +6,10 @@ unsigned int file::inputLineCount = 0; // number of lines in input file
 
 bool debug = false; // if compilation is being debugged (default: false)
 
-unsigned int file::asm_data; // integers for tracking sections in asm file
-unsigned int file::asm_bss;  
-unsigned int file::asm_text;
-unsigned int file::asm_func;
+unsigned long file::asm_data; // integers for tracking sections in asm file
+unsigned long file::asm_bss;
+unsigned long file::asm_text;
+unsigned long file::asm_func;
 
 std::string file::inputText; // input file
 std::vector<std::string> file::outputVector = { // prefix for asm file
@@ -29,7 +29,7 @@ std::vector<std::string> file::outputVector = { // prefix for asm file
 	};
 
 // help text (if no argumets provided
-#define HELP_TEXT \ 
+#define HELP_TEXT \
 "Jaclang help: \n"\
 "usage:\n"\
 "	jaclang - for help\n"\
@@ -177,8 +177,8 @@ int main(int argc, char **argv)
 	
 	long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // end timer
 	std::string ms = std::to_string((end - start) % 1000); // get miliseconds time difference
-	int len = ms.length(); // add zeros to have 4 char string for miliseconds
-	for(int i = 4; i > len; i--)
+    unsigned long len = ms.length(); // add zeros to have 4 char string for miliseconds
+	for(unsigned int i = 4; i > len; i--)
 		ms.insert(ms.begin(), '0'); // insert zeros
 	
 	std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl; // tell compilation time
@@ -191,13 +191,13 @@ void file::read(std::string text) // read file
 	preprocessor::main(text); // call preprocessor
 }
 
-void file::write(std::string output) // write to file
+void file::write(std::string file_output) // write to file
 {
 	std::string command = "touch "; // create file (if not existing)
-	command += output;
+	command += file_output;
 	command += ".asm";
 	system(command.c_str()); // create file
-	std::ofstream outputFileObj(output + ".asm"); // open file (or create)
+	std::ofstream outputFileObj(file_output + ".asm"); // open file (or create)
 	if (outputFileObj.is_open()) // if file was opened (or created)
 		for (std::vector<std::string>::iterator t=file::outputVector.begin(); t!=file::outputVector.end(); ++t) // add line from vector 
 			outputFileObj << *t << "\n"; // add new line so that the code wont be in the same line
@@ -236,7 +236,7 @@ void file::append_func(std::string line)
 }
 
 
-void file::add(std::string line, int position)
+void file::add(std::string line, unsigned long position)
 {
 	file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
 }

@@ -28,8 +28,8 @@ double toDec(std::string text); // convert string to float or int
 bool isInt(std::string text); // check if int if float then returns false
 bool isDec(std::string text); // the same but says yes to floats
 
-long unsigned int prevC = 0;
-long unsigned int c = 0;
+unsigned int prevC = 0;
+unsigned int c = 0;
 
 void lexer::main() // main lexer function
 {
@@ -67,7 +67,7 @@ void lexer::main() // main lexer function
 		else if(contains(lexer::symbols, CHAR) && !IN_STRING) // if character is symbol (and not in string)
 		{
 			bool special = false;
-			const int OPERATOR = lexer::operators.find(CHAR); // OPERATOR indicates position in operators
+			const unsigned long OPERATOR = lexer::operators.find(CHAR); // OPERATOR indicates position in operators
 			if(CHAR == '.' && isInt(currentToken))
 			{
 				currentToken += CHAR;
@@ -99,7 +99,7 @@ void lexer::main() // main lexer function
 		}
 		else if(contains(lexer::operators, CHAR) && !IN_STRING) // operators are the same, but multi-char
 		{
-			const int OPERATOR = lexer::operators.find(CHAR); // finds in operators
+			const unsigned long OPERATOR = lexer::operators.find(CHAR); // finds in operators
 			newToken(); // dumps the token
 			currentToken = CHAR; // sets token to that operator
 			if(CHAR == ':' && file::inputText.at(c + 1) == ':') // there is operator ':' and symbol '::'
@@ -176,7 +176,7 @@ void lexer::main() // main lexer function
 		{
 			coutd << int(iter.type) << ": " << iter.text;
 			if(iter.text.size() < 10)
-				for(int i = 0; i < 10 - iter.text.size(); i++)
+				for(unsigned int i = 0; i < 10 - iter.text.size(); i++)
 					coutd << " ";
 			coutd << " " << iter.line << ", " << iter.pos << std::endl;
 		}
@@ -222,13 +222,13 @@ double toDec(std::string text) // not going to explain it is a little too comple
 				break;
 			i++;
 		}
-		for(long unsigned int c = 1; c < text.size() - i; c++)
+		for(long unsigned int c2 = 1; c < text.size() - i; c++)
 		{
 			char* p2;
-			char temp = text.at(i + c);
+			char temp = text.at(i + c2);
 			std::string oneDec(1, temp);
-			int res = strtol(oneDec.c_str(), &p2, 10);
-			converted += res / c*c*c*c*c*c*c*c*c*c; // pow(10, c)
+			long res = strtol(oneDec.c_str(), &p2, 10);
+			converted += res / c2*c2*c2*c2*c2*c2*c2*c2*c2*c2; // pow(10, c)
 		}
 		return converted;
 	}

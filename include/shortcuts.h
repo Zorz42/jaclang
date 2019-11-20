@@ -13,5 +13,5 @@ double toDec(std::string text);
 bool isInt(std::string text);
 bool isDec(std::string text);
 
-int find(std::vector<std::string>& source, std::string target);
-int find(std::string source, char target);
+unsigned long find(std::vector<std::string>& source, std::string target);
+unsigned long find(std::string source, char target);

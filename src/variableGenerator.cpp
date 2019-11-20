@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-void generator::e::variableDeclaration(int scopeOnStack)
+void generator::e::variableDeclaration(unsigned long scopeOnStack)
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count)
 	
@@ -11,7 +11,7 @@ void generator::e::variableDeclaration(int scopeOnStack)
 	obj.type = VARIABLE_INT; // type
 	obj.size = 4;
 	
-	int i = 0;
+	unsigned int i = 0;
 	
 	for(variable iter : generator::stack) // go through stack
 	{

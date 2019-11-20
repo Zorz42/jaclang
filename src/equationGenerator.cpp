@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-int generator::currentRegister32 = 0;
+unsigned int generator::currentRegister32 = 0;
 std::vector<std::string> generator::availableRegisters32 =  // all registers that equations can use
 {
 	"ebx",
@@ -70,7 +70,7 @@ void generator::e::calculation(branch& calculation)
 		#define currentValue calculation.sub.at(i).name
 		#define currentOperator calculation.sub.at(i - 1).name
 		
-		for(int i = 3; i <= calculation.sub.size(); i += 2)
+		for(unsigned int i = 3; i <= calculation.sub.size(); i += 2)
 		{
 			std::string currentValueAsm = currentValue;
 			if(currentValueAsm.at(0) == ':') // if its variable

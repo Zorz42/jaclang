@@ -4,7 +4,7 @@ struct branch
 {
 	std::string name;
 	std::vector<branch> sub;
-	int count = 0;
+	unsigned int count = 0;
 };
 
 extern branch mainBranch;
@@ -18,7 +18,7 @@ namespace parser
 	void main(std::vector<std::string> args);
 	branch calculation(bool nested=false);
 	
-	extern int tokCount;
+	extern unsigned int tokCount;
 	
 	namespace e 
 	{

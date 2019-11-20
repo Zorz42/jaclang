@@ -1,7 +1,8 @@
-BETA 1.2.2
  - you can set variable after declaring it
  - output format recognition:
  	binary executable -> full compilation
 	object file -> skips linker
 	asm file -> skips linker and nasm
 	jl file -> only preprocesses it
+ - function return value gets implemented
+ - function will have arguments

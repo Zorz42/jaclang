@@ -21,7 +21,7 @@ namespace generator
 	{
 		void systemFunctionCall();
 		void functionDeclaration();
-		void variableDeclaration(int scopeOnStack);
+		void variableDeclaration(unsigned long scopeOnStack);
 		void calculation(branch& calculation);
 		void functionCall();
 	}
@@ -32,7 +32,7 @@ namespace generator
 	
 	void pushToStack(variable source);
 
-	extern int currentRegister32;
+	extern unsigned int currentRegister32;
 	extern std::vector<std::string> availableRegisters32;
 
 	void nextRegister();

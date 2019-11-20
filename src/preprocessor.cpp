@@ -19,7 +19,7 @@ void preprocessor::main(std::string text)
 	{
 		// preprocessor
 		bool lineComment = false;
-		for(int i = 0; i < line.length(); i++)
+		for(unsigned int i = 0; i < line.length(); i++)
 		{
 			if(i < line.length() - 3) // if not in the last 3 characters of line
 				if(line[i] == ';') // if triple slash
