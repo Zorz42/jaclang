@@ -1,5 +1,5 @@
 import sys
-from os import popen, system, path
+from os import popen, system, path, listdir
 import platform
 
 python3 = sys.version_info.major == 3
@@ -40,7 +40,17 @@ if len(sys.argv) == 1:
 elif len(sys.argv) == 2:
 	if sys.argv[1] == "install":
 		system("sudo echo")
-		system("make jaclang")
+		objectfiles = [file.split('.')[0] for file in listdir("src")]
+		system("make build --no-print-directory")
+		for file in objectfiles:
+			system("make build/" + file + ".o --no-print-directory")
+		
+		objnames = ""
+		for file in objectfiles:
+			objnames += "build/" + file + ".o "
+		print("linking object files...")
+		system("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames)
+		
 		system("sudo mv jaclang /usr/local/bin/jaclang")
 		
 		if decision("Would you like to clean up object files?"):
