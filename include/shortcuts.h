@@ -1,6 +1,6 @@
 #pragma once
 
-bool contains(std::string text, char character);
+bool contains(const std::string text, char character);
 bool contains(std::vector<std::string>& list, std::string text);
 bool contains(std::vector<char>& list, char text);
 bool isSystemIndent(std::string indent);
@@ -13,5 +13,5 @@ unsigned long toDec(std::string text);
 bool isInt(const std::string text);
 bool isDec(const std::string text);
 
-unsigned long find(std::vector<std::string>& source, std::string target);
-unsigned long find(std::string source, char target);
+unsigned long find(std::vector<std::string>& source, const std::string target);
+unsigned long find(const std::string source, char target);

@@ -65,7 +65,7 @@ void generator::e::functionCall()
 	
 }
 
-std::string generateAsmText() // generate text for inline assmebly [text]  ;;__asm__
+std::string generateAsmText() // generate text for inline assembly [text]  ;;__asm__
 {
 	std::string text;
 	text += current.sub.at(1).name;

@@ -13,7 +13,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	
 	unsigned int i = 0;
 	
-	for(variable iter : generator::stack) // go through stack
+	for(const variable& iter : generator::stack) // go through stack
 	{
 		if(iter.indent == current.sub.at(0).name && i >= scopeOnStack) // if this variable already exists, then report error
 			error::treeError("Declaration of already existing variable");

@@ -1,8 +1,8 @@
-// this file preprocesses the input code.
+// this file will preprocess the input code.
 
 #include "jaclang.h"
 
-void preprocessor::main(std::string text)
+void preprocessor::main(const std::string& text)
 {
 	std::ifstream inputFileObj(text); // open file and store it in std::ifstream object
 	if(!inputFileObj.is_open()) // if didnt open (file missing,...)
@@ -12,14 +12,13 @@ void preprocessor::main(std::string text)
 	}
 	
 	bool multilineComment = false; // if in multiline comment
-	
-	//                              |||| string for iteration
-	std::string line; //            VVVV
+
+	std::string line;
 	while(std::getline(inputFileObj,line)) // iterate through lines of input file
 	{
 		// preprocessor
 		bool lineComment = false;
-		for(unsigned int i = 0; i < line.length(); i++)
+		for(unsigned long i = 0; i < line.length(); i++)
 		{
 			if(i < line.length() - 3) // if not in the last 3 characters of line
 				if(line[i] == ';') // if triple slash

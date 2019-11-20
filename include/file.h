@@ -13,18 +13,18 @@ namespace file
 	extern std::string output; // Path to output file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
 	
-	void read(std::string text); // Read input file and put result in inputFileVector
+	void read(const std::string& text); // Read input file and put result in inputFileVector
 	void write(const std::string& output); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
 
 	std::string getLine(int LINE); // Get text of line
 	
-	void append_data(const std::string line);
-	void append_bss(const std::string line);
-	void append_text(const std::string line);
-	void append_func(const std::string line);
-	void append(const std::string line);
+	void append_data(const std::string& line);
+	void append_bss(const std::string& line);
+	void append_text(const std::string& line);
+	void append_func(const std::string& line);
+	void append(const std::string& line);
 	void add(const std::string& line, unsigned long position);
 	void add(const std::string& line);
 	
-	void append_instruction(std::string instruction, std::string arg1="", std::string arg2="");
+	void append_instruction(const std::string& instruction, const std::string& arg1="", const std::string& arg2="");
 }

@@ -188,9 +188,9 @@ int main(int argc, char **argv)
 	return 0; // exit success
 }
 
-void file::read(std::string text) // read file
+void file::read(const std::string& text) // read file
 {
-	preprocessor::main(std::move(text)); // call preprocessor
+	preprocessor::main(text); // call preprocessor
 }
 
 void file::write(const std::string& file_output) // write to file
@@ -207,7 +207,7 @@ void file::write(const std::string& file_output) // write to file
 	outputFileObj.close(); // close file, c++ code has been written
 }
 
-void file::append_data(const std::string line)
+void file::append_data(const std::string& line)
 {
 	file::add(line, file::asm_data); // append text to data section
 	file::asm_data++;
@@ -216,22 +216,22 @@ void file::append_data(const std::string line)
 	file::asm_func++;
 }
 
-void file::append_bss(const std::string line)
+void file::append_bss(const std::string& line)
 {
-	file::add(std::move(line), file::asm_bss); // append text to bss section
+	file::add(line, file::asm_bss); // append text to bss section
 	file::asm_bss++;
 	file::asm_text++;
 	file::asm_func++;
 }
 
-void file::append_text(const std::string line)
+void file::append_text(const std::string& line)
 {
 	file::add(line, file::asm_text); // append text to text section
 	file::asm_text++;
 	file::asm_func++;
 }
 
-void file::append_func(const std::string line)
+void file::append_func(const std::string& line)
 {
 	file::add(line, file::asm_func); // append text to text section
 	file::asm_func++;
@@ -263,7 +263,7 @@ std::string file::getLine(int LINE) // get line of code
 	return currentString;
 }
 
-void file::append_instruction(const std::string instruction, const std::string arg1, const std::string arg2)
+void file::append_instruction(const std::string& instruction, const std::string& arg1, const std::string& arg2)
 {
 	std::string expr; // returns asm instruction: instruction arg1, arg2
 	expr = "	";
@@ -276,7 +276,7 @@ void file::append_instruction(const std::string instruction, const std::string a
 	file::append(expr);
 }
 
-void file::append(const std::string line)
+void file::append(const std::string& line)
 {
 	if(generator::inFunction) // if code should be in function append it to function section
 		file::append_func(line);
