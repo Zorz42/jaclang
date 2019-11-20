@@ -1,6 +1,6 @@
 import sys
 from os import popen, system, path, listdir
-import platform
+import platform, subprocess
 
 python3 = sys.version_info.major == 3
 
@@ -34,29 +34,43 @@ def check_for_package(name, binary, install_command):
 	else:
 		print(prefix + "OK")
 
-if len(sys.argv) == 1:
-	print("Input an argument such as install, uninstall, dependencies!")
-
-elif len(sys.argv) == 2:
-	if sys.argv[1] == "install":
+def install(fail=False):
+	if not fail:
 		system("sudo echo")
-		objectfiles = [file.split('.')[0] for file in listdir("src")]
-		system("make build --no-print-directory")
-		for file in objectfiles:
-			system("make build/" + file + ".o --no-print-directory")
-		
-		objnames = ""
-		for file in objectfiles:
-			objnames += "build/" + file + ".o "
-		print("linking object files...")
-		system("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames)
-		
+	objectfiles = [file.split('.')[0] for file in listdir("src")]
+	system("make build --no-print-directory")
+	for file in objectfiles:
+		system("make build/" + file + ".o --no-print-directory")
+	
+	objnames = ""
+	for file in objectfiles:
+		objnames += "build/" + file + ".o "
+	print("linking object files...")
+
+	linker_return_value = subprocess.Popen("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
+	linker_return_value2 = linker_return_value.communicate()[0]
+	linker_return_code = linker_return_value.returncode
+	if linker_return_code != 0:
+		print("Linker failed.")
+		print("Recompiling the whole program from scratch.")
+		system("make clean")
+		install(True)
+	
+
+	if not fail:
 		system("sudo mv jaclang /usr/local/bin/jaclang")
 		
 		if decision("Would you like to clean up object files?"):
 			system("make clean")
 		system("sudo python3 install/makealias.py")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
+
+if len(sys.argv) == 1:
+	print("Input an argument such as install, uninstall, dependencies!")
+
+elif len(sys.argv) == 2:
+	if sys.argv[1] == "install":
+		install()
 	
 	elif sys.argv[1] == "dependencies":
 		system("sudo echo")
