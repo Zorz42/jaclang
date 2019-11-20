@@ -4,13 +4,13 @@
 
 void error::syntaxError(std::string error) // Print out syntax error
 {
-	std::cerr << "\033[1;31mSyntax error, line " << lexer::toks.at(parser::tokCount).line << ": " // syntax error in red
+	std::cerr << "\033[1;31mSyntax error, line " << lexer::tokens.at(parser::tokCount).line << ": " // syntax error in red
 	<< error << std::endl << std::endl; // actual error
-	std::string errorLine = file::getLine(lexer::toks.at(parser::tokCount).line);
+	std::string errorLine = file::getLine(lexer::tokens.at(parser::tokCount).line);
 	while(errorLine.at(0) == ' ' || errorLine.at(0) == '	')
 		errorLine.erase(errorLine.begin());
 	std::cerr << errorLine << std::endl; // find line of error
-	for(unsigned int i = 0; i < lexer::toks.at(parser::tokCount).pos; i++) // point to error token
+	for(unsigned int i = 0; i < lexer::tokens.at(parser::tokCount).pos; i++) // point to error token
 		std::cerr << " ";
 	std::cerr << "^" << "\033[0m" << std::endl; // reset to white
 	

@@ -2,11 +2,11 @@
 
 #include "jaclang.h"
 
-#define current lexer::toks.at(parser::tokCount)
+#define current lexer::tokens.at(parser::tokCount)
 
 bool parser::e::functionCall(branch& target)
 {
-	if(current.type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
+	if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system fucntion call or just function call
@@ -26,7 +26,7 @@ bool parser::e::functionCall(branch& target)
 
 bool parser::e::systemFunctionCall()
 {
-	if(current.type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
+	if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system fucntion call
@@ -51,7 +51,7 @@ bool parser::e::systemFunctionCall()
 
 bool parser::e::functionDeclaration()
 {
-	if(current.text == "int" && lexer::toks.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::toks.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
+	if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
 	{
 		branch currentBranch;
 		currentBranch.name = "functionDeclaration"; // set to variableDeclaration
@@ -60,7 +60,7 @@ bool parser::e::functionDeclaration()
 			error::syntaxError("No arguments allowed in function declaration (for now)");
 		
 		appendBranch("int", currentBranch);
-		appendBranch(lexer::toks.at(parser::tokCount-2).text, currentBranch);
+		appendBranch(lexer::tokens.at(parser::tokCount - 2).text, currentBranch);
 		
 		appendBranch(currentBranch, *currentBranchScope);
 		return true;

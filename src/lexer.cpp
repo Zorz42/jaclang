@@ -1,6 +1,8 @@
+#include <utility>
+
 #include "jaclang.h"
 
-/* this is the LEXER which breaks code into lexer::toks aka more readable code.
+/* this is the LEXER which breaks code into lexer::tokens aka more readable code.
  * eg.
  * 
  * int i = 0;
@@ -17,19 +19,19 @@
 
 int currentLine = 1;
 
-std::vector<token> lexer::toks; // vector of tokens
+std::vector<token> lexer::tokens; // vector of tokens
 
 bool isKeyword(std::string text); // check if string is in keyword list, used for defining token type for later
 
 void newToken(int TYPE=TYPE_UNDEF); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
 
-double toDec(std::string text); // convert string to float or int
-bool isInt(std::string text); // check if int if float then returns false
-bool isDec(std::string text); // the same but says yes to floats
+unsigned long toDec(std::string text); // convert string to float or int
+bool isInt(const std::string text); // check if int if float then returns false
+bool isDec(const std::string text); // the same but says yes to floats
 
 unsigned int prevC = 0;
-unsigned int c = 0;
+unsigned long c = 0;
 
 void lexer::main() // main lexer function
 {
@@ -153,7 +155,7 @@ void lexer::main() // main lexer function
 	#undef CHAR
 	
 	token prevToken; // previous token
-	for(token& iter : lexer::toks) // iterate through tokens
+	for(token& iter : lexer::tokens) // iterate through tokens
 	{
 		if(iter.type == TYPE_UNDEF) // if type is undefined
 		{
@@ -176,7 +178,7 @@ void lexer::main() // main lexer function
 		{
 			coutd << int(iter.type) << ": " << iter.text;
 			if(iter.text.size() < 10)
-				for(unsigned int i = 0; i < 10 - iter.text.size(); i++)
+				for(unsigned long i = 0; i < 10 - iter.text.size(); i++)
 					coutd << " ";
 			coutd << " " << iter.line << ", " << iter.pos << std::endl;
 		}
@@ -187,7 +189,7 @@ void lexer::main() // main lexer function
 
 void newToken(int TYPE)
 {
-	if(currentToken == "") // if token is empty just do nothing
+	if(currentToken.empty()) // if token is empty just do nothing
 		return;
 	token obj;
 	obj.text = currentToken;
@@ -196,19 +198,19 @@ void newToken(int TYPE)
 	obj.pos = c - prevC - obj.text.size(); // position in line - length of obj
 	if(obj.type == TYPE_OPERATOR || obj.type == TYPE_SYMBOL)
 		obj.pos++;
-	lexer::toks.push_back(obj); // append token
+	lexer::tokens.push_back(obj); // append token
 	currentToken = ""; // reset token
 }
 
 bool isKeyword(std::string text)
 {
-	return find(lexer::keywords, text) != lexer::keywords.size(); // check if vector keywords containg that string
+	return find(lexer::keywords, std::move(text)) != lexer::keywords.size(); // check if vector keywords containg that string
 }
 
-double toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
+unsigned long toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
 {
 	char* p;
-	double converted = strtol(text.c_str(), &p, 10);
+	unsigned long converted = strtol(text.c_str(), &p, 10);
 	if(*p == 0)
 		return converted;
 	else if(!contains(text, '.'))
@@ -222,19 +224,19 @@ double toDec(std::string text) // not going to explain it is a little too comple
 				break;
 			i++;
 		}
-		for(long unsigned int c2 = 1; c < text.size() - i; c++)
+		for(unsigned long c2 = 1; c < text.size() - i; c++)
 		{
 			char* p2;
 			char temp = text.at(i + c2);
 			std::string oneDec(1, temp);
-			long res = strtol(oneDec.c_str(), &p2, 10);
+            unsigned long res = strtol(oneDec.c_str(), &p2, 10);
 			converted += res / c2*c2*c2*c2*c2*c2*c2*c2*c2*c2; // pow(10, c)
 		}
 		return converted;
 	}
 }
 
-bool isInt(std::string text) // converts to integer
+bool isInt(const std::string text) // converts to integer
 {
 	char* p;
 	strtol(text.c_str(), &p, 10);
@@ -242,7 +244,7 @@ bool isInt(std::string text) // converts to integer
 	return *p == 0;
 }
 
-bool isDec(std::string text) // checks if its decimal
+bool isDec(const std::string text) // checks if its decimal
 {
 	int dot = 0;
 	for(char i : text)

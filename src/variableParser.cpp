@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-#define current lexer::toks.at(parser::tokCount)
+#define current lexer::tokens.at(parser::tokCount)
 
 int stackPointer = 4;
 std::vector<variable> stack;

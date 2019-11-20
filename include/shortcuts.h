@@ -9,9 +9,9 @@ std::string onStack(int offset);
 
 void printAST(branch& obj);
 
-double toDec(std::string text);
-bool isInt(std::string text);
-bool isDec(std::string text);
+unsigned long toDec(std::string text);
+bool isInt(const std::string text);
+bool isDec(const std::string text);
 
 unsigned long find(std::vector<std::string>& source, std::string target);
 unsigned long find(std::string source, char target);

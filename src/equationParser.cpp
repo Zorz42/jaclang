@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-#define current lexer::toks.at(parser::tokCount)
+#define current lexer::tokens.at(parser::tokCount)
 
 std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 branch optimize(branch currentBranch, bool nested);
@@ -95,7 +95,7 @@ branch parser::calculation(bool nested) // parse calculation
 		else
 			break;
 		
-		if(parser::tokCount + 1 == lexer::toks.size())
+		if(parser::tokCount + 1 == lexer::tokens.size())
         {
 			if(timeForValue)
 				error::syntaxError("Equation has no end"); // if calculation has come to the end of file without ending itself
@@ -110,7 +110,7 @@ branch parser::calculation(bool nested) // parse calculation
 	if(timeForValue) // if it was a time for value
 		error::syntaxError("Value expected");
 	
-	if(current.text != ")" && parser::tokCount + 1 != lexer::toks.size())
+	if(current.text != ")" && parser::tokCount + 1 != lexer::tokens.size())
 		parser::tokCount--;
 	
 	#define curr(x) currentBranch.sub.at(x).name

@@ -1,8 +1,10 @@
 // the main loop of parser
 
+#include <utility>
+
 #include "jaclang.h"
 
-unsigned int parser::tokCount = 0;
+unsigned long parser::tokCount = 0;
 std::vector<branch*> parser::scopes = {&mainBranch};
 
 branch* currentBranchScope;
@@ -15,7 +17,7 @@ void parser::main(std::vector<std::string> args)
 	currentBranchScope = &mainBranch;
 	mainBranch.name = args.at(0); // root name is input file name
 	
-	for(;parser::tokCount < lexer::toks.size(); parser::tokCount++) // go through all tokens
+	for(;parser::tokCount < lexer::tokens.size(); parser::tokCount++) // go through all tokens
 	{
 		if(parser::e::systemFunctionCall()); // else execute systemFunctionCall
 		else if(parser::e::functionDeclaration());
@@ -38,6 +40,6 @@ void appendBranch(branch& source, branch& target) // function for appending bran
 void appendBranch(std::string source, branch& target) // function for appending empty branch with name to branch
 {
 	branch obj;
-	obj.name = source;
+	obj.name = std::move(source);
 	target.sub.push_back(obj);
 }

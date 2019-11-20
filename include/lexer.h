@@ -17,7 +17,7 @@ namespace lexer
 {
 	void main();
 	
-	extern std::vector<token> toks;
+	extern std::vector<token> tokens;
 
 	const std::string symbols = "()[]{},*&#.";
 	const std::string operators = "!%^=><+-*%&|/~?:$@";

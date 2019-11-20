@@ -18,7 +18,7 @@ namespace parser
 	void main(std::vector<std::string> args);
 	branch calculation(bool nested=false);
 	
-	extern unsigned int tokCount;
+	extern unsigned long tokCount;
 	
 	namespace e 
 	{
