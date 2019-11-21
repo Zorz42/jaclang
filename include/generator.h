@@ -23,8 +23,8 @@ namespace generator
 		void functionDeclaration();
 		void variableDeclaration(unsigned long scopeOnStack);
 		void calculation(branch& calculation);
-		//void functionCall();
-	}
+        void functionCall();
+    }
 	
 	extern int stackPointer;
 	extern std::vector<variable> stack;
