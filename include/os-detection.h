@@ -13,12 +13,12 @@
 	#elif TARGET_OS_IPHONE
 		#error "Jaclang does not support iPhones!"
 	#elif TARGET_OS_MAC
-		#define OS_TYPE OSX
+		#define OS_TYPE 1
 	#else
 		#error "Unknown Apple platform"
 	#endif
 #elif __linux__
-    #define OS_TYPE Linux
+    #define OS_TYPE 0
 #elif __unix__ 
     #error "Jaclang does not support this unix OS"
 #elif defined(_POSIX_VERSION)
@@ -29,8 +29,8 @@
 
 // the nasm compiler (macos: /usr/local/bin/nasm, linux: /usr/bin/nasm)
 
-#if OS_TYPE == Linux
+#if OS_TYPE == 0
 	#define OS_NASM "/usr/bin/nasm"
-#elif OS_TYPE == OSX
+#elif OS_TYPE == 1
 	#define OS_NASM "/usr/local/bin/nasm"
 #endif

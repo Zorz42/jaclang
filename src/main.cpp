@@ -17,7 +17,7 @@ std::string file::inputText; // input file
 std::vector<std::string> file::outputVector = { // prefix for asm file
 	"section .data", // data section
 	"",
-	"section .bss",  // bss section
+    "section .bss",  // bss section
 	"",
 	"section .text", // text section
 	"   global _start", // for linker
