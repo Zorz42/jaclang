@@ -3,22 +3,7 @@
 #include "jaclang.h"
 
 unsigned int generator::currentRegister32 = 0;
-std::vector<std::string> generator::availableRegisters32 =  // all registers that equations can use
-{
-	"ebx",
-	"ecx",
-	"esi",
-	"edi",
-	"r7d",
-	"r8d",
-	"r9d",
-	"r10d",
-	"r11d",
-	"r12d",
-	"r13d",
-	"r14d",
-	"r15d"
-};
+std::vector<std::string> generator::availableRegisters32; // all registers that equations can use
 
 void generator::e::calculation(branch& calculation)
 {

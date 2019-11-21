@@ -1,7 +1,5 @@
 // there are defined functions, that are often used to make code more readable
 
-#include <utility>
-
 #include "jaclang.h"
 
 bool contains(const std::string& text, char character) // check if string contains character

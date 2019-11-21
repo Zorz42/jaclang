@@ -15,4 +15,4 @@
 #define TYPE_SYMBOL 5
 #define TYPE_OPERATOR 6
 
-#define VARIABLE_INT 0
+//#define VARIABLE_INT 0

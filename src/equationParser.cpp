@@ -6,7 +6,6 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
-std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 branch optimize(branch currentBranch, bool nested);
 
 void insertBranchAtBegin(std::string name, branch& target)
@@ -15,13 +14,14 @@ void insertBranchAtBegin(std::string name, branch& target)
 	obj.name = std::move(name);
 	target.sub.insert(target.sub.begin(), obj);
 }
-void insertBranchAtBegin(const branch& source, branch& target)
+/*void insertBranchAtBegin(const branch& source, branch& target)
 {
 	target.sub.insert(target.sub.begin(), source);
-}
+}*/
 
 branch parser::calculation(bool nested) // parse calculation
 {
+    std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
 	currentBranch.name = "calc"; // sets current branch to calculation

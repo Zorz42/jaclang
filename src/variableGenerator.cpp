@@ -8,7 +8,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	
 	variable obj; // obj variable
 	obj.indent = current.sub.at(0).name; // indent
-	obj.type = VARIABLE_INT; // type
+	//obj.type = VARIABLE_INT; // type
 	obj.size = 4;
 	
 	unsigned int i = 0;

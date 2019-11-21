@@ -49,11 +49,14 @@ def install(fail=False):
 	linker_return_value2 = linker_return_value.communicate()[0]
 	linker_return_code = linker_return_value.returncode
 	if linker_return_code != 0:
-		print("Linker failed.")
-		print("Recompiling the whole program from scratch.")
-		system("make clean")
-		install(True)
-	
+		if not fail:
+			print("Linker failed.")
+			print("Recompiling the whole program from scratch.")
+			system("make clean")
+			install(True)
+		else:
+			print("Program failed twice. There is a syntax error. Aborting...")
+			exit(1)
 
 	if not fail:
 		system("sudo mv jaclang /usr/local/bin/jaclang")
