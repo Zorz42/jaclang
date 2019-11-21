@@ -24,7 +24,7 @@ namespace file
 	void append_func(const std::string& line);
 	void append(const std::string& line);
 	void add(const std::string& line, unsigned long position);
-	void add(const std::string& line);
+	//void add(const std::string& line);
 	
 	void append_instruction(const std::string& instruction, const std::string& arg1="", const std::string& arg2="");
 }

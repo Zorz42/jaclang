@@ -29,14 +29,14 @@ bool parser::e::systemFunctionCall()
 	if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
 	{
 		branch currentBranch; // make branch for function
-		if(isSystemIndent(current.text))  // check if its system fucntion call
+		if(isSystemIndent(current.text))  // check if its system function call
 			currentBranch.name = "systemFunctionCall";
 		else
 			return false;
 		appendBranch(current.text, currentBranch); // append indent to branch 
 		parser::tokCount++; // go to argument
 		if(current.type != TYPE_STRING)
-			error::syntaxError("expected string argment on system function");
+			error::syntaxError("expected string argument on system function");
 		else
 			appendBranch(current.text, currentBranch);
 		parser::tokCount++;

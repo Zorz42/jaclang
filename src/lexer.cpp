@@ -21,14 +21,12 @@ int currentLine = 1;
 
 std::vector<token> lexer::tokens; // vector of tokens
 
-bool isKeyword(std::string text); // check if string is in keyword list, used for defining token type for later
+bool isKeyword(const std::string& text); // check if string is in keyword list, used for defining token type for later
 
 void newToken(int TYPE=TYPE_UNDEF); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
 
-unsigned long toDec(std::string text); // convert string to float or int
-bool isInt(const std::string& text); // check if int if float then returns false
-bool isDec(const std::string& text); // the same but says yes to floats
+//unsigned long toDec(std::string text); // convert string to float or int
 
 unsigned int prevC = 0;
 unsigned long c = 0;
@@ -202,9 +200,9 @@ void newToken(int TYPE)
 	currentToken = ""; // reset token
 }
 
-bool isKeyword(std::string text)
+bool isKeyword(const std::string& text)
 {
-	return find(lexer::keywords, std::move(text)) != lexer::keywords.size(); // check if vector keywords containg that string
+	return find(lexer::keywords, text) != lexer::keywords.size(); // check if vector keywords containing that string
 }
 
 /*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i dont really want to

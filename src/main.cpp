@@ -20,12 +20,13 @@ std::vector<std::string> file::outputVector = { // prefix for asm file
 	"section .bss",  // bss section
 	"",
 	"section .text", // text section
-	"	global _start", // for linker
+	"   global _start", // for linker
 	"_start:",
+	"   mov rbp, rsp",
 	"",
 	"",
-	"	mov eax, 1",  // sys exit
-	"	int 0x80",
+	"   mov eax, 1",  // sys exit
+	"   int 0x80",
 	"",
 	""
 };

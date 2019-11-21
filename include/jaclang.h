@@ -23,7 +23,7 @@ extern bool debug;
 #include "shortcuts.h"    // shortcut functions
 #include "error.h"        // error module
 #include "file.h"         // opens file
-#include "preprocessor.h" // preprocesses file
+#include "preprocessor.h" // preprocessor will preprocess file
 #include "lexer.h"        // breaks it into tokens
 #include "parser.h"       // parses it into syntax tree
 #include "generator.h"    // generates asm code

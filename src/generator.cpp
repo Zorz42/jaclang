@@ -18,7 +18,7 @@ void generator::main()
 	{
 		if(!file::outputVector.at(file::asm_text - 1).empty())
 			file::append_text("");
-		if(current.name == "systemFunctionCall")  // choose apropriate generator for branch
+		if(current.name == "systemFunctionCall")  // choose appropriate generator for branch
 			generator::e::systemFunctionCall();
 		else if(current.name == "variableDeclaration")
 			generator::e::variableDeclaration(currentScopeOnStack);
@@ -33,7 +33,7 @@ void generator::main()
 			currentScopeOnStack = stackLength;  // set scope on stack
 			generator::main();
 			currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
-			while(generator::stack.size() > stackLength) // remove elemets from stack that were in scope
+			while(generator::stack.size() > stackLength) // remove elements from stack that were in scope
 			{
 				stackPointer -= generator::stack.at(generator::stack.size() - 1).size;
 				generator::stack.pop_back();
