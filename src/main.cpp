@@ -22,13 +22,10 @@ std::vector<std::string> file::outputVector = { // prefix for asm file
 	"section .text", // text section
 	"   global _start", // for linker
 	"_start:",
-	"   mov rbp, rsp",
 	"",
 	"",
 	"   mov eax, 1",  // sys exit
 	"   int 0x80",
-	"",
-	""
 };
 
 // help text (if no arguments provided
@@ -142,11 +139,13 @@ int main(int argc, char **argv)
 	file::asm_func = file::outputVector.size() - 1;
 	
 	#undef find
-	
+
+
 	lexer::main(); // convert code into tokens
 	parser::main(args); // convert tokens into syntax tree
 	if(debug)
 		printAST(mainBranch);
+	currentBranchScope = &mainBranch;
 	generator::main(); // generate assembly code out of syntax tree
 	
 	file::write(args.at(1)); // Writes to file
@@ -267,7 +266,7 @@ std::string file::getLine(int LINE) // get line of code
 void file::append_instruction(const std::string& instruction, const std::string& arg1, const std::string& arg2)
 {
 	std::string expr; // returns asm instruction: instruction arg1, arg2
-	expr = "	";
+	expr = "   ";
 	expr += instruction;
 	expr += " ";
 	expr += arg1;

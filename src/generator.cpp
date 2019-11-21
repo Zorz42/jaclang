@@ -12,8 +12,9 @@ unsigned long currentScopeOnStack = 0;
 void generator::main()
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
-	if(currentBranchScope == &mainBranch)
-		file::append_text("	mov rbp, rsp");
+    std::cout << current.name << std::endl;
+    if(currentBranchScope == &mainBranch)
+		file::append_text("   mov rbp, rsp");
 	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
 	{
 		if(!file::outputVector.at(file::asm_text - 1).empty())

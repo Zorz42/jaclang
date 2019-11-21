@@ -58,8 +58,6 @@ def install(fail=False):
 	if not fail:
 		system("sudo mv jaclang /usr/local/bin/jaclang")
 		
-		if decision("Would you like to clean up object files?"):
-			system("make clean")
 		system("sudo python3 install/makealias.py")
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 
