@@ -5,7 +5,7 @@
 void generator::e::variableDeclaration(unsigned long scopeOnStack)
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count)
-	
+
 	variable obj; // obj variable
 	obj.indent = current.sub.at(0).name; // indent
 	//obj.type = VARIABLE_INT; // type

@@ -15,7 +15,7 @@ void generator::main()
     if(currentBranchScope == &mainBranch)
 		file::append_text("   mov rbp, rsp");
 	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
-	{
+    {
 		if(!file::outputVector.at(file::asm_text - 1).empty())
 			file::append_text("");
 		if(current.name == "systemFunctionCall")  // choose appropriate generator for branch
@@ -25,7 +25,7 @@ void generator::main()
 		else if(current.name == "calc")
 			generator::e::calculation(current);
 		else if(current.name == "scope") // if branch is scope
-		{
+        {
 			branch* prevScope = currentBranchScope; // save current scope
 			currentBranchScope = &(current);        // move to new scope
 			unsigned long stackLength = generator::stack.size();  // save stack length
@@ -44,7 +44,7 @@ void generator::main()
 			generator::e::functionDeclaration();
 		else
 			error::treeError("Unknown branch: " + current.name);
-	}
+    }
 }
 
 void generator::pushToStack(variable source) // push to stack
