@@ -23,7 +23,7 @@ namespace generator
 		void functionDeclaration();
 		void variableDeclaration(unsigned long scopeOnStack);
 		void calculation(branch& calculation);
-        void functionCall(const branch& calculation);
+        void functionCall(const std::string& variableName);
     }
 	
 	extern int stackPointer;

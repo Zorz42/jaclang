@@ -21,8 +21,7 @@ void generator::e::calculation(branch& calculation)
 		if(calculation.sub.at(0).name != "int") // for now equations only support int
 			error::treeError("calculation must be int");
 		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
-			generator::e::functionCall(calculation);
-		
+			generator::e::functionCall(calculation.sub.at(1).sub.at(0).name);
 		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
 			file::append_instruction("mov", generator::availableRegister32(), value_variable(calculation.sub.at(1).name)); // mov first value to register
 		else
@@ -128,4 +127,5 @@ std::string value_variable(std::string variableName)
         }
     if(!varExists)
         error::treeError("Variable does not exist!");
+    return value;
 }
