@@ -21,7 +21,6 @@ void insertBranchAtBegin(std::string name, branch& target)
 
 branch parser::calculation(bool nested) // parse calculation
 {
-    std::cout << "test" << std::endl;
     std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation
@@ -55,14 +54,15 @@ branch parser::calculation(bool nested) // parse calculation
 		appendBranch(obj, currentBranch);
 	}
 	else
-		error::syntaxError("Value expected");
-	
+        error::syntaxError("Value expected");
+
+
 	while(true)
-	{
+    {
+	    if(parser::tokCount == lexer::tokens.size()) // Not crashing on unexpected EOF
+	        break;
 		if(parser::e::functionCall(currentBranch))
-		{
 			timeForValue = false;
-		}
 		else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if its constant or string or variable
 		{
 			if(!timeForValue) // if isn't time for value
@@ -111,9 +111,10 @@ branch parser::calculation(bool nested) // parse calculation
 	}
 	if(timeForValue) // if it was a time for value
 		error::syntaxError("Value expected");
-	
-	if(current.text != ")" && parser::tokCount + 1 != lexer::tokens.size())
-		parser::tokCount--;
+
+	if(parser::tokCount != lexer::tokens.size())
+        if(current.text != ")" && parser::tokCount + 1 != lexer::tokens.size())
+            parser::tokCount--;
 	
 	#define curr(x) currentBranch.sub.at(x).name
 	#define currentObj(x) currentBranch.sub.at(x)

@@ -44,24 +44,29 @@ void generator::e::calculation(branch& calculation)
 			if(currentValue.at(0) == '.') // if current value is string
 				error::treeError("int cannot add string");
 			else if(currentValue == "calc") // if value is calculation
-			{
-				generator::nextRegister();
-				generator::e::calculation(calculation.sub.at(i));
+            {
+                generator::nextRegister();
+                generator::e::calculation(calculation.sub.at(i));
                 generator::prevRegister();
 
                 currentValueAsm = generator::availableRegisters32.at(generator::currentRegister32 + 1);
-			}
+            }
 
-			if(currentOperator == "+") // cases for operators default
-				operator_add(currentValueAsm);
-			else if(currentOperator == "-")
-                operator_sub(currentValueAsm);
-			else if(currentOperator == "*")
-			    operator_mul(currentValueAsm);
-			else if(currentOperator == "/")
-			    operator_div(currentValueAsm);
+			if(currentValue == "functionCall") // check if its function call at the beginning
+                generator::e::functionCall(calculation.sub.at(i).sub.at(0).name);
 			else
-				error::treeError("unrecognized operator");
+            {   
+                if (currentOperator == "+") // cases for operators default
+                    operator_add(currentValueAsm);
+                else if (currentOperator == "-")
+                    operator_sub(currentValueAsm);
+                else if (currentOperator == "*")
+                    operator_mul(currentValueAsm);
+                else if (currentOperator == "/")
+                    operator_div(currentValueAsm);
+                else
+                    error::treeError("unrecognized operator");
+            }
 		}
 	}
 }
