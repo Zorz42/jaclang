@@ -26,7 +26,7 @@ std::string currentToken; // current token in processing
 
 //unsigned long toDec(std::string text); // convert string to float or int
 
-unsigned int prevC = 0;
+unsigned long prevC = 0;
 unsigned long c = 0;
 
 void lexer::main() // main lexer function
