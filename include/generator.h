@@ -23,7 +23,7 @@ namespace generator
 		void functionDeclaration();
 		void variableDeclaration(unsigned long scopeOnStack);
 		void calculation(branch& calculation);
-        void functionCall();
+        void functionCall(const branch& calculation);
     }
 	
 	extern int stackPointer;
@@ -36,5 +36,6 @@ namespace generator
 	extern std::vector<std::string> availableRegisters32;
 
 	void nextRegister();
+    void prevRegister();
 	std::string availableRegister32();
 }

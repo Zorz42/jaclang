@@ -60,9 +60,18 @@ void generator::e::functionDeclaration()
 	generator::stack = prevStack;
 }
 
-void generator::e::functionCall()
+void generator::e::functionCall(const branch& calculation)
 {
-	
+    bool funcExists = false; // go through existing functions and check if it exists
+    for(const function& iter : generator::functionVector)
+        if(iter.name == calculation.sub.at(1).sub.at(0).name)
+        {
+            funcExists = true;
+            break;
+        }
+    if(!funcExists)
+        error::treeError("Function does not exist!");
+    file::append_instruction("call", calculation.sub.at(1).sub.at(0).name + "."); // call function
 }
 
 std::string generateAsmText() // generate text for inline assembly [text]  ;;__asm__

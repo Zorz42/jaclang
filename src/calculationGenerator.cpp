@@ -1,9 +1,18 @@
 // this generates tree calculation into asm code
 
+#include <utility>
+
 #include "jaclang.h"
 
 unsigned int generator::currentRegister32 = 0;
 std::vector<std::string> generator::availableRegisters32; // all registers that equations can use
+
+void operator_add(const std::string& value);
+void operator_sub(const std::string& value);
+void operator_mul(const std::string& value);
+void operator_div(const std::string& value);
+
+std::string value_variable(std::string variableName);
 
 void generator::e::calculation(branch& calculation)
 {
@@ -12,43 +21,16 @@ void generator::e::calculation(branch& calculation)
 		if(calculation.sub.at(0).name != "int") // for now equations only support int
 			error::treeError("calculation must be int");
 		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
-		{
-			bool funcExists = false; // go through existing functions and check if it exists
-			for(const function& iter : generator::functionVector)
-				if(iter.name == calculation.sub.at(1).sub.at(0).name)
-				{
-					funcExists = true;
-					break;
-				}
-			if(!funcExists)
-				error::treeError("Function does not exist!");
-			file::append_instruction("call", calculation.sub.at(1).sub.at(0).name + "."); // call function
-		}
+			generator::e::functionCall(calculation);
 		
 		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
-		{
-			std::string value = calculation.sub.at(1).name; // variable name
-			
-			value.erase(value.begin()); // remove :
-			bool varExists = false; // go through stack and check if variable exists
-			for(const variable& iter : generator::stack)
-				if(iter.indent == value)
-				{
-					varExists = true;
-					value = onStack(iter.position);
-					break;
-				}
-			if(!varExists)
-				error::treeError("Variable does not exist!");
-				
-			file::append_instruction("mov", generator::availableRegister32(), value); // mov first value to register
-		}
+			file::append_instruction("mov", generator::availableRegister32(), value_variable(calculation.sub.at(1).name)); // mov first value to register
 		else
 		{
 			generator::nextRegister(); // else its just nested calculation
 			generator::e::calculation(calculation.sub.at(1));
 			file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
-			generator::currentRegister32--;
+			generator::prevRegister();
 		}
 		
 		
@@ -59,65 +41,26 @@ void generator::e::calculation(branch& calculation)
 		{
 			std::string currentValueAsm = currentValue;
 			if(currentValueAsm.at(0) == ':') // if its variable
-			{
-				currentValueAsm.erase(currentValueAsm.begin()); // remove : at the beginning
-				bool varExists = false; // check if variable exists
-				for(const variable& iter : generator::stack)
-					if(iter.indent == currentValueAsm)
-					{
-						varExists = true;
-						currentValueAsm = onStack(iter.position); // if exists set current value to variable on stack
-						break;
-					}
-				if(!varExists)
-					error::treeError("Variable does not exist!");
-			}
+				value_variable(currentValueAsm);
 			if(currentValue.at(0) == '.') // if current value is string
 				error::treeError("int cannot add string");
 			else if(currentValue == "calc") // if value is calculation
 			{
 				generator::nextRegister();
 				generator::e::calculation(calculation.sub.at(i));
-				
-				if(currentOperator == "+") // cases for operators
-					file::append_instruction("add", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
-				else if(currentOperator == "-")
-					file::append_instruction("sub", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
-				else if(currentOperator == "*")
-				{
-					file::append_instruction("mov", "eax", generator::availableRegister32());
-					file::append_text("	imul " + generator::availableRegisters32.at(generator::currentRegister32 - 1));
-					file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), "eax");
-				}
-				else if(currentOperator == "/")
-				{
-					file::append_instruction("mov", "eax", generator::availableRegister32());
-					file::append_text("	idiv " + generator::availableRegisters32.at(generator::currentRegister32 - 1));
-					file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), "eax");
-				}
-				else
-					error::treeError("unrecognized operator");
-				generator::currentRegister32--;
+                generator::prevRegister();
+
+                currentValueAsm = generator::availableRegisters32.at(generator::currentRegister32 + 1);
 			}
-			else if(currentOperator == "+") // cases for operators default
-				file::append_instruction("add", generator::availableRegister32(), currentValueAsm);
+
+			if(currentOperator == "+") // cases for operators default
+				operator_add(currentValueAsm);
 			else if(currentOperator == "-")
-				file::append_instruction("sub", generator::availableRegister32(), currentValueAsm);
+                operator_sub(currentValueAsm);
 			else if(currentOperator == "*")
-			{
-				file::append_instruction("mov", "eax", currentValueAsm);
-				file::append_text("	imul " + generator::availableRegister32());
-				file::append_instruction("mov", generator::availableRegister32(), "eax");
-			}
+			    operator_mul(currentValueAsm);
 			else if(currentOperator == "/")
-			{
-				file::append_instruction("mov", "eax", generator::availableRegister32());
-				generator::nextRegister();
-				file::append_instruction("mov", generator::availableRegister32(), currentValueAsm);
-				file::append_text("	idiv " + generator::availableRegister32());
-				generator::currentRegister32--;
-				file::append_instruction("mov", generator::availableRegister32(), "eax");
-			}
+			    operator_div(currentValueAsm);
 			else
 				error::treeError("unrecognized operator");
 		}
@@ -131,7 +74,58 @@ void generator::nextRegister()
 		error::treeError("register overflow");
 }
 
+void generator::prevRegister()
+{
+    generator::currentRegister32--;
+    if(generator::currentRegister32 == -1)
+        error::treeError("register overflow");
+}
+
 std::string generator::availableRegister32()
 {
 	return generator::availableRegisters32.at(generator::currentRegister32);
+}
+
+void operator_add(const std::string& value)
+{
+    file::append_instruction("add", generator::availableRegister32(), value);
+}
+
+void operator_sub(const std::string& value)
+{
+    file::append_instruction("sub", generator::availableRegister32(), value);
+}
+
+void operator_mul(const std::string& value)
+{
+    file::append_instruction("mov", "eax", value);
+    file::append_text("	imul " + generator::availableRegister32());
+    file::append_instruction("mov", generator::availableRegister32(), "eax");
+}
+void operator_div(const std::string& value)
+{
+    file::append_instruction("mov", "eax", generator::availableRegister32());
+    generator::nextRegister();
+    if(generator::availableRegister32() != value)
+        file::append_instruction("mov", generator::availableRegister32(), value);
+    file::append_text("	idiv " + generator::availableRegister32());
+    generator::prevRegister();
+    file::append_instruction("mov", generator::availableRegister32(), "eax");
+}
+
+std::string value_variable(std::string variableName)
+{
+    std::string value = std::move(variableName); // variable name
+
+    value.erase(value.begin()); // remove :
+    bool varExists = false; // go through stack and check if variable exists
+    for(const variable& iter : generator::stack)
+        if(iter.indent == value)
+        {
+            varExists = true;
+            value = onStack(iter.position);
+            break;
+        }
+    if(!varExists)
+        error::treeError("Variable does not exist!");
 }
