@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	file::read(args.at(0)); // Read file
 
 	lexer::main(); // convert code into tokens
-	parser::main(args); // convert tokens into syntax tree
+	parser::main(args.at(0)); // convert tokens into syntax tree
 	if(debug)
 		printAST(mainBranch);
 	currentBranchScope = &mainBranch;

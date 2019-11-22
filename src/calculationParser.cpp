@@ -21,6 +21,7 @@ void insertBranchAtBegin(std::string name, branch& target)
 
 branch parser::calculation(bool nested) // parse calculation
 {
+    std::cout << "test" << std::endl;
     std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 	bool timeForValue = true; // time for value is true following value, then is false following operator
 	branch currentBranch; // current branch in operation

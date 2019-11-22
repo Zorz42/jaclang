@@ -10,12 +10,12 @@ struct branch
 extern branch mainBranch;
 extern branch* currentBranchScope;
 
-void appendBranch(branch& source, branch& target);
+void appendBranch(const branch& source, branch& target);
 void appendBranch(std::string source, branch& target);
 
 namespace parser
 {
-	void main(std::vector<std::string> args);
+	void main(std::string rootName);
 	branch calculation(bool nested=false);
 	
 	extern unsigned long tokCount;

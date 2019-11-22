@@ -10,12 +10,12 @@ std::vector<branch*> parser::scopes;
 branch* currentBranchScope;
 branch mainBranch;
 
-#define current lexer::toks.at(parser::tokCount)
+#define current lexer::tokens.at(parser::tokCount)
 
-void parser::main(std::vector<std::string> args)
+void parser::main(std::string rootName)
 {
 	currentBranchScope = &mainBranch;
-	mainBranch.name = args.at(0); // root name is input file name
+	mainBranch.name = std::move(rootName); // root name is input file name
 	
 	for(;parser::tokCount < lexer::tokens.size(); parser::tokCount++) // go through all tokens
 	{
@@ -25,14 +25,11 @@ void parser::main(std::vector<std::string> args)
 		else if(parser::e::beginScope());
 		else if(parser::e::endScope());
 		else
-		{
-			branch calculation = parser::calculation(); // else parse calculation
-			appendBranch(calculation, *currentBranchScope);
-		}
+			appendBranch(parser::calculation(), *currentBranchScope);
 	}
 }
 
-void appendBranch(branch& source, branch& target) // function for appending branch to another branch
+void appendBranch(const branch& source, branch& target) // function for appending branch to another branch
 {
 	target.sub.push_back(source);
 }
