@@ -2,8 +2,8 @@
 
 #pragma once
 
-#define VERSION_STR "BETA 2.1.3"
-#define VERSION_INT 6
+#define VERSION_STR "BETA 2.1.4"
+#define VERSION_INT 7
 
 #include <iostream> // cout
 #include <fstream>  // open file
