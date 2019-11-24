@@ -9,9 +9,8 @@ void file::write(const std::string& file_output) // write to file
 {
     std::string command = "touch "; // create file (if not existing)
     command += file_output;
-    command += ".asm";
     system(command.c_str()); // create file
-    std::ofstream outputFileObj(file_output + ".asm"); // open file (or create)
+    std::ofstream outputFileObj(file_output); // open file (or create)
     if (outputFileObj.is_open()) // if file was opened (or created)
         for (auto & t : file::outputVector) // add line from vector
             outputFileObj << t << "\n"; // add new line so that the code wont be in the same line

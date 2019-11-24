@@ -55,7 +55,7 @@ void generator::e::calculation(branch& calculation)
 			if(currentValue == "functionCall") // check if its function call at the beginning
                 generator::e::functionCall(calculation.sub.at(i).sub.at(0).name);
 			else
-            {   
+            {
                 if (currentOperator == "+") // cases for operators default
                     operator_add(currentValueAsm);
                 else if (currentOperator == "-")

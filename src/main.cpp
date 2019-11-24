@@ -14,6 +14,11 @@ unsigned long file::asm_func;
 std::string file::inputText; // input file
 std::vector<std::string> file::outputVector; // prefix for asm file
 
+std::string jaclangInput;
+std::string jaclangToNasm;
+std::string nasmToLinker;
+std::string binaryOutput;
+
 long start;
 
 // help text (if no arguments provided
@@ -43,6 +48,8 @@ void handle_arguments(int argc, char **argv);
 void compile_assembly(const std::string& inputFile, const std::string& outputFile);
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
+std::string getFormat(const std::string& file);
+
 std::vector<std::string> args; // vector of command line arguments
 std::string ops;         // vector of command line options
 
@@ -57,20 +64,24 @@ int main(int argc, char **argv)
     start_timer();
 
     handle_arguments(argc, argv);
-	
-	file::read(args.at(0)); // Read file
 
-	lexer::main(); // convert code into tokens
-	parser::main(args.at(0)); // convert tokens into syntax tree
-	if(debug)
-		printAST(mainBranch);
-	currentBranchScope = &mainBranch;
-	generator::main(); // generate assembly code out of syntax tree
-	
-	file::write(args.at(1)); // Writes to file
+    if(!jaclangInput.empty())
+    {
+        file::read(jaclangInput); // Read file
 
-    compile_assembly(join(args.at(1), "asm"), join(args.at(1), "o"));
-    link_object(join(args.at(1), "o"), args.at(1));
+        lexer::main(); // convert code into tokens
+        parser::main(jaclangInput); // convert tokens into syntax tree
+        if (debug)
+            printAST(mainBranch);
+        currentBranchScope = &mainBranch;
+        generator::main(); // generate assembly code out of syntax tree
+
+        file::write(jaclangToNasm); // Writes to file
+    }
+    if(!jaclangToNasm.empty())
+        compile_assembly(jaclangToNasm, nasmToLinker);
+    if(!nasmToLinker.empty())
+        link_object(nasmToLinker, binaryOutput);
 	
 	std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
 
@@ -154,13 +165,28 @@ void handle_arguments(int argc, char **argv)
         error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
     }
 
-    if(args.at(0).length() > 3)
+    std::string format = getFormat(args.at(0));
+    if(!format.empty())
     {
-        if( !(
-                args.at(0)[args.at(0).length()-3] == '.' &&
-                args.at(0)[args.at(0).length()-2] == 'j' &&
-                args.at(0)[args.at(0).length()-1] == 'l'
-        ) )
+        if(format == "lj") // because format gets read backwards
+        {
+            jaclangInput = args.at(0);
+            jaclangToNasm = join(args.at(1), "asm");
+            nasmToLinker = join(args.at(1), "o");
+            binaryOutput = args.at(1);
+        }
+        else if(format == "msa") // because format gets read backwards
+        {
+            jaclangToNasm = join(args.at(1), "asm");
+            nasmToLinker = join(args.at(1), "o");
+            binaryOutput = args.at(1);
+        }
+        else if(format == "o") // because format gets read backwards
+        {
+            nasmToLinker = join(args.at(1), "o");
+            binaryOutput = args.at(1);
+        }
+        else
         {
             std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
             error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
@@ -172,6 +198,23 @@ void handle_arguments(int argc, char **argv)
         error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
     }
 
+    std::string outputFormat = getFormat(args.at(1));
+    if(!outputFormat.empty())
+    {
+        std::cout << outputFormat << std::endl;
+        if(outputFormat == "msa") // because format gets read backwards
+        {
+            nasmToLinker = "";
+            binaryOutput = "";
+        }
+        else if(outputFormat == "o") // because format gets read backwards
+            binaryOutput = "";
+        else
+        {
+            std::cout << "\033[1;31mUnrecognized output file format!\033[0m" << std::endl;
+            error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
+        }
+    }
     if(contains(ops, 'd'))
         debug = true;
 }
@@ -207,6 +250,11 @@ void link_object(const std::string& inputFile, const std::string& outputFile)
 
 void init() // initialize global variables
 {
+    jaclangInput = "";
+    jaclangToNasm = "";
+    nasmToLinker = "";
+    binaryOutput = "";
+
     generator::availableRegisters32 = {
             "ebx",
             "ecx",
@@ -270,4 +318,13 @@ void init() // initialize global variables
         file::asm_func = file::outputVector.size();
 
     #undef find
+}
+
+std::string getFormat(const std::string& file)
+{
+    std::string format;
+    if(contains(file, '.'))
+        for (unsigned int i = args.at(0).length() - 1; args.at(0).at(i) != '.'; i--)
+            format += args.at(0).at(i);
+    return format;
 }
