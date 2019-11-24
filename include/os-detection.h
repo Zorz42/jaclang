@@ -29,8 +29,10 @@
 
 // the nasm compiler (macos: /usr/local/bin/nasm, linux: /usr/bin/nasm)
 
-#if OS_TYPE == 0
-	#define OS_NASM "/usr/bin/nasm"
-#elif OS_TYPE == 1
-	#define OS_NASM "/usr/local/bin/nasm"
+#if OS_TYPE == 0 // Linux
+	#define OS_NASM "/usr/bin/nasm -w-all -f elf64 "
+    #define OS_LINKER "ld -m elf_x86_64 -s -o "
+#elif OS_TYPE == 1 // MACOS
+	#define OS_NASM "/usr/local/bin/nasm -w-all -f macho64 "
+    #define OS_LINKER "ld -macosx_version_min 10.7.0 -o "
 #endif

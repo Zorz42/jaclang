@@ -179,7 +179,6 @@ void handle_arguments(int argc, char **argv)
 void compile_assembly(const std::string& inputFile, const std::string& outputFile)
 {
     std::string command = OS_NASM;
-    command += " -w-all -f elf64 "; // compile assembly code
     command += inputFile;
     command += " -o ";
     command += outputFile;
@@ -195,7 +194,7 @@ void compile_assembly(const std::string& inputFile, const std::string& outputFil
 
 void link_object(const std::string& inputFile, const std::string& outputFile)
 {
-    std::string command = "ld -m elf_x86_64 -s -o "; // link assembly code
+    std::string command = OS_LINKER; // link assembly code
     command += outputFile;
     command += " ";
     command += inputFile;
@@ -224,19 +223,38 @@ void init() // initialize global variables
             "r15d"
     };
 
-    file::outputVector = {
-            "section .data", // data section
-            "",
-            "section .bss",  // bss section
-            "",
-            "section .text", // text section
-            "   global _start", // for linker
-            "_start:",
-            "",
-            "",
-            "   mov eax, 1",  // sys exit
-            "   int 0x80",
-    };
+#if OS_TYPE == 0 // Linux
+        file::outputVector = {
+                "section .data", // data section
+                "",
+                "section .bss",  // bss section
+                "",
+                "section .text", // text section
+                "   global _start", // for linker
+                "_start:",
+                "",
+                "",
+                "   mov eax, 1",  // sys exit
+                "   int 0x80",
+        };
+#elif OS_TYPE == 1 // MACOS
+        file::outputVector = {
+                "global start",
+                "section .data", // data section
+                "",
+                "section .bss",  // bss section
+                "",
+                "section .text", // text section
+                "", // for linker
+                "start:",
+                "",
+                "",
+                "   mov     rax, 0x2000001",
+                "   mov     rdi, 0",
+                "   syscall",
+        };
+#endif
+    
 
     lexer::keywords = {
             "int"
