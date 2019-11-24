@@ -48,7 +48,7 @@ void handle_arguments(int argc, char **argv);
 void compile_assembly(const std::string& inputFile, const std::string& outputFile);
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
-std::string getFormat(const std::string& file);
+std::string getFormat(std::string& file);
 
 std::vector<std::string> args; // vector of command line arguments
 std::string ops;         // vector of command line options
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 
     handle_arguments(argc, argv);
 
-    if(!jaclangInput.empty())
+    if(!jaclangToNasm.empty())
     {
         file::read(jaclangInput); // Read file
 
@@ -78,9 +78,9 @@ int main(int argc, char **argv)
 
         file::write(jaclangToNasm); // Writes to file
     }
-    if(!jaclangToNasm.empty())
-        compile_assembly(jaclangToNasm, nasmToLinker);
     if(!nasmToLinker.empty())
+        compile_assembly(jaclangToNasm, nasmToLinker);
+    if(!binaryOutput.empty())
         link_object(nasmToLinker, binaryOutput);
 	
 	std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
@@ -112,7 +112,6 @@ void handle_arguments(int argc, char **argv)
 {
     const char allowedOptions[] = { // all allowed options
             'd', // debug
-            'k', // keep
     };
 
     for(int i = 1; i < argc; i++) // go through arguments
@@ -164,27 +163,35 @@ void handle_arguments(int argc, char **argv)
         std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
         error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
     }
-
     std::string format = getFormat(args.at(0));
+    
+    std::string outputFileName = args.at(1);
+    std::string outputFormat = getFormat(args.at(1));
+    if(!outputFormat.empty())
+    {
+        for(;outputFileName.at(outputFileName.size()-1) != '.';)
+            outputFileName.pop_back();
+        outputFileName.pop_back();
+    }
     if(!format.empty())
     {
         if(format == "lj") // because format gets read backwards
         {
             jaclangInput = args.at(0);
-            jaclangToNasm = join(args.at(1), "asm");
-            nasmToLinker = join(args.at(1), "o");
-            binaryOutput = args.at(1);
+            jaclangToNasm = join(outputFileName, "asm");
+            nasmToLinker = join(outputFileName, "o");
+            binaryOutput = outputFileName;
         }
         else if(format == "msa") // because format gets read backwards
         {
-            jaclangToNasm = join(args.at(1), "asm");
-            nasmToLinker = join(args.at(1), "o");
-            binaryOutput = args.at(1);
+            jaclangToNasm = join(outputFileName, "asm");
+            nasmToLinker = join(outputFileName, "o");
+            binaryOutput = outputFileName;
         }
         else if(format == "o") // because format gets read backwards
         {
-            nasmToLinker = join(args.at(1), "o");
-            binaryOutput = args.at(1);
+            nasmToLinker = join(outputFileName, "o");
+            binaryOutput = outputFileName;
         }
         else
         {
@@ -197,11 +204,8 @@ void handle_arguments(int argc, char **argv)
         std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
         error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
     }
-
-    std::string outputFormat = getFormat(args.at(1));
     if(!outputFormat.empty())
     {
-        std::cout << outputFormat << std::endl;
         if(outputFormat == "msa") // because format gets read backwards
         {
             nasmToLinker = "";
@@ -227,12 +231,9 @@ void compile_assembly(const std::string& inputFile, const std::string& outputFil
     command += outputFile;
     system(command.c_str());
 
-    if(!contains(ops, 'k')) // remove asm file if needed
-    {
-        command = "rm ";
-        command += inputFile;
-        system(command.c_str());
-    }
+    command = "rm ";
+    command += inputFile;
+    system(command.c_str());
 }
 
 void link_object(const std::string& inputFile, const std::string& outputFile)
@@ -320,11 +321,11 @@ void init() // initialize global variables
     #undef find
 }
 
-std::string getFormat(const std::string& file)
+std::string getFormat(std::string& file)
 {
     std::string format;
     if(contains(file, '.'))
-        for (unsigned int i = args.at(0).length() - 1; args.at(0).at(i) != '.'; i--)
-            format += args.at(0).at(i);
+        for (unsigned long i = file.length() - 1; file.at(i) != '.'; i--)
+            format += file.at(i);
     return format;
 }
