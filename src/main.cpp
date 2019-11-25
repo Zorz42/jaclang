@@ -45,6 +45,7 @@ void start_timer();
 void end_timer();
 void handle_arguments(int argc, char **argv);
 
+void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm);
 void compile_assembly(const std::string& inputFile, const std::string& outputFile);
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
@@ -65,22 +66,11 @@ int main(int argc, char **argv)
 
     handle_arguments(argc, argv);
 
-    if(!jaclangToNasm.empty())
-    {
-        file::read(jaclangInput); // Read file
-
-        lexer::main(); // convert code into tokens
-        parser::main(jaclangInput); // convert tokens into syntax tree
-        if (debug)
-            printAST(mainBranch);
-        currentBranchScope = &mainBranch;
-        generator::main(); // generate assembly code out of syntax tree
-
-        file::write(jaclangToNasm); // Writes to file
-    }
-    if(!nasmToLinker.empty())
+    if(!jaclangInput.empty() && !jaclangToNasm.empty())
+        compile_jaclang(jaclangInput, jaclangToNasm);
+    if(!jaclangToNasm.empty() && !nasmToLinker.empty())
         compile_assembly(jaclangToNasm, nasmToLinker);
-    if(!binaryOutput.empty())
+    if(!nasmToLinker.empty() &&!binaryOutput.empty())
         link_object(nasmToLinker, binaryOutput);
 	
 	std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
@@ -88,6 +78,20 @@ int main(int argc, char **argv)
 	end_timer();
 	
 	return 0; // exit success
+}
+
+void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm)
+{
+    file::read(jaclangInput); // Read file
+
+    lexer::main(); // convert code into tokens
+    parser::main(jaclangInput); // convert tokens into syntax tree
+    if (debug)
+        printAST(mainBranch);
+    currentBranchScope = &mainBranch;
+    generator::main(); // generate assembly code out of syntax tree
+
+    file::write(jaclangToNasm); // Writes to file
 }
 
 void start_timer()
@@ -163,32 +167,32 @@ void handle_arguments(int argc, char **argv)
         std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
         error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
     }
-    std::string format = getFormat(args.at(0));
     
     std::string outputFileName = args.at(1);
     std::string outputFormat = getFormat(args.at(1));
+    std::string inputFormat = getFormat(args.at(0));
     if(!outputFormat.empty())
     {
         for(;outputFileName.at(outputFileName.size()-1) != '.';)
             outputFileName.pop_back();
         outputFileName.pop_back();
     }
-    if(!format.empty())
+    if(!inputFormat.empty())
     {
-        if(format == "lj") // because format gets read backwards
+        if(inputFormat == "lj") // because format gets read backwards
         {
             jaclangInput = args.at(0);
             jaclangToNasm = join(outputFileName, "asm");
             nasmToLinker = join(outputFileName, "o");
             binaryOutput = outputFileName;
         }
-        else if(format == "msa") // because format gets read backwards
+        else if(inputFormat == "msa")
         {
-            jaclangToNasm = join(outputFileName, "asm");
+            jaclangToNasm = args.at(0);
             nasmToLinker = join(outputFileName, "o");
             binaryOutput = outputFileName;
         }
-        else if(format == "o") // because format gets read backwards
+        else if(inputFormat == "o")
         {
             nasmToLinker = join(outputFileName, "o");
             binaryOutput = outputFileName;
@@ -211,7 +215,7 @@ void handle_arguments(int argc, char **argv)
             nasmToLinker = "";
             binaryOutput = "";
         }
-        else if(outputFormat == "o") // because format gets read backwards
+        else if(outputFormat == "o")
             binaryOutput = "";
         else
         {
@@ -230,10 +234,13 @@ void compile_assembly(const std::string& inputFile, const std::string& outputFil
     command += " -o ";
     command += outputFile;
     system(command.c_str());
-
-    command = "rm ";
-    command += inputFile;
-    system(command.c_str());
+    
+    if(!jaclangInput.empty())
+    {
+        command = "rm ";
+        command += inputFile;
+        system(command.c_str());
+    }
 }
 
 void link_object(const std::string& inputFile, const std::string& outputFile)
@@ -243,10 +250,13 @@ void link_object(const std::string& inputFile, const std::string& outputFile)
     command += " ";
     command += inputFile;
     system(command.c_str());
-
-    command = "rm "; // remove object file
-    command += inputFile;
-    system(command.c_str());
+    
+    if(!jaclangToNasm.empty())
+    {
+        command = "rm "; // remove object file
+        command += inputFile;
+        system(command.c_str());
+    }
 }
 
 void init() // initialize global variables
