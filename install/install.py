@@ -4,6 +4,11 @@ import platform, subprocess
 
 python3 = sys.version_info.major == 3
 
+if python3:
+	print("Installing using python3")
+else:
+	print("Installing using python2")
+
 def decision(question):
     yesOptions = ["Y", "YES"]
     noOptions  = ["N", "NO"]
@@ -103,8 +108,6 @@ elif len(sys.argv) == 2:
 			check_for_package("unzip", "unzip", "sudo " + current_package_manager + " unzip")
 			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")
 			check_for_package("python3-pip", "pip3", "sudo " + current_package_manager + " python3-pip")
-			from checkforpippackages import *
-			system("python3 install/installjpm.py")
 
 		elif platform.system() == 'Darwin':
 
@@ -115,10 +118,15 @@ elif len(sys.argv) == 2:
 			check_for_package("binutils", "ld", "brew install binutils")
 			check_for_package("unzip", "unzip", "brew install unzip")
 			check_for_package("python3", "python3", "brew install python3")
-			system("python3 install/checkforpippackages.py")
-			system("python3 install/installjpm.py")
 		else:
 			print("Unsuported os!")
+			exit(1)
+		if python3:
+			from checkforpippackages import *
+			from installjpm import *
+		else:
+			system("python3 install/checkforpippackages.py")
+			system("python3 install/installjpm.py")
 	else:
 		print("Invalid argument: " + sys.argv[1])
 else:

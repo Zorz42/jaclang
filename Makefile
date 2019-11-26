@@ -1,7 +1,7 @@
-ifeq ($(shell uname),Darwin)
+ifeq (,$(which python))
     PYTHON := python
 endif
-ifeq ($(shell uname),Linux)
+ifeq (,$(which python3))
     PYTHON := python3
 endif
 
