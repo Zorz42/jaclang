@@ -4,6 +4,7 @@ try:
 except:
 	pass
 wget.download("https://github.com/Zorz42/jpm/archive/master.zip")
-os.system("unzip jpm-master.zip")
+os.system("unzip -q jpm-master.zip")
+print()
 os.system("cd jpm-master && python3 install.py dependencies && python3 install.py install")
 os.system("rm jpm-master.zip; rm -r jpm-master")

@@ -4,7 +4,7 @@ yesOptions = ["Y", "YES"]
 noOptions  = ["N", "NO"]
 
 def check_for_pip_package(name):
-	print("Checking for pip3-" + name + " ... ", end='')
+	print("Checking for pip3-" + name + " ... ", end='', flush=True)
 
 	try:
 		__import__(name)
@@ -19,6 +19,10 @@ def check_for_pip_package(name):
 			elif decision.upper() in noOptions:
 				exit(1)
 
-check_for_pip_package("setuptools")
-check_for_pip_package("wget")
-check_for_pip_package("httplib2")
+packages = [
+	"setuptools",
+	"wget",
+	"httplib2"
+]
+for package in packages:
+	check_for_pip_package(package)

@@ -1,6 +1,5 @@
-import sys
 from os import popen, system, path, listdir
-import platform, subprocess
+import platform, subprocess, sys
 
 python3 = sys.version_info.major == 3
 
@@ -27,15 +26,19 @@ def decision(question):
             return False
 
 def check_for_package(name, binary, install_command):
-	prefix = name.upper() + " ... "
+	if python3:
+		exec("print(name.upper() + ' ... ', end='', flush=False)")
+	else:
+		sys.stdout.write(name.upper() + " ... ")
+		sys.stdout.flush()
 	if popen("which " + binary).read() == "":
-		print(prefix + "FAILED")
+		print("FAILED")
 		if decision("Do you want me to install " + name + "?"):
 			system(install_command)
 		else:
 			exit(1)
 	else:
-		print(prefix + "OK")
+		print("OK")
 
 def install(fail=False):
 	if not fail:
