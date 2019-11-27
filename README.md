@@ -11,8 +11,9 @@ Website is still in development. I am trying to make it feel more alive.
  PROJECT MADE BY JAKOB
 // -------------------------- //
 
+
 INSTALLATION PROCESS:
-1. Download zip file and unzip it.
+1. Download zip file and unzip it. (or clone it via git) 
 2. Open terminal and go to unzipped folder.
 3. Execute command make (you will need sudo).
 4. Jaclang is installed at /usr/local/bin
@@ -27,9 +28,8 @@ INSTALLATION PROCESS:
  * Support:
  * 
  * - 64 bit computers,
- * - linux and macos (most linux distros, tested on Ubuntu)
+ * - linux and macos (most linux distros, tested on Ubuntu and other distros)
  * 
- * Syntax is almost the same as C++.
  * 
  *  THE ZEN OF JACLANG:
  * 
