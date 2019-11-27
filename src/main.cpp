@@ -45,7 +45,7 @@ void start_timer();
 void end_timer();
 void handle_arguments(int argc, char **argv);
 
-void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm);
+void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm2);
 void compile_assembly(const std::string& inputFile, const std::string& outputFile);
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 	return 0; // exit success
 }
 
-void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm)
+void compile_jaclang(const std::string& jaclangInput2, const std::string& jaclangToNasm2)
 {
     file::read(jaclangInput); // Read file
 
@@ -91,7 +91,7 @@ void compile_jaclang(const std::string& jaclangInput, const std::string& jaclang
     currentBranchScope = &mainBranch;
     generator::main(); // generate assembly code out of syntax tree
 
-    file::write(jaclangToNasm); // Writes to file
+    file::write(jaclangToNasm2); // Writes to file
 }
 
 void start_timer()
