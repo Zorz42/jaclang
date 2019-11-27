@@ -99,25 +99,33 @@ elif len(sys.argv) == 2:
 				exit(1)
 			
 			print("Checking for dependencies:")
-			check_for_package("nasm", "nasm", "sudo " + current_package_manager + " nasm")
 			if package_manager == 'zypper':
 				check_for_package("g++", "g++", "sudo " + current_package_manager + " gcc-c++")
 			else:
 				check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
-			check_for_package("binutils", "ld", "sudo " + current_package_manager + " binutils")
-			check_for_package("unzip", "unzip", "sudo " + current_package_manager + " unzip")
-			check_for_package("python3", "python3", "sudo " + current_package_manager + " python3")
-			check_for_package("python3-pip", "pip3", "sudo " + current_package_manager + " python3-pip")
+			packages = [
+				("nasm", "nasm"),
+				("binutils", "ld"),
+				("unzip", "unzip"),
+				("python3", "python3"),	
+				("python3-pip", "pip3"),
+			]
+			for package in packages:
+				check_for_package(package[0], package[1], "sudo " + current_package_manager + package[0])
 
 		elif platform.system() == 'Darwin':
 
 			print("Checking for dependencies:")
 			check_for_package("brew", "brew", '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"')
-			check_for_package("nasm", "nasm", "brew install nasm")
-			check_for_package("gcc", "gcc", "brew install gcc")
-			check_for_package("binutils", "ld", "brew install binutils")
-			check_for_package("unzip", "unzip", "brew install unzip")
-			check_for_package("python3", "python3", "brew install python3")
+			packages = [
+				("nasm", "nasm"),
+				("gcc", "g++"),
+				("binutils", "ld"),
+				("unzip", "unzip"),
+				("python3", "python3"),
+			]
+			for package in packages:
+				check_for_package(package[0], package[1], "brew install " + package[0])
 		else:
 			print("Unsuported os!")
 			exit(1)
