@@ -27,3 +27,22 @@ bool parser::e::variableDeclaration()
 	else
 		return false;
 }
+
+bool parser::e::variableSetting()
+{
+    if(parser::tokCount == lexer::tokens.size())
+        return false;
+    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "=") // if first text is int - keyword
+    {
+        branch currentBranch;
+        currentBranch.name = "variableSetting";
+        appendBranch(current.text, currentBranch);
+        parser::tokCount += 2;
+        branch equationBranch = parser::calculation(true);
+        appendBranch(equationBranch, currentBranch);
+        appendBranch(currentBranch, *currentBranchScope);
+        return true;
+    }
+    else
+        return false;
+}

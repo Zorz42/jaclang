@@ -58,7 +58,7 @@ void compile_assembly(const std::string& inputFile, const std::string& outputFil
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
 void create_cache_dir();
-void remove_cache_dir();
+void remove_cache_dir(bool exitSucsess);
 
 std::string getFormat(std::string& file);
 
@@ -73,7 +73,8 @@ std::string join(const std::string& filename, const std::string& end)
 int main(int argc, char **argv)
 {
     init();
-    start_timer();
+    if(!contains(ops, 'q'))
+        start_timer();
 
     handle_arguments(argc, argv);
     
@@ -86,12 +87,14 @@ int main(int argc, char **argv)
     if(!nasmToLinker.empty() &&!binaryOutput.empty())
         link_object(nasmToLinker, binaryOutput);
 	
-	std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
+    if(!contains(ops, 'q'))
+        std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
     
     if(!contains(ops, 'k'))
-        remove_cache_dir();
+        remove_cache_dir(true);
     
-	end_timer();
+	if(!contains(ops, 'q'))
+        end_timer();
 	
 	return 0; // exit success
 }
@@ -133,6 +136,7 @@ void handle_arguments(int argc, char **argv)
     const char allowedOptions[] = { // all allowed options
             'd', // debug
             'k', // keep cache
+            'q', // be quiet (still show errors)
     };
 
     for(int i = 1; i < argc; i++) // go through arguments
@@ -371,7 +375,7 @@ void create_cache_dir()
     }
 }
 
-void remove_cache_dir()
+void remove_cache_dir(bool exitSucsess)
 {
     if(!cacheDirExisted)
     {
@@ -379,7 +383,7 @@ void remove_cache_dir()
         command += cacheDir;
         system(command.c_str());
     }
-    else
+    else if(exitSucsess)
     {
         if(jaclangToNasm.rfind(cacheDir + "/", 0) == 0)
         {

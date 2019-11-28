@@ -2,6 +2,8 @@
 
 #include "jaclang.h"
 
+void remove_cache_dir(bool exitSucsess);
+
 void error::syntaxError(const std::string& error) // Print out syntax error
 {
 	std::cerr << "\033[1;31mSyntax error, line " << lexer::tokens.at(parser::tokCount).line << ": " // syntax error in red
@@ -30,5 +32,6 @@ void error::terminate(const std::string& reason, int exitCode) // exit if error
 {
 	std::cerr << "Jaclang terminated with exit code " << exitCode << "." << std::endl // Terminated
 	<< "Reason: " << reason << "." << std::endl; // reason
+    remove_cache_dir(false);
 	exit(exitCode); // exit
 }

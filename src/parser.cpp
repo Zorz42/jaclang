@@ -24,6 +24,7 @@ void parser::main(std::string rootName)
 		else if(parser::e::variableDeclaration()); // else execute variableDeclaration
 		else if(parser::e::beginScope());
 		else if(parser::e::endScope());
+        else if(parser::e::variableSetting());
 		else
 			appendBranch(parser::calculation(), *currentBranchScope);
 	}
