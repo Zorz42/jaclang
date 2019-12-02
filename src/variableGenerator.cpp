@@ -2,10 +2,10 @@
 
 #include "jaclang.h"
 
+#define current currentBranchScope->sub.at(currentBranchScope->count)
+
 void generator::e::variableDeclaration(unsigned long scopeOnStack)
 {
-	#define current currentBranchScope->sub.at(currentBranchScope->count)
-
 	variable obj; // obj variable
 	obj.indent = current.sub.at(0).name; // indent
 	//obj.type = VARIABLE_INT; // type
@@ -38,4 +38,22 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 		
 		file::append_instruction("mov", "DWORD " + onStack(generator::stackPointer), current.sub.at(1).name);
 	}
+}
+
+void generator::e::variableSetting()
+{
+    bool variableExists = false;
+    variable curr;
+    
+    for(const variable& iter : generator::stack) // go through stack
+        if(iter.indent == current.sub.at(0).name) // if this variable doesn't exist, then report error
+        {
+            curr = iter;
+            variableExists = true;
+            break;
+        }
+    if(!variableExists)
+        error::treeError("Setting of non existing variable");
+    
+    file::append_instruction("mov", "DWORD " + onStack(curr.position), current.sub.at(1).name);
 }
