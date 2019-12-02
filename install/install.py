@@ -1,3 +1,4 @@
+from __future__ import print_function
 from os import popen, system, path, listdir
 import platform, subprocess, sys
 
@@ -27,11 +28,7 @@ def decision(question):
             return False
 
 def check_for_package(name, binary, install_command):
-	if python3:
-		exec("print(name.upper() + ' ... ', end='', flush=False)")
-	else:
-		sys.stdout.write(name.upper() + " ... ")
-		sys.stdout.flush()
+	print(name.upper() + ' ... ', end='')
 	if popen("which " + binary).read() == "":
 		print("FAILED")
 		if decision("Do you want me to install " + name + "?"):
@@ -41,20 +38,45 @@ def check_for_package(name, binary, install_command):
 	else:
 		print("OK")
 
+def print_progress_bar(compiled, total, length):
+	print('[', end='')
+	for i in range(int(length / total * compiled)):
+		print("█", end='')
+	for i in range(int(length / total * (total - compiled))):
+		print(" ", end='')
+	print("]\r", end='')
+	sys.stdout.flush()
+
 def install(fail=False):
 	if not fail:
 		system("sudo echo")
 	objectfiles = [file.split('.')[0] for file in listdir("src")]
+	count = 0
+	columns = int(popen('stty size', 'r').read().split()[1]) - 2
 	for file in objectfiles:
 		result = popen("make build/" + file + ".o --no-print-directory").read()
-		if result[0] != 'm':
-			print(result, end='', flush=True)
+		try:
+			if result[0] != 'm':
+				for i in range(columns + 2):
+					print(" ", end='')
+				print('\r', end='')
+				print(result, end='')
+				sys.stdout.flush()
+		except:
+			pass
+		count += 1
+		columns = int(popen('stty size', 'r').read().split()[1]) - 2
+		print_progress_bar(count, len(objectfiles), columns)
+	for i in range(columns + 2):
+		print(" ", end='')
+	print('\r', end='')
 
 	
 	objnames = ""
 	for file in objectfiles:
 		objnames += "build/" + file + ".o "
-	print("Linking object files ... ", end='', flush=True)
+	print("Linking object files ... ", end='')
+	sys.stdout.flush()
 
 	linker_return_value = subprocess.Popen("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
 	linker_return_value2 = linker_return_value.communicate()[0]

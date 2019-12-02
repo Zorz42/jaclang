@@ -5,22 +5,16 @@ ifeq (,$(which python3))
     PYTHON := python3
 endif
 
-#W = -Wall -Wextra -Wshadow -pedantic
-W = -w
+cc = g++ $(incldir:%=-I%)
+flags = -w -o $@ -m64 -std=gnu++11
 
 objdir  = build
 srcdir  = src
 incldir = include
 
-cc = g++ $(incldir:%=-I%)
-flags = $W -o $@ -m64 -std=gnu++11
-
 all: install
 
 .PHONY: clean install
-
-jaclang: $(objdir)/*.o | .
-	@$(cc) $(flags) $(objdir)/*.o
 
 $(objdir)/%.o: $(srcdir)/%.cpp | $(objdir)
 	@echo '[CC] [-FLAGS] $< -> $@'

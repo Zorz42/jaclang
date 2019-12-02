@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     
 	if(!contains(ops, 'q'))
         end_timer();
-	
+
 	return 0; // exit success
 }
 
