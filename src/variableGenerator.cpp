@@ -16,7 +16,11 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	for(const variable& iter : generator::stack) // go through stack
 	{
 		if(iter.indent == current.sub.at(0).name && i >= scopeOnStack) // if this variable already exists, then report error
-			error::treeError("Declaration of already existing variable");
+        {
+            std::string errorString = iter.indent;
+            errorString += " already exists as a variable";
+            error::treeError(errorString);
+        }
 		i++;
 	}
 	
@@ -25,7 +29,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	if(current.sub.at(1).name == "calc")
 	{
 		if(current.sub.at(1).sub.at(0).name != "int") // if calculation type is not int report error
-			error::treeError("Int declaration must be type int");
+			error::treeError("int declaration must be type int");
 		
 		generator::e::calculation(current.sub.at(1)); // do calculation
 		
@@ -34,7 +38,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	else
 	{
 		if(!isInt(current.sub.at(1).name))
-			error::treeError("Int declaration must be type int");
+			error::treeError("int declaration must be type int");
 		
 		file::append_instruction("mov", "DWORD " + onStack(generator::stackPointer), current.sub.at(1).name);
 	}
@@ -46,14 +50,18 @@ void generator::e::variableSetting()
     variable curr;
     
     for(const variable& iter : generator::stack) // go through stack
-        if(iter.indent == current.sub.at(0).name) // if this variable doesn't exist, then report error
+        if(iter.indent == current.sub.at(0).name)
         {
             curr = iter;
             variableExists = true;
             break;
         }
     if(!variableExists)
-        error::treeError("Setting of non existing variable");
+    {
+        std::string errorString = current.sub.at(0).name;
+        errorString += " does not exist as a variable";
+        error::treeError(errorString);
+    }
     
     file::append_instruction("mov", "DWORD " + onStack(curr.position), current.sub.at(1).name);
 }
