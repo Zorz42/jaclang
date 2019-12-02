@@ -3,10 +3,11 @@ import platform, subprocess, sys
 
 python3 = sys.version_info.major == 3
 
-if python3:
-	print("Installing using python3")
-else:
-	print("Installing using python2")
+if sys.argv[1] == "dependencies":
+    if python3:
+        print("Installing using python3")
+    else:
+        print("Installing using python2")
 
 def decision(question):
     yesOptions = ["Y", "YES"]
@@ -44,32 +45,38 @@ def install(fail=False):
 	if not fail:
 		system("sudo echo")
 	objectfiles = [file.split('.')[0] for file in listdir("src")]
-	system("make build --no-print-directory")
 	for file in objectfiles:
-		system("make build/" + file + ".o --no-print-directory")
+		result = popen("make build/" + file + ".o --no-print-directory").read()
+		if result[0] != 'm':
+			print(result, end='', flush=True)
+
 	
 	objnames = ""
 	for file in objectfiles:
 		objnames += "build/" + file + ".o "
-	print("linking object files...")
+	print("Linking object files ... ", end='', flush=True)
 
 	linker_return_value = subprocess.Popen("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
 	linker_return_value2 = linker_return_value.communicate()[0]
 	linker_return_code = linker_return_value.returncode
+    
 	if linker_return_code != 0:
 		if not fail:
+			print("FAIL")
 			print("Linker failed.")
 			print("Recompiling the whole program from scratch.")
 			system("make clean")
 			install(True)
 		else:
-			print("Program failed twice. There is a syntax error. Aborting...")
+			print("Program failed twice. Aborting...")
 			exit(1)
-
+	else:
+        	print("DONE")
 	if not fail:
 		system("sudo mv jaclang /usr/local/bin/jaclang")
 		
 		system("sudo python3 install/makealias.py")
+		print()
 		print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 
 if len(sys.argv) == 1:

@@ -1,7 +1,6 @@
 from os import system, path
 import platform
 
-print("Creating alias ... ", end='')
 alias_file_name = ""
 if platform.system() == 'Linux':
 	alias_file_name = ".bashrc"
@@ -25,6 +24,3 @@ if lines != alias_command:
 	alias_file = open(path.expanduser("~") + "/" + alias_file_name, "a")
 	alias_file.write(alias_command)
 	alias_file.close()
-	print("DONE")
-else:
-	print("ALREADY MADE")

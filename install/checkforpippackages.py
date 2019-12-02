@@ -22,7 +22,8 @@ def check_for_pip_package(name):
 packages = [
 	"setuptools",
 	"wget",
-	"httplib2"
+	"httplib2",
+	"zipfile"
 ]
 for package in packages:
 	check_for_pip_package(package)
