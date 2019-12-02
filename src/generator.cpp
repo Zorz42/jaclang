@@ -44,6 +44,8 @@ void generator::main()
 			generator::e::functionDeclaration();
         else if(current.name == "variableSetting")
             generator::e::variableSetting();
+        else if(current.name == "returnStatement" && generator::inFunction)
+            generator::e::returnStatement();
 		else
 			error::treeError("Unknown branch: " + current.name);
     }

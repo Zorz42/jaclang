@@ -74,3 +74,16 @@ bool parser::e::functionDeclaration()
 	else
 		return false;
 }
+
+bool parser::e::returnStatement()
+{
+    if(current.text == "return")
+    {
+        branch currentBranch;
+        currentBranch.name = "returnStatement";
+        appendBranch(currentBranch, *currentBranchScope);
+        return true;
+    }
+    else
+        return false;
+}

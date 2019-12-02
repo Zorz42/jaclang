@@ -1,3 +1,2 @@
- - you can set variable after declaring it
  - function return value gets implemented
  - function will have arguments

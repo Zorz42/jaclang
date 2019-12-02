@@ -120,7 +120,8 @@ void operator_div(const std::string& value)
 std::string value_variable(std::string variableName)
 {
     std::string value = std::move(variableName); // variable name
-
+    
+    
     value.erase(value.begin()); // remove :
     bool varExists = false; // go through stack and check if variable exists
     for(const variable& iter : generator::stack)
@@ -131,6 +132,10 @@ std::string value_variable(std::string variableName)
             break;
         }
     if(!varExists)
-        error::treeError("Variable does not exist!");
+    {
+        std::string errorString = variableName;
+        errorString += " does not exist";
+        error::treeError(errorString);
+    }
     return value;
 }

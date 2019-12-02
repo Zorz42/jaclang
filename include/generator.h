@@ -25,6 +25,7 @@ namespace generator
 		void calculation(branch& calculation);
         void functionCall(const std::string& variableName);
         void variableSetting();
+        void returnStatement();
     }
 	
 	extern int stackPointer;

@@ -74,6 +74,12 @@ void generator::e::functionCall(const std::string& variableName)
     file::append_instruction("call", variableName + "."); // call function
 }
 
+void generator::e::returnStatement()
+{
+    file::append_instruction("pop", "rbp"); // call function
+    file::append_instruction("ret");
+}
+
 std::string generateAsmText() // generate text for inline assembly [text]  ;;__asm__
 {
 	std::string text = "   ";

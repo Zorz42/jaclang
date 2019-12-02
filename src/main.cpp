@@ -331,7 +331,8 @@ void init() // initialize global variables
     
 
     lexer::keywords = {
-            "int"
+            "int",
+            "return"
     };
 
     parser::scopes = {&mainBranch};

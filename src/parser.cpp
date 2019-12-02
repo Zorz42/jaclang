@@ -25,6 +25,7 @@ void parser::main(std::string rootName)
 		else if(parser::e::beginScope());
 		else if(parser::e::endScope());
         else if(parser::e::variableSetting());
+        else if(parser::e::returnStatement());
 		else
 			appendBranch(parser::calculation(), *currentBranchScope);
 	}

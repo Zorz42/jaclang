@@ -29,6 +29,7 @@ namespace parser
 		bool endScope();
 		bool functionDeclaration();
         bool variableSetting();
+        bool returnStatement();
 	}
 	
 	extern std::vector<branch*> scopes;
