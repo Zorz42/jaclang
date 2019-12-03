@@ -24,13 +24,16 @@ void generator::e::calculation(branch& calculation)
 			generator::e::functionCall(calculation.sub.at(1).sub.at(0).name);
 		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
 			file::append_instruction("mov", generator::availableRegister32(), value_variable(calculation.sub.at(1).name)); // mov first value to register
-		else
+		else if(calculation.sub.at(1).name == "calculation")
 		{
-			generator::nextRegister(); // else its just nested calculation
+			generator::nextRegister(); // its just nested calculation
 			generator::e::calculation(calculation.sub.at(1));
 			file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
 			generator::prevRegister();
 		}
+        else // else its just constant
+            file::append_instruction("mov", generator::availableRegister32(), calculation.sub.at(1).name);
+        
 		
 		
 		#define currentValue calculation.sub.at(i).name
@@ -40,7 +43,7 @@ void generator::e::calculation(branch& calculation)
 		{
 			std::string currentValueAsm = currentValue;
 			if(currentValueAsm.at(0) == ':') // if its variable
-				value_variable(currentValueAsm);
+				currentValueAsm = value_variable(currentValueAsm);
 			if(currentValue.at(0) == '.') // if current value is string
 				error::treeError("int cannot add string");
 			else if(currentValue == "calc") // if value is calculation

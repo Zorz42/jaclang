@@ -63,5 +63,20 @@ void generator::e::variableSetting()
         error::treeError(errorString);
     }
     
-    file::append_instruction("mov", "DWORD " + onStack(curr.position), current.sub.at(1).name);
+    if(current.sub.at(1).name == "calc")
+    {
+        if(current.sub.at(1).sub.at(0).name != "int") // if calculation type is not int report error
+            error::treeError("int declaration must be type int");
+        
+        generator::e::calculation(current.sub.at(1)); // do calculation
+        
+        file::append_instruction("mov", "DWORD " + onStack(generator::stackPointer), generator::availableRegister32()); // set variable on stack
+    }
+    else
+    {
+        if(!isInt(current.sub.at(1).name))
+            error::treeError("int declaration must be type int");
+        
+        file::append_instruction("mov", "DWORD " + onStack(generator::stackPointer), current.sub.at(1).name);
+    }
 }
