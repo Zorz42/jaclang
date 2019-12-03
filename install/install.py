@@ -2,7 +2,12 @@ from __future__ import print_function
 from __future__ import division
 from builtins import input
 from builtins import range
-from past.utils import old_div
+def div(a, b):
+	return a / b
+try:
+	from past.utils import old_div
+except:
+	old_div = div
 from os import popen, system, path, listdir
 import platform, subprocess, sys
 
@@ -39,7 +44,7 @@ def check_for_package(name, binary, install_command):
 def print_progress_bar(compiled, total, length):
 	print('[', end='')
 	for i in range(int(old_div(length, total) * compiled)):
-		print(".", end='')
+		print("#", end='')
 	for i in range(int(old_div(length, total) * (total - compiled))):
 		print(" ", end='')
 	print("]\r", end='')
@@ -107,10 +112,10 @@ elif len(sys.argv) == 2:
 		install()
 	
 	elif sys.argv[1] == "dependencies":
-    		if python3:
-        		print("Installing using python3")
-    		else:
-        		print("Installing using python2")
+		if python3:
+			print("Installing using python3")
+		else:
+			print("Installing using python2")
 		system("sudo echo")
 		if platform.system() == 'Linux':
 			current_package_manager = ''
