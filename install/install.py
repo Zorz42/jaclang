@@ -2,6 +2,7 @@ from __future__ import print_function
 from __future__ import division
 from builtins import input
 from builtins import range
+from settings import *
 def div(a, b):
 	return a / b
 try:
@@ -64,22 +65,22 @@ def buildfile(filename, count, objlen):
 	for i in range(columns + 2):
 		print(" ", end='')
 	print("\r", end='')
-	print("[CC] [-FLAGS] src/" + filename + ".cpp -> build/" + filename + ".o")
+	print("[CC] [-FLAGS] " + srcdir + "/" + filename + ".cpp -> " + objdir + "/" + filename + ".o")
 	print_progress_bar(count, objlen, columns)
-	system("g++ -w -m64 -std=gnu++11 -Iinclude -o build/" + filename + ".o -c src/" + filename + ".cpp")
+	system("g++ -w -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + filename + ".o -c " + srcdir + "/" + filename + ".cpp")
 
 def build(fail=False):
 	if not fail:
 		system("sudo echo")
-	if not os.path.isdir("build"):	
-		system("mkdir build")
-	objectfiles = [file.split('.')[0] for file in listdir("src")]
+	if not os.path.isdir(objdir):	
+		system("mkdir " + objdir)
+	objectfiles = [file.split('.')[0] for file in listdir(srcdir)]
 	count = 0
 	for file in objectfiles:
 		count += 1
-		if not os.path.isfile("build/" + file + ".o"):
+		if not os.path.isfile(objdir + "/" + file + ".o"):
 			buildfile(file, count, len(objectfiles))
-		elif os.path.getctime("build/" + file + ".o") < os.path.getctime("src/" + file + ".cpp"):
+		elif os.path.getctime(objdir + "/" + file + ".o") < os.path.getctime(srcdir + "/" + file + ".cpp"):
 			buildfile(file, count, len(objectfiles))
 	columns = int(popen('stty size', 'r').read().split()[1]) - 2
 	for i in range(columns + 2):
@@ -89,7 +90,7 @@ def build(fail=False):
 	
 	objnames = ""
 	for file in objectfiles:
-		objnames += "build/" + file + ".o "
+		objnames += objdir + "/" + file + ".o "
 	print("Linking object files ... ", end='')
 	sys.stdout.flush()
 
