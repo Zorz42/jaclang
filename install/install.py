@@ -72,15 +72,15 @@ def buildfile(filename, count, objlen):
 def build(fail=False):
 	if not fail:
 		system("sudo echo")
-	if not os.path.isdir(objdir):	
+	if not path.isdir(objdir):	
 		system("mkdir " + objdir)
 	objectfiles = [file.split('.')[0] for file in listdir(srcdir)]
 	count = 0
 	for file in objectfiles:
 		count += 1
-		if not os.path.isfile(objdir + "/" + file + ".o"):
+		if not path.isfile(objdir + "/" + file + ".o"):
 			buildfile(file, count, len(objectfiles))
-		elif os.path.getctime(objdir + "/" + file + ".o") < os.path.getctime(srcdir + "/" + file + ".cpp"):
+		elif path.getctime(objdir + "/" + file + ".o") < path.getctime(srcdir + "/" + file + ".cpp"):
 			buildfile(file, count, len(objectfiles))
 	columns = int(popen('stty size', 'r').read().split()[1]) - 2
 	for i in range(columns + 2):
