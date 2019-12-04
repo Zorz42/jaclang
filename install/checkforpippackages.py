@@ -18,12 +18,15 @@ def check_for_pip_package(name):
 				break
 			elif decision.upper() in noOptions:
 				exit(1)
+def checkforpippackages_main():
+	packages = [
+		"setuptools",
+		"wget",
+		"httplib2",
+		"zipfile"
+	]
+	for package in packages:
+		check_for_pip_package(package)
 
-packages = [
-	"setuptools",
-	"wget",
-	"httplib2",
-	"zipfile"
-]
-for package in packages:
-	check_for_pip_package(package)
+if __name__ == "__main__":
+	checkforpippackages_main()
