@@ -19,17 +19,17 @@ else:
 
 
 def decision(question):
-    YesOptions = ["Y", "YES"]
-    NoOptions = ["N", "NO"]
+    yes_options = ["Y", "YES"]
+    no_options = ["N", "NO"]
     while True:
         if python3:
-            Decision = input(question + " [y,n]:")
+            yndecision = input(question + " [y,n]:")
         else:
-            Decision = raw_input(question + " [y,n]:")
+            yndecision = raw_input(question + " [y,n]:")
 
-        if Decision.upper() in YesOptions:
+        if yndecision.upper() in yes_options:
             return True
-        elif Decision.upper() in NoOptions:
+        elif yndecision.upper() in no_options:
             return False
 
 
