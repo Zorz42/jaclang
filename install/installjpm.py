@@ -1,8 +1,11 @@
 import os
+import ssl
 import wget
 
 
 def installjpm_main():
+	ssl._create_default_https_context = ssl._create_unverified_context
+
 	print()
 	print("Downloading jpm ... ", end='', flush=True)
 	wget.download("https://github.com/Zorz42/jpm/archive/master.zip", bar=None)
