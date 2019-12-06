@@ -1,7 +1,8 @@
 import os
 
 yesOptions = ["Y", "YES"]
-noOptions  = ["N", "NO"]
+noOptions = ["N", "NO"]
+
 
 def check_for_pip_package(name):
 	print("Checking for pip3-" + name + " ... ", end='', flush=True)
@@ -9,7 +10,7 @@ def check_for_pip_package(name):
 	try:
 		__import__(name)
 		print("OK")
-	except:
+	except ImportError:
 		print("FAILED")
 		while True:
 			decision = input("Do you want me to install pip3-" + name + "? [y,n]")
@@ -18,6 +19,8 @@ def check_for_pip_package(name):
 				break
 			elif decision.upper() in noOptions:
 				exit(1)
+
+
 def checkforpippackages_main():
 	packages = [
 		"setuptools",
@@ -27,6 +30,7 @@ def checkforpippackages_main():
 	]
 	for package in packages:
 		check_for_pip_package(package)
+
 
 if __name__ == "__main__":
 	checkforpippackages_main()

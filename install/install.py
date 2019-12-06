@@ -1,26 +1,10 @@
-from __future__ import division
 from __future__ import print_function
 import platform
 import subprocess
 import sys
 from os import popen, system, path, listdir
 
-try:
-    from builtins import input
-    from builtins import range
-except:
-    pass
 from settings import *
-
-
-def div(a, b):
-    return a / b
-
-
-try:
-    from past.utils import old_div
-except ImportError:
-    old_div = div
 
 python3 = sys.version_info.major == 3
 
@@ -38,13 +22,10 @@ def decision(question):
     YesOptions = ["Y", "YES"]
     NoOptions = ["N", "NO"]
     while True:
-        try:
-            if python3:
-                Decision = input(question + " [y,n]:")
-            else:
-                Decision = input(question + " [y,n]:")
-        except:
-            pass
+        if python3:
+            Decision = input(question + " [y,n]:")
+        else:
+            Decision = raw_input(question + " [y,n]:")
 
         if Decision.upper() in YesOptions:
             return True
@@ -66,9 +47,9 @@ def check_for_package(name, binary, install_command):
 
 def print_progress_bar(compiled, total, length):
     print('[', end='')
-    for i in range(int(old_div(length, total) * compiled)):
+    for i in range(int(length / total * compiled)):
         print("#", end='')
-    for i in range(int(old_div(length, total) * (total - compiled))):
+    for i in range(int(length / total * (total - compiled))):
         print(" ", end='')
     print("]\r", end='')
     sys.stdout.flush()
@@ -82,7 +63,8 @@ def buildfile(filename, count, objlen):
     print("[CC] [-FLAGS] " + srcdir + "/" + filename + ".cpp -> " + objdir + "/" + filename + ".o")
     print_progress_bar(count, objlen, columns)
     system(
-        "g++ -w -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + filename + ".o -c " + srcdir + "/" + filename + ".cpp")
+        "g++ -w -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + filename + ".o -c " +
+        srcdir + "/" + filename + ".cpp")
 
 
 def build(fail=False):
@@ -143,22 +125,22 @@ def dependencies():
         for package_manager in package_managers:
             if popen("which " + package_manager).read() != "":
                 if package_manager == 'apt':
-                    current_package_manager = 'apt install'
+                    current_package_manager = 'apt install '
                 elif package_manager == 'yum':
-                    current_package_manager = 'yum install'
+                    current_package_manager = 'yum install '
                 elif package_manager == 'emerge':
-                    current_package_manager = 'emerge'
+                    current_package_manager = 'emerge '
                 elif package_manager == 'pacman':
-                    current_package_manager = 'pacman -S'
+                    current_package_manager = 'pacman -S '
                 elif package_manager == 'zypper':
-                    current_package_manager = 'zypper in'
+                    current_package_manager = 'zypper in '
                 break
         if current_package_manager == '':
             print('Could not find package manager!')
             exit(1)
 
         print("Checking for dependencies:")
-        if package_manager == 'zypper':
+        if current_package_manager.split(" ")[0] == 'zypper':
             check_for_package("g++", "g++", "sudo " + current_package_manager + " gcc-c++")
         else:
             check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")

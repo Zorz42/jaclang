@@ -1,19 +1,11 @@
-import wget, os, ssl
-
-
-def no_bar(a, b, c):
-	pass
+import os
+import wget
 
 
 def installjpm_main():
-	try:
-		ssl._create_default_https_context = ssl._create_unverified_context
-	except:
-		pass
-
 	print()
 	print("Downloading jpm ... ", end='', flush=True)
-	wget.download("https://github.com/Zorz42/jpm/archive/master.zip", bar=no_bar)
+	wget.download("https://github.com/Zorz42/jpm/archive/master.zip", bar=None)
 	print("DONE")
 
 	print("Installing jpm ... ", end='', flush=True)
