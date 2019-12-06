@@ -1,7 +1,9 @@
 import wget, os, ssl
 
+
 def no_bar(a, b, c):
 	pass
+
 
 def installjpm_main():
 	try:
@@ -19,6 +21,7 @@ def installjpm_main():
 	os.system("cd jpm-master && python3 install.py quietinstall")
 	os.system("rm jpm-master.zip; rm -r jpm-master")
 	print("DONE")
+
 
 if __name__ == "__main__":
 	installjpm_main()

@@ -8,7 +8,7 @@ if platform.system() == 'Linux':
 elif platform.system() == 'Darwin':
 	alias_file_name = ".bash_profile"
 else:
-	print("unsuported os")
+	print("unsupported os")
 	exit(1)
 
 alias_command = "complete -o default -W \"uninstall version versionid versionstr\" 'jaclang'\n"
