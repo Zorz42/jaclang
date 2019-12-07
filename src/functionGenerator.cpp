@@ -9,17 +9,18 @@
 void f_asmtext();
 void f_asmdata();
 void f_asmbss();
+void f_printchar();
 
 void generator::e::systemFunctionCall() // system function: __test__
 {
-	if(currentName == "__asmtext__") // system functions
-		f_asmtext();
-	else if(currentName == "__asm__") // asm is alternative to asm text, because asmtext is the most common asm call
+	if(currentName == "__asm__" || currentName == "__asmtext__") // asm is alternative to asm text, because asmtext is the most common asm call
 		f_asmtext();
 	else if(currentName == "__asmdata__")
 		f_asmdata();
 	else if(currentName == "__asmbss__")
 		f_asmbss();
+	else if(currentName == "__printchar__")
+	    f_printchar();
 	else
 		error::treeError("Unknown system function call: " + currentName);
 }
@@ -34,6 +35,8 @@ void generator::e::functionDeclaration()
 	generator::functionVector.push_back(obj);
 	currentBranchScope->count++;
 	std::vector<variable> prevStack = generator::stack;
+	int prevStackPointer = generator::stackPointer;
+	generator::stackPointer = 0;
 	generator::stack = {};
 	if(current.name != "scope")
 		error::treeError("Expected scope after function declaration!");
@@ -58,6 +61,7 @@ void generator::e::functionDeclaration()
 	generator::inFunction = false;
 	currentBranchScope = prevScope;
 	generator::stack = prevStack;
+	generator::stackPointer = prevStackPointer;
 }
 
 void generator::e::functionCall(const std::string& variableName)
@@ -84,7 +88,6 @@ std::string generateAsmText() // generate text for inline assembly [text]  ;;__a
 {
 	std::string text = "   ";
 	text += currentName2;
-	text += " ;;__asm__";
 	return text;
 }
 
@@ -101,4 +104,13 @@ void f_asmdata() // append to data section
 void f_asmbss() // append to bss section
 {
 	file::append_bss(generateAsmText());
+}
+
+void f_printchar()
+{
+    std::string text = "   mov ah, ";
+    text += currentName2;
+    file::append_text(text);
+    file::append_text("   call printchar");
+
 }

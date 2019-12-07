@@ -47,12 +47,10 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 void generator::e::variableSetting()
 {
     bool variableExists = false;
-    variable curr;
     
     for(const variable& iter : generator::stack) // go through stack
         if(iter.indent == current.sub.at(0).name)
         {
-            curr = iter;
             variableExists = true;
             break;
         }

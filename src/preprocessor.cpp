@@ -5,13 +5,13 @@
 void preprocessor::main(const std::string& text)
 {
 	std::ifstream inputFileObj(text); // open file and store it in std::ifstream object
-	if(!inputFileObj.is_open()) // if didnt open (file missing,...)
+	if(!inputFileObj.is_open()) // if didn't open (file missing,...)
 	{
 		std::cout << "\033[1;31mFile does not exist!\033[0m" << std::endl;
 		error::terminate("UNABLE TO OPEN FILE", ERROR_UNABLE_TO_OPEN_FILE);
 	}
 	
-	bool multilineComment = false; // if in multiline comment
+	bool multilineComment = false; // if in multi-line comment
 
 	std::string line;
 	while(std::getline(inputFileObj,line)) // iterate through lines of input file

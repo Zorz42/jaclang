@@ -8,7 +8,7 @@ bool parser::e::functionCall(branch& target)
 {
     if(parser::tokCount == lexer::tokens.size())
         return false;
-	else if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
+    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system function call or just function call
@@ -22,7 +22,7 @@ bool parser::e::functionCall(branch& target)
 		appendBranch(currentBranch, target); // append branch to root
 		return true;
 	}
-	else
+    else
 		return false;
 }
 
@@ -30,7 +30,7 @@ bool parser::e::systemFunctionCall()
 {
     if(parser::tokCount == lexer::tokens.size())
         return false;
-	else if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
+    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system function call
@@ -40,16 +40,13 @@ bool parser::e::systemFunctionCall()
 		appendBranch(current.text, currentBranch); // append indent to branch 
 		parser::tokCount++; // go to argument
 		if(current.type != TYPE_STRING)
-			error::syntaxError("expected string argument on system function");
+			error::syntaxError("Expected one string argument on system function");
 		else
 			appendBranch(current.text, currentBranch);
-		parser::tokCount++;
-		if(current.text != "\\n" && current.text != ";") // function end
-			error::syntaxError("Expected newline or ';' at the end of function");
 		appendBranch(currentBranch, *currentBranchScope); // append branch to root
 		return true;
 	}
-	else
+    else
 		return false;
 }
 
@@ -57,7 +54,7 @@ bool parser::e::functionDeclaration()
 {
     if(parser::tokCount == lexer::tokens.size())
         return false;
-	else if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
+    if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
 	{
 		branch currentBranch;
 		currentBranch.name = "functionDeclaration"; // set to variableDeclaration
@@ -71,7 +68,7 @@ bool parser::e::functionDeclaration()
 		appendBranch(currentBranch, *currentBranchScope);
 		return true;
 	}
-	else
+    else
 		return false;
 }
 
