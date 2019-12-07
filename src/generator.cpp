@@ -53,7 +53,7 @@ void generator::main()
 
 void generator::pushToStack(variable source) // push to stack
 {
-	generator::stackPointer += 4;
+	generator::stackPointer += source.size;
 	source.position = generator::stackPointer;
 	generator::stack.push_back(source);
 }

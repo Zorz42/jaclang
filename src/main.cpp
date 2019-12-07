@@ -301,6 +301,7 @@ void init() // initialize global variables
         file::outputVector = {
                 "section .data", // data section
                 "",
+                "stdoutchar: db 0",
                 "section .bss",  // bss section
                 "",
                 "section .text", // text section
@@ -310,6 +311,16 @@ void init() // initialize global variables
                 "",
                 "   mov eax, 1",  // sys exit
                 "   int 0x80",
+                "",
+                "printchar:",
+                "   mov BYTE [stdoutchar], ah",
+                "   mov eax, 4",
+                "   mov ebx, 1",
+                "   mov ecx, stdoutchar",
+                "   mov edx, 1",
+                "   int 0x80",
+                "",
+                "   ret",
         };
 #elif OS_TYPE == 1 // MACOS
         file::outputVector = {
