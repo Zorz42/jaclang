@@ -1,9 +1,9 @@
 **/__pycache__
 **/build
-**/install
 **/.DS_Store
 **/.idea
 **/CMakeLists.txt
 **/cmake-build-debug
 **/*.tmp
 **/venv
+**/*.pyc
