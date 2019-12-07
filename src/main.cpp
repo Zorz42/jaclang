@@ -1,6 +1,5 @@
 #include "jaclang.h"
 
-#include <sys/types.h>
 #include <sys/stat.h>
 
 struct stat info;
@@ -58,7 +57,7 @@ void compile_assembly(const std::string& inputFile, const std::string& outputFil
 void link_object(const std::string& inputFile, const std::string& outputFile);
 
 void create_cache_dir();
-void remove_cache_dir(bool exitSucsess);
+void remove_cache_dir(bool exitSuccess);
 
 std::string getFormat(std::string& file);
 
@@ -309,34 +308,45 @@ void init() // initialize global variables
                 "_start:",
                 "",
                 "",
-                "   mov eax, 1",  // sys exit
-                "   int 0x80",
+                "   mov eax, 60",  // sys exit
+                "   mov edi, 0", // exit code 0 (success)
+                "   syscall",
                 "",
-                "printchar:",
-                "   mov BYTE [stdoutchar], ah",
-                "   mov eax, 4",
-                "   mov ebx, 1",
-                "   mov ecx, stdoutchar",
-                "   mov edx, 1",
-                "   int 0x80",
+                "printchar:", // print character
+                "   mov BYTE [stdoutchar], ah", // char argument
+                "   mov rax, 1",
+                "   mov rdi, 1",
+                "   mov rsi, stdoutchar",
+                "   mov rdx, 1",
+                "   syscall",
                 "",
                 "   ret",
         };
 #elif OS_TYPE == 1 // MACOS
         file::outputVector = {
-                "global start",
+                "global main",
                 "section .data", // data section
                 "",
                 "section .bss",  // bss section
                 "",
                 "section .text", // text section
                 "", // for linker
-                "start:",
+                "main:",
                 "",
                 "",
                 "   mov     rax, 0x2000001",
                 "   mov     rdi, 0",
                 "   syscall",
+                "",
+                "printchar:", // print character
+                "   mov BYTE [stdoutchar], ah", // char argument
+                "   mov rax, 4",
+                "   mov rbx, 1",
+                "   mov rcx, stdoutchar",
+                "   mov rdx, 1",
+                "   syscall",
+                "",
+                "   ret",
         };
 #endif
     
@@ -371,7 +381,7 @@ void create_cache_dir()
 {
     if(stat(cacheDir.c_str(), &info) != 0)
         cacheDirExisted = false;
-    else if( info.st_mode & S_IFDIR )
+    else if(info.st_mode & S_IFDIR)
         cacheDirExisted = true;
     else
     {
@@ -387,7 +397,7 @@ void create_cache_dir()
     }
 }
 
-void remove_cache_dir(bool exitSucsess)
+void remove_cache_dir(bool exitSuccess)
 {
     if(!cacheDirExisted)
     {
@@ -395,7 +405,7 @@ void remove_cache_dir(bool exitSucsess)
         command += cacheDir;
         system(command.c_str());
     }
-    else if(exitSucsess)
+    else if(exitSuccess)
     {
         if(jaclangToNasm.rfind(cacheDir + "/", 0) == 0)
         {

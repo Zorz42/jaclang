@@ -13,9 +13,7 @@ void f_printchar();
 
 void generator::e::systemFunctionCall() // system function: __test__
 {
-	if(currentName == "__asmtext__") // system functions
-        f_asmtext();
-	else if(currentName == "__asm__") // asm is alternative to asm text, because asmtext is the most common asm call
+	if(currentName == "__asm__" || currentName == "__asmtext__") // asm is alternative to asm text, because asmtext is the most common asm call
 		f_asmtext();
 	else if(currentName == "__asmdata__")
 		f_asmdata();
@@ -113,5 +111,6 @@ void f_printchar()
     std::string text = "   mov ah, ";
     text += currentName2;
     file::append_text(text);
-    file::append_text("call printchar");
+    file::append_text("   call printchar");
+
 }

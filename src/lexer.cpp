@@ -173,8 +173,9 @@ void lexer::main() // main lexer function
 		if(debug)
 		{
 			coutd << int(iter.type) << ": " << iter.text;
-			if(iter.text.size() < 10)
-				for(unsigned long i = 0; i < 10 - iter.text.size(); i++)
+#define POS_OFFSET 15
+			if(iter.text.size() < POS_OFFSET)
+				for(unsigned long i = 0; i < POS_OFFSET - iter.text.size(); i++)
 					coutd << " ";
 			coutd << " " << iter.line << ", " << iter.pos << std::endl;
 		}
@@ -203,7 +204,7 @@ bool isKeyword(const std::string& text)
 	return find(lexer::keywords, text) != lexer::keywords.size(); // check if vector keywords containing that string
 }
 
-/*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i dont really want to
+/*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i don't really want to
 {
 	char* p;
 	unsigned long converted = strtol(text.c_str(), &p, 10);

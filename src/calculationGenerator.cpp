@@ -1,7 +1,5 @@
 // this generates tree calculation into asm code
 
-#include <utility>
-
 #include "jaclang.h"
 
 unsigned int generator::currentRegister32 = 0;
@@ -12,7 +10,7 @@ void operator_sub(const std::string& value);
 void operator_mul(const std::string& value);
 void operator_div(const std::string& value);
 
-std::string value_variable(std::string variableName);
+std::string value_variable(const std::string& variableName);
 
 void generator::e::calculation(branch& calculation)
 {
@@ -31,7 +29,7 @@ void generator::e::calculation(branch& calculation)
 			file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
 			generator::prevRegister();
 		}
-        else // else its just constant
+		else // else its just constant
             file::append_instruction("mov", generator::availableRegister32(), calculation.sub.at(1).name);
         
 		
@@ -120,9 +118,9 @@ void operator_div(const std::string& value)
     file::append_instruction("mov", generator::availableRegister32(), "eax");
 }
 
-std::string value_variable(std::string variableName)
+std::string value_variable(const std::string& variableName)
 {
-    std::string value = std::move(variableName); // variable name
+    std::string value = variableName; // variable name
     
     
     value.erase(value.begin()); // remove :

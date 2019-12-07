@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-void remove_cache_dir(bool exitSucsess);
+void remove_cache_dir(bool exitSuccess);
 
 void error::syntaxError(const std::string& error) // Print out syntax error
 {
