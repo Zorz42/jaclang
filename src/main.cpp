@@ -327,6 +327,7 @@ void init() // initialize global variables
                 "global main",
                 "section .data", // data section
                 "",
+		"stdoutchar: db 0",
                 "section .bss",  // bss section
                 "",
                 "section .text", // text section
