@@ -34,5 +34,5 @@
     #define OS_LINKER "ld -m elf_x86_64 -s -o "
 #elif OS_TYPE == 1 // MACOS
 	#define OS_NASM "/usr/local/bin/nasm -w-all -f macho64 "
-    #define OS_LINKER "ld -macosx_version_min 10.7.0 -o "
+    #define OS_LINKER "ld -macosx_version_min 10.7.0 -no_pie -o "
 #endif

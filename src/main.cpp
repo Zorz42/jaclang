@@ -324,7 +324,7 @@ void init() // initialize global variables
         };
 #elif OS_TYPE == 1 // MACOS
         file::outputVector = {
-                "global main",
+                "global start",
                 "section .data", // data section
                 "",
 		"stdoutchar: db 0",
@@ -332,7 +332,7 @@ void init() // initialize global variables
                 "",
                 "section .text", // text section
                 "", // for linker
-                "main:",
+                "start:",
                 "",
                 "",
                 "   mov     rax, 0x2000001",
@@ -340,10 +340,10 @@ void init() // initialize global variables
                 "   syscall",
                 "",
                 "printchar:", // print character
-                "   mov BYTE [stdoutchar], ah", // char argument
-                "   mov rax, 4",
-                "   mov rbx, 1",
-                "   mov rcx, stdoutchar",
+                "   mov BYTE [rel stdoutchar], ah", // char argument
+                "   mov rax, 0x2000004",
+                "   mov rdi, 1",
+                "   mov rsi, stdoutchar",
                 "   mov rdx, 1",
                 "   syscall",
                 "",
