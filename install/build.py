@@ -9,29 +9,29 @@ from settings import *
 
 compiled_count = 0
 
-def buildfile(filename, objlen):
-    global compiled_count
-    currentThread = Popen(
-        ("g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + filename + ".o -c " +
-        srcdir + "/" + filename + ".cpp").split(" "))
-    while currentThread.poll() is None:
-        pass
-    columns = int(popen('stty size', 'r').read().split()[1]) - 2
-    for i in range(columns + 2):
-        print(" ", end='')
-    print("\r", end='')
-    print("[CC] [-FLAGS] " + srcdir + "/" + filename + ".cpp -> " + objdir + "/" + filename + ".o")
-    compiled_count += 1
-    print_progress_bar(compiled_count, objlen, columns)
 
-class buildThread(threading.Thread):
+class BuildThread(threading.Thread):
     def __init__(self, count, filename):
-       threading.Thread.__init__(self)
-       self.threadID = count
-       self.name = filename
-       self.objlen = 0
+        threading.Thread.__init__(self)
+        self.threadID = count
+        self.name = filename
+        self.objlen = 0
+
     def run(self):
-       buildfile(self.name, self.objlen)
+        global compiled_count
+        current_thread = Popen(
+            ("g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + self.name + ".o -c " +
+             srcdir + "/" + self.name + ".cpp").split(" "))
+        while current_thread.poll() is None:
+            pass
+        columns = int(popen('stty size', 'r').read().split()[1]) - 2
+        for i in range(columns + 2):
+            print(" ", end='')
+        print("\r", end='')
+        print("[CC] [-FLAGS] " + srcdir + "/" + self.name + ".cpp -> " + objdir + "/" + self.name + ".o")
+        compiled_count += 1
+        print_progress_bar(compiled_count, self.objlen, columns)
+
 
 def print_progress_bar(compiled, total, length):
     print('[', end='')
@@ -54,9 +54,10 @@ def build(fail=False):
     threads = []
     for file in objectfiles:
         count += 1
-        if not path.isfile(objdir + "/" + file + ".o") or path.getctime(objdir + "/" + file + ".o") < path.getctime(srcdir + "/" + file + ".cpp"):
-            threads.append(buildThread(count, file))
-    if threads != []:
+        if not path.isfile(objdir + "/" + file + ".o") or path.getctime(objdir + "/" + file + ".o") < path.getctime(
+                srcdir + "/" + file + ".cpp"):
+            threads.append(BuildThread(count, file))
+    if threads:
         print("Building jaclang. Please wait...")
     for thread in threads:
         thread.objlen = len(threads)

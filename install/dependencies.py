@@ -14,6 +14,7 @@ if python3:
 else:
     print("Installing using python2")
 
+
 def check_for_package(name, binary, install_command):
     print(name.upper() + ' ... ', end='')
     if popen("which " + binary).read() == "":
