@@ -12,15 +12,15 @@ all: fullinstall
 clean:
 	@rm -rf build
 
-fullinstall: install/install.py
-	@$(PYTHON) install/install.py all
+fullinstall:
+	@$(PYTHON) install/main.py all
 
 init:
-	@$(PYTHON) install/install.py dependencies
+	@$(PYTHON) install/main.py dependencies
 buildc:
-	@$(PYTHON) install/install.py build
+	@$(PYTHON) install/main.py build
 install:
-	@$(PYTHON) install/install.py install
+	@$(PYTHON) install/main.py install
 
-uninstall: install/install.py
+uninstall:
 	@jaclang uninstall
