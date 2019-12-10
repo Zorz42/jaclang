@@ -56,7 +56,8 @@ def build(fail=False):
         count += 1
         if not path.isfile(objdir + "/" + file + ".o") or path.getctime(objdir + "/" + file + ".o") < path.getctime(srcdir + "/" + file + ".cpp"):
             threads.append(buildThread(count, file))
-    print("Building jaclang. Please wait...")
+    if threads != []:
+        print("Building jaclang. Please wait...")
     for thread in threads:
         thread.objlen = len(threads)
         thread.start()
