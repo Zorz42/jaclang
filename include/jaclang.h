@@ -5,11 +5,8 @@
 #define VERSION_STR "BETA 2.2.2"
 #define VERSION_INT 10
 
-#include <iostream> // cout
-#include <fstream>  // open file
-#include <string>   // better strings
-#include <vector>   // better arrays
-#include <chrono>   // time
+#include <iostream>
+#include <vector>
 
 struct branch;
 

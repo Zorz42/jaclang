@@ -2,6 +2,8 @@
 
 #include "jaclang.h"
 
+#include <fstream>  // open file
+
 void preprocessor::main(const std::string& text)
 {
 	std::ifstream inputFileObj(text); // open file and store it in std::ifstream object

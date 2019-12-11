@@ -1,6 +1,7 @@
 #include "jaclang.h"
 
 #include <sys/stat.h>
+#include <chrono>   // time
 
 struct stat info;
 
@@ -409,16 +410,8 @@ void remove_cache_dir(bool exitSuccess)
     else if(exitSuccess)
     {
         if(jaclangToNasm.rfind(cacheDir + "/", 0) == 0)
-        {
-            std::string command = "rm ";
-            command += jaclangToNasm;
-            system(command.c_str());
-        }
+            remove(jaclangToNasm.c_str());
         if(nasmToLinker.rfind(cacheDir + "/", 0) == 0)
-        {
-            std::string command = "rm ";
-            command += nasmToLinker;
-            system(command.c_str());
-        }
+            remove(nasmToLinker.c_str());
     }
 }

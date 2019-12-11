@@ -1,4 +1,5 @@
 #include "jaclang.h"
+#include <fstream>  // open file
 
 void file::read(const std::string& text) // read file
 {
@@ -7,9 +8,6 @@ void file::read(const std::string& text) // read file
 
 void file::write(const std::string& file_output) // write to file
 {
-    std::string command = "touch "; // create file (if not existing)
-    command += file_output;
-    system(command.c_str()); // create file
     std::ofstream outputFileObj(file_output); // open file (or create)
     if (outputFileObj.is_open()) // if file was opened (or created)
         for (auto & t : file::outputVector) // add line from vector
