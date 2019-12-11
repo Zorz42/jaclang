@@ -44,15 +44,21 @@ def print_progress_bar(compiled, total, length):
 
 
 def build(fail=False):
+    print()
     print("Preparing build...")
     if not fail:
         system("sudo echo")
     if not path.isdir(objdir):
         system("mkdir " + objdir)
-    objectfiles = [file.split('.')[0] for file in listdir(srcdir)]
+    files = [file.split('.')[0] for file in listdir(srcdir) if len(file.split('.')) == 2]
+    srcfilesdirs = [dir for dir in listdir(srcdir) if len(dir.split('.')) == 1]
+    for dir in srcfilesdirs:
+        if not path.isdir("build/" + dir):
+            system("mkdir " + objdir + "/" + dir)
+        files += [dir + "/" + file.split('.')[0] for file in listdir(srcdir + "/" + dir) if len(file.split('.')) == 2]
     count = 0
     threads = []
-    for file in objectfiles:
+    for file in files:
         count += 1
         if not path.isfile(objdir + "/" + file + ".o") or path.getctime(objdir + "/" + file + ".o") < path.getctime(
                 srcdir + "/" + file + ".cpp"):
@@ -70,7 +76,7 @@ def build(fail=False):
     print('\r', end='')
 
     objnames = ""
-    for file in objectfiles:
+    for file in files:
         objnames += objdir + "/" + file + ".o "
     print("Linking object files ... ", end='')
     sys.stdout.flush()
