@@ -21,7 +21,7 @@ class BuildThread(threading.Thread):
         global compiled_count
         current_thread = Popen(
             ("g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + self.name + ".o -c " +
-             srcdir + "/" + self.name + ".cpp").split(" "))
+             srcdir + "/" + self.name + ".cpp -include-pch build/jaclang.h.gch").split(" "))
         while current_thread.poll() is None:
             pass
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
@@ -64,7 +64,9 @@ def build(fail=False):
                 srcdir + "/" + file + ".cpp"):
             threads.append(BuildThread(count, file))
     if threads:
-        print("Building jaclang. Please wait...")
+        print("Building jaclang header...")
+        system("g++ " + includedir + "/jaclang.h -o " + objdir + "/jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+        print("Building jaclang...")
     for thread in threads:
         thread.objlen = len(threads)
         thread.start()
