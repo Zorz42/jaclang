@@ -1,6 +1,6 @@
 from __future__ import print_function
 from os import system, path, listdir, popen
-from subprocess import Popen
+from subprocess import Popen, call
 
 import threading
 import sys
@@ -8,6 +8,8 @@ import sys
 from settings import *
 
 compiled_count = 0
+
+return_fail = False
 
 platform = None
 
@@ -36,16 +38,19 @@ class BuildThread(threading.Thread):
         elif platform == "OSX":
             compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
                               ".o -c " + srcdir + self.name + ".cpp -include-pch build/jaclang.h.gch"
-        current_thread = Popen(compile_command.split(" "))
-        while current_thread.poll() is None:
-            pass
+        current_thread = call(compile_command, shell=True)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
         for i in range(columns + 2):
             print(" ", end='')
         print("\r", end='')
         print("[CC] [-FLAGS] " + srcdir + self.name + ".cpp -> " + objdir + self.name + ".o")
-        compiled_count += 1
-        print_progress_bar(compiled_count, self.objlen, columns)
+        if current_thread != 0:
+            print("Compiling for " + srcdir + self.name + ".cpp failed. Aborting.")
+            global return_fail
+            return_fail = True
+        else:
+            compiled_count += 1
+            print_progress_bar(compiled_count, self.objlen, columns)
 
 
 def print_progress_bar(compiled, total, length):
@@ -58,11 +63,9 @@ def print_progress_bar(compiled, total, length):
     sys.stdout.flush()
 
 
-def build(fail=False):
+def build():
     print()
     print("Preparing build...")
-    if not fail:
-        system("sudo echo")
     if not path.isdir(objdir):
         system("mkdir " + objdir)
     files = [file.split('.')[0] for file in listdir(srcdir) if len(file.split('.')) == 2]
@@ -96,6 +99,8 @@ def build(fail=False):
         thread.start()
     for thread in threads:
         thread.join()
+        if return_fail:
+            exit(0)
     columns = int(popen('stty size', 'r').read().split()[1]) - 2
     for i in range(columns + 2):
         print(" ", end='')
@@ -106,19 +111,12 @@ def build(fail=False):
         objnames += objdir + file + ".o "
     print("Linking object files ... ", end='')
     sys.stdout.flush()
-    linker_return_value = Popen("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
-    linker_return_value.communicate()
-    linker_return_code = linker_return_value.returncode
+    linker_return_value = call("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
+    linker_return_code = linker_return_value
 
     if linker_return_code != 0:
-        if not fail:
-            print("FAIL")
-            print("Linker failed.")
-            print("Recompiling the whole program from scratch.")
-            system("make clean")
-            build(True)
-        else:
-            print("Program failed twice. Aborting...")
-            exit(1)
+        print("FAIL")
+        print("Linker failed.")
+        exit(1)
     else:
         print("DONE")
