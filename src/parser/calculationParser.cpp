@@ -1,7 +1,5 @@
 // this file parses equations
 
-#include <utility>
-
 #include "jaclang.h"
 
 #define current lexer::tokens.at(parser::tokCount)

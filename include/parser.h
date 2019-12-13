@@ -2,9 +2,9 @@
 
 struct branch
 {
-	std::string name;
-	std::vector<branch> sub;
-	unsigned int count = 0;
+    std::string name;
+    std::vector<branch> sub;
+    unsigned int count = 0;
 };
 
 extern branch mainBranch;

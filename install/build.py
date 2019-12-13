@@ -8,7 +8,7 @@ import sys
 from settings import *
 
 compiled_count = 0
-
+new_header = False
 
 class BuildThread(threading.Thread):
     def __init__(self, count, filename):
@@ -20,15 +20,15 @@ class BuildThread(threading.Thread):
     def run(self):
         global compiled_count
         current_thread = Popen(
-            ("g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + "/" + self.name + ".o -c " +
-             srcdir + "/" + self.name + ".cpp -include-pch build/jaclang.h.gch").split(" "))
+            ("g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + ".o -c " +
+             srcdir + self.name + ".cpp -include-pch build/jaclang.h.gch").split(" "))
         while current_thread.poll() is None:
             pass
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
         for i in range(columns + 2):
             print(" ", end='')
         print("\r", end='')
-        print("[CC] [-FLAGS] " + srcdir + "/" + self.name + ".cpp -> " + objdir + "/" + self.name + ".o")
+        print("[CC] [-FLAGS] " + srcdir +  self.name + ".cpp -> " + objdir +  self.name + ".o")
         compiled_count += 1
         print_progress_bar(compiled_count, self.objlen, columns)
 
@@ -54,18 +54,22 @@ def build(fail=False):
     srcfilesdirs = [dir for dir in listdir(srcdir) if len(dir.split('.')) == 1]
     for dir in srcfilesdirs:
         if not path.isdir("build/" + dir):
-            system("mkdir " + objdir + "/" + dir)
-        files += [dir + "/" + file.split('.')[0] for file in listdir(srcdir + "/" + dir) if len(file.split('.')) == 2]
+            system("mkdir " + objdir + dir)
+        files += [dir + "/" + file.split('.')[0] for file in listdir(srcdir + dir) if len(file.split('.')) == 2]
     count = 0
     threads = []
     for file in files:
         count += 1
-        if not path.isfile(objdir + "/" + file + ".o") or path.getctime(objdir + "/" + file + ".o") < path.getctime(
-                srcdir + "/" + file + ".cpp"):
+        if not path.isfile(objdir + file + ".o") or path.getctime(objdir + file + ".o") < path.getctime(
+                srcdir + file + ".cpp"):
             threads.append(BuildThread(count, file))
     if threads:
-        print("Building jaclang header...")
-        system("g++ " + includedir + "/jaclang.h -o " + objdir + "/jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+        for file in listdir(includedir):
+            if not path.isfile(objdir + "jaclang.h.gch") or path.getctime(objdir + "jaclang.h.gch") < path.getctime(includedir + file):
+                print("Building jaclang header...")
+                system("g++ " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+                new_header = True
+                break
         print("Building jaclang...")
     for thread in threads:
         thread.objlen = len(threads)
@@ -79,7 +83,7 @@ def build(fail=False):
 
     objnames = ""
     for file in files:
-        objnames += objdir + "/" + file + ".o "
+        objnames += objdir + file + ".o "
     print("Linking object files ... ", end='')
     sys.stdout.flush()
     linker_return_value = Popen("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)

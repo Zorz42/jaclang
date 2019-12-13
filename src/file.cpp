@@ -1,9 +1,22 @@
 #include "jaclang.h"
+
 #include <fstream>  // open file
 
 void file::read(const std::string& text) // read file
 {
-    preprocessor::main(text); // call preprocessor
+    std::ifstream inputFileObj(text); // open file and store it in std::ifstream object
+    if(!inputFileObj.is_open()) // if didn't open (file missing,...)
+    {
+        std::cout << "\033[1;31mFile does not exist!\033[0m" << std::endl;
+        error::terminate("UNABLE TO OPEN FILE", ERROR_UNABLE_TO_OPEN_FILE);
+    }
+
+    std::string line;
+    std::vector<std::string> rawInputFile;
+    while(std::getline(inputFileObj,line)) // iterate through lines of input file
+        rawInputFile.push_back(line);
+    inputFileObj.close(); // close the file - file have been read
+    preprocessor::main(rawInputFile); // call preprocessor
 }
 
 void file::write(const std::string& file_output) // write to file

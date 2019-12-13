@@ -4,27 +4,20 @@
 
 #include <fstream>  // open file
 
-void preprocessor::main(const std::string& text)
+void preprocessor::main(const std::vector<std::string>& rawInputFile)
 {
-	std::ifstream inputFileObj(text); // open file and store it in std::ifstream object
-	if(!inputFileObj.is_open()) // if didn't open (file missing,...)
+    bool multilineComment = false;
+    std::string line;
+    for(int i = 0; i < rawInputFile.size(); i++)
 	{
-		std::cout << "\033[1;31mFile does not exist!\033[0m" << std::endl;
-		error::terminate("UNABLE TO OPEN FILE", ERROR_UNABLE_TO_OPEN_FILE);
-	}
-	
-	bool multilineComment = false; // if in multi-line comment
-
-	std::string line;
-	while(std::getline(inputFileObj,line)) // iterate through lines of input file
-	{
+        line = rawInputFile.at(i);
 		// preprocessor
 		bool lineComment = false;
 		for(unsigned long i = 0; i < line.length(); i++)
 		{
 			if(i < line.length() - 3) // if not in the last 3 characters of line
-				if(line[i] == ';') // if triple slash
-					lineComment = true; // then there is comment
+				if(line[i] == ';')
+					lineComment = true;
 			if(i < line.length() - 2 && !lineComment) // prevent out of range
 				if(line[i] == '/' && line[i + 1] == '*') // if multiline comment starts
 					multilineComment = true;
@@ -41,6 +34,4 @@ void preprocessor::main(const std::string& text)
 	}
 	
 	file::inputText += " "; // So that lexer stores the last token for sure
-	
-	inputFileObj.close(); // close the file - file have been read
 }

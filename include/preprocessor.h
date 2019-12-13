@@ -2,5 +2,5 @@
 
 namespace preprocessor
 {
-	void main(const std::string& text);
+	void main(const std::vector<std::string>& rawInputFile);
 }

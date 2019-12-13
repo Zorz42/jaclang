@@ -1,7 +1,5 @@
 // the main loop of parser
 
-#include <utility>
-
 #include "jaclang.h"
 
 unsigned long parser::tokCount = 0;
