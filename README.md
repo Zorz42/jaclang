@@ -11,7 +11,7 @@ Website is still in development. I am trying to make it feel more alive.
  PROJECT MADE BY JAKOB
 // -------------------------- //
 
-INSTALLATION CAN BE SEEN AT install/README.md
+INSTALLATION CAN BE SEEN AT: install/README.md
 
  * Jaclang is trying to achieve as small compiled binaries as possible.
  * 
