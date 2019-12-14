@@ -8,7 +8,6 @@ bin_paths = environ["PATH"].split(":")
 
 if python3:
     from checkforpippackages import *
-    from installjpm import *
 
 if python3:
     print("Installing using python3")
@@ -18,23 +17,21 @@ else:
 
 def check_for_package(name, binary, install_command):
     print(name.upper() + ' ... ', end='')
-    exists = False
     for bin_path in bin_paths:
         if path.isfile(bin_path + "/" + binary):
-            exists = True
+            print("OK")
             break
-    if not exists:
+    else:
         print("FAILED")
         if decision("Do you want me to install " + name + "?"):
             system(install_command)
         else:
             exit(1)
-    else:
-        print("OK")
 
 
 def dependencies():
     system("sudo echo")
+    print("Checking for dependencies:")
     if platform.system() == 'Linux':
         current_package_manager = ''
         package_managers = ['zypper', 'apt', 'yum', 'emerge', 'pacman']
@@ -55,24 +52,21 @@ def dependencies():
             print('Could not find package manager!')
             exit(1)
 
-        print("Checking for dependencies:")
         if current_package_manager.split(" ")[0] == 'zypper':
             check_for_package("g++", "g++", "sudo " + current_package_manager + " gcc-c++")
         else:
             check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
-        packages = [
+        packages = (
             ("nasm", "nasm"),
             ("binutils", "ld"),
             ("unzip", "unzip"),
             ("python3", "python3"),
             ("python3-pip", "pip3"),
-        ]
+        )
         for package in packages:
             check_for_package(package[0], package[1], "sudo " + current_package_manager + package[0])
 
     elif platform.system() == 'Darwin':
-
-        print("Checking for dependencies:")
         check_for_package("brew", "brew",
                           '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/'
                           'Homebrew/install/master/install)"')
@@ -91,7 +85,5 @@ def dependencies():
 
     if python3:
         checkforpippackages_main()
-        installjpm_main()
     else:
         system("python3 install/checkforpippackages.py")
-        system("python3 install/installjpm.py")
