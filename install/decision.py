@@ -1,5 +1,6 @@
-from dependencies import *
+from sys import version_info
 
+python3 = version_info.major == 3
 
 def decision(question):
     yes_options = ["Y", "YES"]

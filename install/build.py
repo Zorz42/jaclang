@@ -1,9 +1,9 @@
 from __future__ import print_function
 from os import system, path, listdir, popen
 from subprocess import Popen, call
-
-import threading
-import sys
+from threading import Thread
+from sys import stdout
+import platform
 
 from settings import *
 
@@ -11,20 +11,20 @@ compiled_count = 0
 
 return_fail = False
 
-platform = None
+osplatform = None
 
-if sys.platform == "linux" or sys.platform == "linux2":
-    platform = "linux"
-elif sys.platform == "darwin":
-    platform = "OSX"
+if platform.system() == "linux":
+    osplatform = "linux"
+elif platform.system() == "Darwin":
+    osplatform = "OSX"
 else:
     print("Unsupported platform!")
     exit(1)
 
 
-class BuildThread(threading.Thread):
+class BuildThread(Thread):
     def __init__(self, count, filename):
-        threading.Thread.__init__(self)
+        Thread.__init__(self)
         self.threadID = count
         self.name = filename
         self.objlen = 0
@@ -32,10 +32,10 @@ class BuildThread(threading.Thread):
     def run(self):
         global compiled_count
         compile_command = None
-        if platform == "linux":
+        if osplatform == "linux":
             compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -I" + objdir + " -o " + objdir + \
                               self.name + ".o -c " + srcdir + self.name + ".cpp"
-        elif platform == "OSX":
+        elif osplatform == "OSX":
             compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
                               ".o -c " + srcdir + self.name + ".cpp -include-pch build/jaclang.h.gch"
         current_thread = call(compile_command, shell=True)
@@ -60,7 +60,7 @@ def print_progress_bar(compiled, total, length):
     for i in range(int(length / total * (total - compiled))):
         print(" ", end='')
     print("]\r", end='')
-    sys.stdout.flush()
+    stdout.flush()
 
 
 def build():
@@ -76,24 +76,26 @@ def build():
         files += [Dir + "/" + str(file.split('.')[0]) for file in listdir(srcdir + Dir) if len(file.split('.')) == 2]
     count = 0
     threads = []
-    for file in files:
-        count += 1
-        if not path.isfile(objdir + file + ".o") or path.getctime(objdir + file + ".o") < path.getctime(
-                srcdir + file + ".cpp"):
-            threads.append(BuildThread(count, file))
+    build_header = False
     for file in listdir(includedir):
         if not path.isfile(objdir + "jaclang.h.gch") or path.getctime(objdir + "jaclang.h.gch") < \
-                path.getctime(includedir + file):
-            print("Building jaclang header...")
-            if platform == "linux":
-                system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w")
-            elif platform == "OSX":
-                system("g++ " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
-            threads = []
-            for file2 in files:
-                threads.append(BuildThread(count, file2))
-            break
-    print("Building jaclang...")
+            path.getctime(includedir + file):
+            build_header = True
+            
+    for file in files:
+        count += 1
+        if build_header or not path.isfile(objdir + file + ".o") or path.getctime(objdir + file + ".o") < path.getctime(
+                srcdir + file + ".cpp"):
+            threads.append(BuildThread(count, file))
+
+    if build_header:
+        print("Building jaclang header...")
+        if osplatform == "linux":
+            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w")
+        elif osplatform == "OSX":
+            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+    if threads:
+        print("Building jaclang...")
     for thread in threads:
         thread.objlen = len(threads)
         thread.start()
@@ -110,9 +112,8 @@ def build():
     for file in files:
         objnames += objdir + file + ".o "
     print("Linking object files ... ", end='')
-    sys.stdout.flush()
-    linker_return_value = call("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
-    linker_return_code = linker_return_value
+    stdout.flush()
+    linker_return_code = call("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
 
     if linker_return_code != 0:
         print("FAIL")

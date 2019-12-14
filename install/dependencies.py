@@ -1,9 +1,10 @@
 from __future__ import print_function
-from os import system, popen
+from os import system, popen, environ, path
 import platform
-import sys
 
-python3 = sys.version_info.major == 3
+from decision import *
+
+bin_paths = environ["PATH"].split(":")
 
 if python3:
     from checkforpippackages import *
@@ -17,7 +18,12 @@ else:
 
 def check_for_package(name, binary, install_command):
     print(name.upper() + ' ... ', end='')
-    if popen("which " + binary).read() == "":
+    exists = False
+    for bin_path in bin_paths:
+        if path.isfile(bin_path + "/" + binary):
+            exists = True
+            break
+    if not exists:
         print("FAILED")
         if decision("Do you want me to install " + name + "?"):
             system(install_command)
