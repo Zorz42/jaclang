@@ -4,10 +4,11 @@ from pkgutil import iter_modules
 yesOptions = ["Y", "YES"]
 noOptions = ["N", "NO"]
 
+packages = [name for loader, name, ispkg in iter_modules()]
 
 def check_for_pip_package(name):
 	print("Checking for pip3-" + name + " ... ", end='', flush=True)
-	if name in (name for loader, name, ispkg in iter_modules()):
+	if name in packages:
 		print("OK")
 	else:
 		print("FAILED")
