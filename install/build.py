@@ -12,9 +12,10 @@ compiled_count = 0
 return_fail = False
 
 osplatform = None
+print(platform.system())
 
 if platform.system() == "linux":
-    osplatform = "linux"
+    osplatform = "Linux"
 elif platform.system() == "Darwin":
     osplatform = "OSX"
 else:
