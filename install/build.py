@@ -14,8 +14,8 @@ return_fail = False
 osplatform = None
 print(platform.system())
 
-if platform.system() == "linux":
-    osplatform = "Linux"
+if platform.system() == "Linux":
+    osplatform = "linux"
 elif platform.system() == "Darwin":
     osplatform = "OSX"
 else:
