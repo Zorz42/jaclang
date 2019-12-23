@@ -12,7 +12,6 @@ compiled_count = 0
 return_fail = False
 
 osplatform = None
-print(platform.system())
 
 if platform.system() == "Linux":
     osplatform = "linux"
