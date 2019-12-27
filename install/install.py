@@ -1,6 +1,5 @@
-from __future__ import print_function
 from os import system
-
+from decision import python3
 
 def install():
     system("sudo mv jaclang /usr/local/bin/jaclang")

@@ -45,7 +45,6 @@ long start;
 "	version    - check the version name and id\n"\
 "	versionid  - show only version id\n"\
 "	versionstr - show only version name\n"\
-"	uninstall  - remove jaclang"\
 
 void init();
 
@@ -167,11 +166,6 @@ void handle_arguments(int argc, char **argv)
     {
         if(args.at(0) == "version") // check for every misc option
             std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
-        else if(args.at(0) == "uninstall")
-        {
-            system("sudo rm /usr/local/bin/jaclang");
-            std::cout << "Jaclang successfully removed!" << std::endl;
-        }
         else if(args.at(0) == "versionid")
             std::cout << VERSION_INT << std::endl;
         else if(args.at(0) == "versionstr")

@@ -37,7 +37,7 @@ class BuildThread(Thread):
                               self.name + ".o -c " + srcdir + self.name + ".cpp"
         elif osplatform == "OSX":
             compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
-                              ".o -c " + srcdir + self.name + ".cpp -include-pch build/jaclang.h.gch"
+                              ".o -c " + srcdir + self.name + ".cpp -include-pch " + objdir + "jaclang.h.gch"
         current_thread = call(compile_command, shell=True)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
         for i in range(columns + 2):
@@ -66,17 +66,21 @@ def print_progress_bar(compiled, total, length):
 def build():
     print()
     print("Preparing build...")
+    
     if not path.isdir(objdir):
         system("mkdir " + objdir)
     files = [file.split('.')[0] for file in listdir(srcdir) if len(file.split('.')) == 2]
     srcfilesdirs = [Dir for Dir in listdir(srcdir) if len(Dir.split('.')) == 1]
+    
     for Dir in srcfilesdirs:
-        if not path.isdir("build/" + Dir):
+        if not path.isdir(objdir + Dir):
             system("mkdir " + objdir + Dir)
         files += [Dir + "/" + str(file.split('.')[0]) for file in listdir(srcdir + Dir) if len(file.split('.')) == 2]
+    
     count = 0
     threads = []
     build_header = False
+    
     for file in listdir(includedir):
         if not path.isfile(objdir + "jaclang.h.gch") or path.getctime(objdir + "jaclang.h.gch") < \
             path.getctime(includedir + file):
@@ -94,30 +98,28 @@ def build():
             system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w")
         elif osplatform == "OSX":
             system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+    
     if threads:
         print("Building jaclang...")
-    for thread in threads:
-        thread.objlen = len(threads)
-        thread.start()
-    for thread in threads:
-        thread.join()
-        if return_fail:
-            exit(0)
-    columns = int(popen('stty size', 'r').read().split()[1]) - 2
-    for i in range(columns + 2):
-        print(" ", end='')
-    print('\r', end='')
-
-    objnames = ""
-    for file in files:
-        objnames += objdir + file + ".o "
+        for thread in threads:
+            thread.objlen = len(threads)
+            thread.start()
+        for thread in threads:
+            thread.join()
+            if return_fail:
+                exit(0)
+        columns = int(popen('stty size', 'r').read().split()[1]) - 2
+        for i in range(columns + 2):
+            print(" ", end='')
+        print('\r', end='')
+    
+    objfiles = [objdir + file + ".o " for file in files]
     print("Linking object files ... ", end='')
     stdout.flush()
-    linker_return_code = call("g++ -W -o jaclang -m64 -std=gnu++11 " + objnames, shell=True)
+    linker_return_code = call("g++ -W -o jaclang -m64 -std=gnu++11 " + " ".join(objfiles), shell=True)
 
     if linker_return_code != 0:
         print("FAIL")
-        print("Linker failed.")
         exit(1)
     else:
         print("DONE")

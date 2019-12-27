@@ -10,17 +10,22 @@ all: fullinstall
 .PHONY: clean install
 
 clean:
-	@rm -rf build
+	@rm -rf obj
 
 fullinstall:
-	@$(PYTHON) install/main.py all
+	@$(PYTHON) install/main.py dependencies
+	@python3 install/installjpm.py
+	@python3 install/main.py build
+	@python3 install/main.py install
 
 init:
 	@$(PYTHON) install/main.py dependencies
-buildc:
-	@$(PYTHON) install/main.py build
+jpm:
+	@python3 install/installjpm.py
+build:
+	@python3 install/main.py build
 install:
-	@$(PYTHON) install/main.py install
+	@python3 install/main.py install
 
 uninstall:
-	@jaclang uninstall
+	@sudo rm /usr/local/bin/jaclang

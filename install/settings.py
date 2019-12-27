@@ -1,3 +1,3 @@
-objdir = "build/"
+objdir = "obj/"
 srcdir = "src/"
 includedir = "include/"
