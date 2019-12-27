@@ -1,5 +1,5 @@
 **/__pycache__
-**/build
+**/obj
 **/.DS_Store
 **/.idea
 **/CMakeLists.txt
