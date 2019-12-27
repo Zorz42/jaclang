@@ -9,12 +9,6 @@ bin_paths = environ["PATH"].split(":")
 if python3:
     from checkforpippackages import *
 
-if python3:
-    print("Installing using python3")
-else:
-    print("Installing using python2")
-
-
 def check_for_package(name, binary, install_command):
     print(name.upper() + ' ... ', end='')
     for bin_path in bin_paths:
