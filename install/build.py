@@ -13,7 +13,7 @@ return_fail = False
 
 osplatform = None
 
-if platform.system() == "linux":
+if platform.system() == "Linux":
     osplatform = "linux"
 elif platform.system() == "Darwin":
     osplatform = "OSX"
