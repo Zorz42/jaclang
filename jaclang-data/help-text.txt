@@ -1,0 +1,15 @@
+Jaclang help: 
+usage:
+   jaclang - for help
+   jaclang [option] - for misc
+   jaclang [input file] [output file] - for compilation
+
+options:
+   -d - debug - get more detailed compilation (for nerds)
+   -k - keep  - keep the assembly file
+   -q - quiet - say nothing except errors and debug messages if specified
+
+misc options:
+   version    - check the version name and id
+   versionid  - show only version id
+   versionstr - show only version name

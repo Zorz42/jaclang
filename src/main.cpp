@@ -2,6 +2,7 @@
 
 #include <chrono>   // time
 #include <sys/stat.h> // check if file/directory exists
+#include <fstream>
 
 struct stat info;
 
@@ -159,7 +160,18 @@ void handle_arguments(int argc, char **argv)
 
     if(args.empty()) // if there are no arguments
     {
-        std::cout << HELP_TEXT << std::endl; // print help text
+        std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
+        if(helpFile.is_open())
+        {
+            std::string helpText((std::istreambuf_iterator<char>(helpFile.rdbuf())),std::istreambuf_iterator<char>());
+            helpText.pop_back(); // remove newline
+            std::cout << helpText; // print help text
+        }
+        else
+        {
+            std::cout << "\033[1;31mCannot open help-text file (/usr/local/bin/jaclang-data/help-text.txt)!\033[0m" << std::endl; // file missing
+            error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
+        }
         exit(0);
     }
 

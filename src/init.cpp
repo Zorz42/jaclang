@@ -1,5 +1,7 @@
 #include "jaclang.h"
 
+#include <fstream>
+
 void init() // initialize global variables
 {
     jaclangInput = "";
@@ -57,68 +59,22 @@ void init() // initialize global variables
             "r14",
             "r15",
     };
-
 #if OS_TYPE == 0 // Linux
-    file::outputVector = {
-            "section .data", // data section
-            "",
-            "stdoutchar: db 0",
-            "section .bss",  // bss section
-            "",
-            "section .text", // text section
-            "   global _start", // for linker
-            "_start:",
-            "",
-            "",
-            "   mov eax, 60",  // sys exit
-            "   mov edi, 0", // exit code 0 (success)
-            "   syscall",
-            "",
-            "printchar:", // print character
-            "   mov BYTE [stdoutchar], ah", // char argument
-            "   mov rax, 1",
-            "   mov rdi, 1",
-            "   mov rsi, stdoutchar",
-            "   mov rdx, 1",
-            "   syscall",
-            "",
-            "   ret",
-    };
+    std::string fileToRead = "/usr/local/bin/jaclang-data/empty-gnu.asm";
 #elif OS_TYPE == 1 // MACOS
-    file::outputVector = {
-                "global start",
-                "section .data", // data section
-                "",
-		"stdoutchar: db 0",
-                "section .bss",  // bss section
-                "",
-                "section .text", // text section
-                "", // for linker
-                "start:",
-                "",
-                "",
-                "   mov     rax, 0x2000001",
-                "   mov     rdi, 0",
-                "   syscall",
-                "",
-                "printchar:", // print character
-                "   mov BYTE [rel stdoutchar], ah", // char argument
-                "   mov rax, 0x2000004",
-                "   mov rdi, 1",
-                "   mov rsi, stdoutchar",
-                "   mov rdx, 1",
-                "   syscall",
-                "",
-                "   ret",
-        };
+    std::string fileToRead = "/usr/local/bin/jaclang-data/empty-macho.asm";
 #endif
+    std::ifstream readFile(fileToRead);
 
+    std::string line;
+    while(std::getline(readFile, line))
+        file::outputVector.push_back(line);
 
     lexer::keywords = {
             "int",
             "return"
     };
-
+    
     parser::scopes = {&mainBranch};
 
 #define find(x) find(file::outputVector, x)
