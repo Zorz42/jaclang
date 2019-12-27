@@ -397,9 +397,13 @@ void remove_cache_dir(bool exitSuccess)
 {
     if(!cacheDirExisted)
     {
-        std::string command = "rm -r ";
-        command += cacheDir;
-        system(command.c_str());
+        stat(cacheDir.c_str(), &info);
+        if(info.st_mode & S_IFDIR)
+        {
+            std::string command = "rm -r ";
+            command += cacheDir;
+            system(command.c_str());
+        }
     }
     else if(exitSuccess)
     {
