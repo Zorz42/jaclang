@@ -33,18 +33,19 @@ long start;
 #define HELP_TEXT \
 "Jaclang help: \n"\
 "usage:\n"\
-"	jaclang - for help\n"\
-"	jaclang [option] - for misc\n"\
-"	jaclang [input file] [output file] - for compilation\n"\
+"   jaclang - for help\n"\
+"   jaclang [option] - for misc\n"\
+"   jaclang [input file] [output file] - for compilation\n"\
 "\n"\
 "options:\n"\
-"	-d - debug - get more detailed compilation (for nerds)\n"\
-"	-k - keep  - keep the assembly file\n"\
+"   -d - debug - get more detailed compilation (for nerds)\n"\
+"   -k - keep  - keep the assembly file\n"\
+"   -q - quiet - say nothing except errors and debug messages if specified\n"\
 "\n"\
 "misc options:\n"\
-"	version    - check the version name and id\n"\
-"	versionid  - show only version id\n"\
-"	versionstr - show only version name\n"\
+"   version    - check the version name and id\n"\
+"   versionid  - show only version id\n"\
+"   versionstr - show only version name\n"\
 
 void init();
 
@@ -62,7 +63,7 @@ void remove_cache_dir(bool exitSuccess);
 std::string getFormat(std::string& file);
 
 std::vector<std::string> args; // vector of command line arguments
-std::string ops;         // vector of command line options
+std::string ops;               // vector of command line options
 
 std::string join(const std::string& filename, const std::string& end)
 {
