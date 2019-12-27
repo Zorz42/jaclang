@@ -68,8 +68,10 @@ void init() // initialize global variables
 
     std::string line;
     if(!readFile.is_open())
+    {
         std::cout << "\033[1;31mCannot open empty assembly framework file!\033[0m" << std::endl; // file missing
         error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
+    }
     while(std::getline(readFile, line))
         file::outputVector.push_back(line);
 
