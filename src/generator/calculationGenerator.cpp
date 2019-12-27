@@ -2,8 +2,8 @@
 
 #include "jaclang.h"
 
-unsigned int generator::currentRegister32 = 0;
-std::vector<std::string> generator::availableRegisters32; // all registers that equations can use
+unsigned int generator::currentRegister = 0;
+std::vector<std::string> generator::availableRegisters[4]; // all registers that equations can use
 
 void operator_add(const std::string& value);
 void operator_sub(const std::string& value);
@@ -26,7 +26,7 @@ void generator::e::calculation(branch& calculation)
 		{
 			generator::nextRegister(); // its just nested calculation
 			generator::e::calculation(calculation.sub.at(1));
-			file::append_instruction("mov", generator::availableRegisters32.at(generator::currentRegister32 - 1), generator::availableRegister32());
+			file::append_instruction("mov", generator::availableRegisters[2].at(generator::currentRegister - 1), generator::availableRegister32());
 			generator::prevRegister();
 		}
 		else // else its just constant
@@ -50,7 +50,7 @@ void generator::e::calculation(branch& calculation)
                 generator::e::calculation(calculation.sub.at(i));
                 generator::prevRegister();
 
-                currentValueAsm = generator::availableRegisters32.at(generator::currentRegister32 + 1);
+                currentValueAsm = generator::availableRegisters[2].at(generator::currentRegister + 1);
             }
 
 			if(currentValue == "functionCall") // check if its function call at the beginning
@@ -74,21 +74,21 @@ void generator::e::calculation(branch& calculation)
 
 void generator::nextRegister()
 {
-	generator::currentRegister32++;
-	if(generator::currentRegister32 == generator::availableRegisters32.size())
+	generator::currentRegister++;
+	if(generator::currentRegister == generator::availableRegisters[2].size())
 		error::treeError("register overflow");
 }
 
 void generator::prevRegister()
 {
-    generator::currentRegister32--;
-    if(generator::currentRegister32 == -1)
+    generator::currentRegister--;
+    if(generator::currentRegister == -1)
         error::treeError("register overflow");
 }
 
 std::string generator::availableRegister32()
 {
-	return generator::availableRegisters32.at(generator::currentRegister32);
+	return generator::availableRegisters[2].at(generator::currentRegister);
 }
 
 void operator_add(const std::string& value)

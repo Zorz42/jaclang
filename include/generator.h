@@ -34,8 +34,8 @@ namespace generator
 	
 	void pushToStack(variable source);
 
-	extern unsigned int currentRegister32;
-	extern std::vector<std::string> availableRegisters32;
+	extern unsigned int currentRegister;
+	extern std::vector<std::string> availableRegisters[4];
 
 	void nextRegister();
     void prevRegister();

@@ -9,12 +9,33 @@ void init() // initialize global variables
 
     cacheDir = ".jlcache";
 
-    generator::availableRegisters32 = {
-            "ebx",
-            "ecx",
+    generator::availableRegisters[0] = {
+            "sil",
+            "dil",
+            "r8b",
+            "r9b",
+            "r10b",
+            "r11b",
+            "r12b",
+            "r13b",
+            "r14b",
+            "r15b",
+    };
+    generator::availableRegisters[1] = {
+            "si",
+            "di",
+            "r8w",
+            "r9w",
+            "r10w",
+            "r11w",
+            "r12w",
+            "r13w",
+            "r14w",
+            "r15w",
+    };
+    generator::availableRegisters[2] = {
             "esi",
             "edi",
-            "r7d",
             "r8d",
             "r9d",
             "r10d",
@@ -22,7 +43,19 @@ void init() // initialize global variables
             "r12d",
             "r13d",
             "r14d",
-            "r15d"
+            "r15d",
+    };
+    generator::availableRegisters[3] = {
+            "rsi",
+            "rdi",
+            "r8",
+            "r9",
+            "r10",
+            "r11",
+            "r12",
+            "r13",
+            "r14",
+            "r15",
     };
 
 #if OS_TYPE == 0 // Linux
