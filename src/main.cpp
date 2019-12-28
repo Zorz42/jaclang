@@ -1,5 +1,7 @@
 #include "jaclang.h"
 
+// the main file, where the main function is happening
+
 #include <chrono>   // time
 #include <sys/stat.h> // check if file/directory exists
 #include <fstream>
@@ -8,8 +10,6 @@ struct stat info;
 
 bool cacheDirExisted;
 std::string cacheDir;
-
-// the main file, where the main loop is happening, and also where the file members are defined
 
 unsigned int file::inputLineCount = 0; // number of lines in input file
 
@@ -29,24 +29,6 @@ std::string nasmToLinker;
 std::string binaryOutput;
 
 long start;
-
-// help text (if no arguments provided
-#define HELP_TEXT \
-"Jaclang help: \n"\
-"usage:\n"\
-"   jaclang - for help\n"\
-"   jaclang [option] - for misc\n"\
-"   jaclang [input file] [output file] - for compilation\n"\
-"\n"\
-"options:\n"\
-"   -d - debug - get more detailed compilation (for nerds)\n"\
-"   -k - keep  - keep the assembly file\n"\
-"   -q - quiet - say nothing except errors and debug messages if specified\n"\
-"\n"\
-"misc options:\n"\
-"   version    - check the version name and id\n"\
-"   versionid  - show only version id\n"\
-"   versionstr - show only version name\n"\
 
 void init();
 
