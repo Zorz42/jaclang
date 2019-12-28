@@ -6,6 +6,7 @@ usage:
 
 options:
    -d - debug - get more detailed compilation (for nerds)
+   -k - keep  - keep cache (asm, object file located in .jlcache)
    -q - quiet - say nothing except errors and debug messages if specified
 
 misc options:
