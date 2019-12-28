@@ -4,11 +4,19 @@
  * eg.
  * 
  * int i = 0;
- * token 1: type: indent, text: "i"
- * token 2: type: symbol, text: "="
- * token 3: type: constant, text: "0"
- * token 4: type: symbol, text: ";"
- * 
+ * token 1: type indent, text: "int"
+ * token 2: type: indent, text: "i"
+ * token 3: type: symbol, text: "="
+ * token 4: type: constant, text: "0"
+ * token 5: type: symbol, text: ";"
+ *
+ * types of tokens with examples:
+ * 1. indent:   a
+ * 2. constant: 10
+ * 3. string:   "Hello, World!"
+ * 4. symbol:   {
+ * 5. operator: +
+ *
  * it breaks code so that parser can read it and turn it into syntax tree
  * */
 
