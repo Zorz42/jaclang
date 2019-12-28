@@ -4,11 +4,10 @@
  * eg.
  * 
  * int i = 0;
- * token 1: type: keyword, text: "int"
- * token 2: type: indent, text: "i"
- * token 3: type: symbol, text: "="
- * token 4: type: constant, text: "0"
- * token 5: type: symbol, text: ";"
+ * token 1: type: indent, text: "i"
+ * token 2: type: symbol, text: "="
+ * token 3: type: constant, text: "0"
+ * token 4: type: symbol, text: ";"
  * 
  * it breaks code so that parser can read it and turn it into syntax tree
  * */
@@ -18,8 +17,6 @@
 int currentLine = 1;
 
 std::vector<token> lexer::tokens; // vector of tokens
-
-bool isKeyword(const std::string& text); // check if string is in keyword list, used for defining token type for later
 
 void newToken(int TYPE=TYPE_UNDEF); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
@@ -155,9 +152,7 @@ void lexer::main() // main lexer function
 	{
 		if(iter.type == TYPE_UNDEF) // if type is undefined
 		{
-			if(isKeyword(iter.text)) // keyword
-				iter.type = TYPE_KEYWORD;
-			else if(isDec(iter.text)) // constant
+			if(isDec(iter.text)) // constant
 				iter.type = TYPE_CONST;
 			else if(iter.text == "*" || iter.text == "&") // unresolved '*' and '&'
 			{
@@ -197,11 +192,6 @@ void newToken(int TYPE)
 		obj.pos++;
 	lexer::tokens.push_back(obj); // append token
 	currentToken = ""; // reset token
-}
-
-bool isKeyword(const std::string& text)
-{
-	return find(lexer::keywords, text) != lexer::keywords.size(); // check if vector keywords containing that string
 }
 
 /*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i don't really want to

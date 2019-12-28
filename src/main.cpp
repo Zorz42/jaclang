@@ -145,9 +145,7 @@ void handle_arguments(int argc, char **argv)
         std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
         if(helpFile.is_open())
         {
-            std::string helpText((std::istreambuf_iterator<char>(helpFile.rdbuf())),std::istreambuf_iterator<char>());
-            helpText.pop_back(); // remove newline
-            std::cout << helpText; // print help text
+            std::cout << helpFile.rdbuf(); // print help text
         }
         else
         {

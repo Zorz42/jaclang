@@ -10,11 +10,10 @@
 #define ERROR_DATA_ERROR 8
 
 #define TYPE_UNDEF 0
-#define TYPE_KEYWORD 1
-#define TYPE_INDENT 2
-#define TYPE_CONST 3
-#define TYPE_STRING 4
-#define TYPE_SYMBOL 5
-#define TYPE_OPERATOR 6
+#define TYPE_INDENT 1
+#define TYPE_CONST 2
+#define TYPE_STRING 3
+#define TYPE_SYMBOL 4
+#define TYPE_OPERATOR 5
 
 //#define VARIABLE_INT 0

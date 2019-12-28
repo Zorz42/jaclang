@@ -75,11 +75,6 @@ void init() // initialize global variables
     while(std::getline(readFile, line))
         file::outputVector.push_back(line);
 
-    lexer::keywords = {
-            "int",
-            "return"
-    };
-
     parser::scopes = {&mainBranch};
 
 #define find(x) find(file::outputVector, x)
