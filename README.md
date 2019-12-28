@@ -1,7 +1,7 @@
 # jaclang beta
 *project made by jakob*
 
-INSTALLATION CAN BE SEEN AT: install/README.md
+INSTALLATION: https://github.com/Zorz42/jaclang/blob/master/install/README.md
 
  * Jaclang is trying to achieve as small compiled binaries as possible.
  * 
