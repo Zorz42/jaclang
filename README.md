@@ -1,8 +1,5 @@
 # jaclang beta
-
-// -------------------------- //
- PROJECT MADE BY JAKOB
-// -------------------------- //
+*project made by jakob*
 
 INSTALLATION CAN BE SEEN AT: install/README.md
 
