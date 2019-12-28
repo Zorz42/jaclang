@@ -1,6 +1,4 @@
-jaclang beta
-
-Website is still in development. I am trying to make it feel more alive.
+# jaclang beta
 
 // -------------------------- //
  PROJECT MADE BY JAKOB
