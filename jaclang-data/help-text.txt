@@ -6,7 +6,6 @@ usage:
 
 options:
    -d - debug - get more detailed compilation (for nerds)
-   -k - keep  - keep the assembly file
    -q - quiet - say nothing except errors and debug messages if specified
 
 misc options:
