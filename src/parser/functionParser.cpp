@@ -54,7 +54,7 @@ bool parser::e::functionDeclaration()
 {
     if(parser::tokCount == lexer::tokens.size())
         return false;
-    if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int - keyword
+    if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int
 	{
 		branch currentBranch;
 		currentBranch.name = "functionDeclaration"; // set to variableDeclaration
