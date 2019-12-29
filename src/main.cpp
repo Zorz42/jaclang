@@ -13,7 +13,9 @@ std::string cacheDir;
 
 unsigned int file::inputLineCount = 0; // number of lines in input file
 
-bool debug = false; // if compilation is being debugged (default: false)
+// if compilation is being debugged (default: false)
+bool debug_show_tokens = false;
+bool debug_show_ast = false;
 
 unsigned long file::asm_data; // integers for tracking sections in asm file
 unsigned long file::asm_bss;
@@ -27,6 +29,9 @@ std::string jaclangInput;
 std::string jaclangToNasm;
 std::string nasmToLinker;
 std::string binaryOutput;
+
+bool quiet = false;
+bool keep = false;
 
 long start;
 
@@ -46,7 +51,6 @@ void remove_cache_dir(bool exitSuccess);
 std::string getFormat(std::string& file);
 
 std::vector<std::string> args; // vector of command line arguments
-std::string ops;               // vector of command line options
 
 std::string join(const std::string& filename, const std::string& end)
 {
@@ -56,7 +60,7 @@ std::string join(const std::string& filename, const std::string& end)
 int main(int argc, char **argv)
 {
     init();
-    if(!contains(ops, 'q'))
+    if(!quiet)
         start_timer();
 
     handle_arguments(argc, argv);
@@ -70,13 +74,13 @@ int main(int argc, char **argv)
     if(!nasmToLinker.empty() &&!binaryOutput.empty())
         link_object(nasmToLinker, binaryOutput);
 	
-    if(!contains(ops, 'q'))
+    if(!quiet)
         std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
     
-    if(!contains(ops, 'k'))
+    if(!keep)
         remove_cache_dir(true);
     
-	if(!contains(ops, 'q'))
+	if(!quiet)
         end_timer();
 
 	return 0; // exit success
@@ -88,7 +92,7 @@ void compile_jaclang(const std::string& jaclangInput2, const std::string& jaclan
 
     lexer::main(); // convert code into tokens
     parser::main(jaclangInput); // convert tokens into syntax tree
-    if (debug)
+    if (debug_show_ast)
         printAST(mainBranch);
     currentBranchScope = &mainBranch;
     generator::main(); // generate assembly code out of syntax tree
@@ -116,24 +120,34 @@ void end_timer()
 
 void handle_arguments(int argc, char **argv)
 {
-    const char allowedOptions[] = { // all allowed options
-            'd', // debug
-            'k', // keep cache
-            'q', // be quiet (still show errors)
-    };
-
     for(int i = 1; i < argc; i++) // go through arguments
     {
         if(argv[i][0] == '-') // if option
         {
             for(int i2 = 1; argv[i][i2] != 0; i2++) // go through options
             {
-                if(find(allowedOptions, argv[i][i2]) == 3) // if option is not valid
+                switch(argv[i][i2])
                 {
-                    std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl; // error
-                    error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+                    case 'd': // debug (show tokens and ast)
+                        debug_show_tokens = true;
+                        debug_show_ast = true;
+                        break;
+                    case 't': // show tokens
+                        debug_show_tokens = true;
+                        break;
+                    case 'a': // show ast
+                        debug_show_ast = true;
+                        break;
+                    case 'q': // be quiet (still show errors)
+                        quiet = true;
+                        break;
+                    case 'k': // keep cache
+                        keep = true;
+                        break;
+                    default:
+                        std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m" << std::endl; // error
+                        error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
                 }
-                ops.push_back(argv[i][i2]); // else append option
             }
         }
         else // if not option
@@ -237,8 +251,6 @@ void handle_arguments(int argc, char **argv)
     }
     else
         binaryOutput = outputFileName;
-    if(contains(ops, 'd'))
-        debug = true;
 }
 
 void compile_assembly(const std::string& inputFile, const std::string& outputFile)

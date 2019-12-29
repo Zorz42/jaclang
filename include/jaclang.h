@@ -13,7 +13,8 @@ struct branch;
 
 #define coutd std::cout
 
-extern bool debug;
+extern bool debug_show_tokens;
+extern bool debug_show_ast;
 
 // headers/
 #include "os-detection.h" // detects os during compile-time

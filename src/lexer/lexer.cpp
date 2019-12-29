@@ -173,7 +173,7 @@ void lexer::main() // main lexer function
 				iter.type = TYPE_INDENT; // indent is only left
 		}
 		
-		if(debug)
+		if(debug_show_tokens)
 		{
 			coutd << int(iter.type) << ": " << iter.text;
 #define POS_OFFSET 15
