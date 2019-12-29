@@ -91,9 +91,19 @@ void init() // initialize global variables
         "int",
         "long",
     };
-    for(std::string primitiveDatatype : parser::primitiveDatatypes)
-        for(std::string primitiveDatatype2 : parser::primitiveDatatypes)
-            parser::operatorMatches[primitiveDatatype + "+" + primitiveDatatype2] = primitiveDatatype;
+    for(const std::string& primitiveDatatype : parser::primitiveDatatypes)
+        for(const std::string& primitiveDatatype2 : parser::primitiveDatatypes)
+        {
+            std::string target = primitiveDatatype;
+            target += "+";
+            target += primitiveDatatype2;
+            parser::operatorMatches[target] = primitiveDatatype;
+        }
+
+    parser::primitiveDatatypeSizes["char"]  = 1;
+    parser::primitiveDatatypeSizes["short"] = 2;
+    parser::primitiveDatatypeSizes["int"]   = 4;
+    parser::primitiveDatatypeSizes["long"]  = 8;
 }
 
 

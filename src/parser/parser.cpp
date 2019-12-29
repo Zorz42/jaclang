@@ -11,21 +11,23 @@ branch mainBranch;
 std::unordered_map<std::string, std::string> parser::operatorMatches;
 std::vector<std::string> parser::primitiveDatatypes;
 
-auto parserFunctions = {
-    parser::e::systemFunctionCall,
-    parser::e::functionDeclaration,
-    parser::e::variableDeclaration,
-    parser::e::beginScope,
-    parser::e::endScope,
-    parser::e::variableSetting,
-    parser::e::returnStatement,
-};
+std::unordered_map<std::string, int> parser::primitiveDatatypeSizes;
 
 #define current lexer::tokens.at(parser::tokCount)
 
 void parser::main(std::string rootName)
 {
-	currentBranchScope = &mainBranch;
+    auto parserFunctions = {
+            parser::e::systemFunctionCall,
+            parser::e::functionDeclaration,
+            parser::e::variableDeclaration,
+            parser::e::beginScope,
+            parser::e::endScope,
+            parser::e::variableSetting,
+            parser::e::returnStatement,
+    };
+
+    currentBranchScope = &mainBranch;
 	mainBranch.name = std::move(rootName); // root name is input file name
 	
 	for(;parser::tokCount < lexer::tokens.size(); parser::tokCount++) // go through all tokens

@@ -29,3 +29,9 @@ install:
 
 uninstall:
 	@sudo rm /usr/local/bin/jaclang
+
+skipjpm:
+	@$(PYTHON) install/main.py dependencies
+	@python3 install/main.py build
+	@python3 install/main.py install
+
