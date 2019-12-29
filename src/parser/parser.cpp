@@ -11,6 +11,16 @@ branch mainBranch;
 std::unordered_map<std::string, std::string> parser::operatorMatches;
 std::vector<std::string> parser::primitiveDatatypes;
 
+auto parserFunctions = {
+    parser::e::systemFunctionCall,
+    parser::e::functionDeclaration,
+    parser::e::variableDeclaration,
+    parser::e::beginScope,
+    parser::e::endScope,
+    parser::e::variableSetting,
+    parser::e::returnStatement,
+};
+
 #define current lexer::tokens.at(parser::tokCount)
 
 void parser::main(std::string rootName)
@@ -20,14 +30,14 @@ void parser::main(std::string rootName)
 	
 	for(;parser::tokCount < lexer::tokens.size(); parser::tokCount++) // go through all tokens
 	{
-		if(parser::e::systemFunctionCall()); // else execute systemFunctionCall
-		else if(parser::e::functionDeclaration());
-		else if(parser::e::variableDeclaration()); // else execute variableDeclaration
-		else if(parser::e::beginScope());
-		else if(parser::e::endScope());
-		else if(parser::e::variableSetting());
-		else if(parser::e::returnStatement());
-		else
+        bool knownBranch = false;
+		for(auto i : parserFunctions)
+            if(i())
+            {
+                knownBranch = true;
+                break;
+            }
+		if(!knownBranch)
 			appendBranch(parser::calculation(), *currentBranchScope);
 	}
 }
