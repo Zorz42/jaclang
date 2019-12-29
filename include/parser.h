@@ -33,4 +33,6 @@ namespace parser
 	}
 	
 	extern std::vector<branch*> scopes;
+    extern std::unordered_map<std::string, std::string> operatorMatches;
+    extern std::vector<std::string> primitiveDatatypes;
 }

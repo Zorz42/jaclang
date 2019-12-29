@@ -79,11 +79,22 @@ void init() // initialize global variables
 
 #define find(x) find(file::outputVector, x)
 
-    file::asm_data = find("section .data")     + 1; // locate each section
-    file::asm_bss  = find("section .bss")      + 1;
-    file::asm_text = find("section .text")     + 4;
+    file::asm_data = find("section .data") + 1; // locate each section
+    file::asm_bss  = find("section .bss")  + 1;
+    file::asm_text = find("section .text") + 4;
     file::asm_func = file::outputVector.size();
 
 #undef find
+    parser::primitiveDatatypes = {
+        "char",
+        "short",
+        "int",
+        "long",
+    };
+    for(std::string primitiveDatatype : parser::primitiveDatatypes)
+        for(std::string primitiveDatatype2 : parser::primitiveDatatypes)
+            parser::operatorMatches[primitiveDatatype + "+" + primitiveDatatype2] = primitiveDatatype;
 }
+
+
 
