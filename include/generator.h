@@ -2,7 +2,7 @@
 
 struct variable
 {
-    std::string indent; // indent
+    std::string name; // name
     std::string type;   // datatype
     int position; // position on stack
     int8_t size()

@@ -4,14 +4,14 @@
  * eg.
  * 
  * int i = 0;
- * token 1: type indent, text: "int"
- * token 2: type: indent, text: "i"
+ * token 1: type name, text: "int"
+ * token 2: type: name, text: "i"
  * token 3: type: symbol, text: "="
  * token 4: type: constant, text: "0"
  * token 5: type: symbol, text: ";"
  *
  * types of tokens with examples:
- * 1. indent:   a
+ * 1. name:   a
  * 2. constant: 10
  * 3. string:   "Hello, World!"
  * 4. symbol:   {
@@ -28,6 +28,10 @@ std::vector<token> lexer::tokens; // vector of tokens
 
 void newToken(int TYPE=TYPE_UNDEF); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
+
+std::string lexer::symbols;
+std::string lexer::operators;
+std::string lexer::inNumber;
 
 //unsigned long toDec(std::string text); // convert string to float or int
 
@@ -170,7 +174,7 @@ void lexer::main() // main lexer function
 					iter.type = TYPE_SYMBOL;
 			}
 			else
-				iter.type = TYPE_INDENT; // indent is only left
+				iter.type = TYPE_INDENT; // name is only left
 		}
 		
 		if(debug_show_tokens)

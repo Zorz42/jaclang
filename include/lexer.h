@@ -18,7 +18,7 @@ namespace lexer
 	
 	extern std::vector<token> tokens;
 
-	const std::string symbols = "()[]{},*&#.";
-	const std::string operators = "!%^=><+-*%&|/~?:$@";
-	const std::string inNumber = "0123456789.";
+	extern std::string symbols;
+	extern std::string operators;
+	extern std::string inNumber;
 }

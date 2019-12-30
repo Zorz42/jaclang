@@ -87,8 +87,6 @@ void generator::e::calculation(branch& calculation)
                     error::treeError("unrecognized operator");
             }
 		}
-		delete calculationType;
-		delete calculationTypes;
 	}
 }
 
@@ -129,13 +127,17 @@ std::pair<std::string, std::vector<std::string>> getCalculationTypes(branch& cal
     {
         if(current == "calc")
             calculationTypes.push_back(getCalculationTypes(calculation.sub.at(i)).first);
+        else if(current == "functionCall")
+            calculationTypes.emplace_back("int");
         else if(current.at(0) == ':')
         {
             std::string variableName = current;
             variableName.erase(variableName.begin());
             variable currentVariable = generator::get_variable(variableName);
+            calculationTypes.push_back(currentVariable.type);
         }
-        std::cout << current << std::endl;
+        else
+            calculationTypes.emplace_back("int");
     }
 #undef current
     output.first = calculationType;

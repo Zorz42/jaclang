@@ -15,11 +15,11 @@ bool parser::e::variableDeclaration()
         appendBranch(current.text, currentBranch);
 		parser::tokCount++;
 		if(current.type != TYPE_INDENT) // check if everything is working out and append it to main branch
-			error::syntaxError("Expected indent after value type indent in variable declaration");
+			error::syntaxError("Expected name after value type name in variable declaration");
 		appendBranch(current.text, currentBranch);
 		parser::tokCount++;
 		if(current.text != "=")
-			error::syntaxError("Expected '=' after value type indent in variable declaration");
+			error::syntaxError("Expected '=' after value type name in variable declaration");
 		parser::tokCount++;
 		branch equationBranch = parser::calculation(true);
 		appendBranch(equationBranch, currentBranch);

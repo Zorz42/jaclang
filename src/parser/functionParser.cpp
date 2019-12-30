@@ -8,14 +8,14 @@ bool parser::e::functionCall(branch& target)
 {
     if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
-    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
+    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> name followed by '('
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system function call or just function call
 			return false;
 		else
 			currentBranch.name = "functionCall";
-		appendBranch(current.text, currentBranch); // append indent to branch 
+		appendBranch(current.text, currentBranch); // append name to branch
 		parser::tokCount += 2;
 		if(current.text != ")")
 			error::syntaxError("Function call cannot have arguments (for now)");
@@ -30,14 +30,14 @@ bool parser::e::systemFunctionCall()
 {
     if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
-    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
+    if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> name followed by string
 	{
 		branch currentBranch; // make branch for function
 		if(isSystemIndent(current.text))  // check if its system function call
 			currentBranch.name = "systemFunctionCall";
 		else
 			return false;
-		appendBranch(current.text, currentBranch); // append indent to branch 
+		appendBranch(current.text, currentBranch); // append name to branch
 		parser::tokCount++; // go to argument
 		if(current.type != TYPE_STRING)
 			error::syntaxError("Expected one string argument on system function");
