@@ -4,12 +4,6 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
-bool test(bool output)
-{
-    std::cout << "test" << std::endl;
-    return output;
-}
-
 bool parser::e::functionCall(branch& target)
 {
     if(parser::tokCount == lexer::tokens.size() - 1)
