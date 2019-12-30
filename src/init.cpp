@@ -85,12 +85,17 @@ void init() // initialize global variables
     file::asm_func = file::outputVector.size();
 
 #undef find
+    parser::primitiveDatatypeSizes["char"] = 1;
+    parser::primitiveDatatypeSizes["short"] = 2;
+    parser::primitiveDatatypeSizes["int"] = 4;
+    parser::primitiveDatatypeSizes["long"] = 8;
     parser::primitiveDatatypes = {
         "char",
         "short",
         "int",
         "long",
     };
+    
     for(const std::string& primitiveDatatype : parser::primitiveDatatypes)
         for(const std::string& primitiveDatatype2 : parser::primitiveDatatypes)
         {
@@ -99,11 +104,10 @@ void init() // initialize global variables
             target += primitiveDatatype2;
             parser::operatorMatches[target] = primitiveDatatype;
         }
-
-    parser::primitiveDatatypeSizes["char"]  = 1;
-    parser::primitiveDatatypeSizes["short"] = 2;
-    parser::primitiveDatatypeSizes["int"]   = 4;
-    parser::primitiveDatatypeSizes["long"]  = 8;
+    generator::sizeKeywords[1] = "BYTE";
+    generator::sizeKeywords[2] = "WORD";
+    generator::sizeKeywords[4] = "DWORD";
+    generator::sizeKeywords[8] = "QWORD";
 }
 
 

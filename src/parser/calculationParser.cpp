@@ -4,7 +4,7 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
-branch optimize(branch currentBranch, bool nested);
+void optimize(branch& currentBranch, const bool& nested);
 
 void insertBranchAtBegin(std::string name, branch& target)
 {
@@ -12,10 +12,6 @@ void insertBranchAtBegin(std::string name, branch& target)
 	obj.name = std::move(name);
 	target.sub.insert(target.sub.begin(), obj);
 }
-/*void insertBranchAtBegin(const branch& source, branch& target)
-{
-	target.sub.insert(target.sub.begin(), source);
-}*/
 
 branch parser::calculation(bool nested) // parse calculation
 {
@@ -36,12 +32,7 @@ branch parser::calculation(bool nested) // parse calculation
 		timeForValue = false;
 	}
 	else if(current.type == TYPE_CONST || current.type == TYPE_INDENT) // if first value is number
-	{
-		if(contains(current.text, '.')) // if it has '.' in it then its float
-			insertBranchAtBegin("float", currentBranch);
-		else
-			insertBranchAtBegin("int", currentBranch); // else its integer
-	}
+        insertBranchAtBegin("int", currentBranch); // its integer
 	else if(current.text == "(") // if its nested with () then its calculation within calculation
 	{
 		parser::tokCount++;
@@ -53,7 +44,6 @@ branch parser::calculation(bool nested) // parse calculation
 	}
 	else
         error::syntaxError("Value expected");
-
 
 	while(true)
     {
@@ -138,27 +128,21 @@ branch parser::calculation(bool nested) // parse calculation
 				eraseEl(i);
 			}
 			
-			obj = optimize(obj, true);
+			optimize(obj, true);
 			
 			currentBranch.sub.insert(currentBranch.sub.begin() + i, obj);
 			i--;
 		}
 	}
 	
-	currentBranch = optimize(currentBranch, nested);
+	optimize(currentBranch, nested);
 	
 	return currentBranch;
 }
 
-branch optimize(branch currentBranch, bool nested)
+void optimize(branch& currentBranch, const bool& nested)
 {
-	if(currentBranch.sub.size() == 2 && nested)
-	{
-		branch obj = currentBranch.sub.at(1);
-		currentBranch = obj;
-	}
-	
-	for(unsigned int i = 1; i + 2 <= currentBranch.sub.size(); i += 2)
+    for(unsigned int i = 1; i + 2 <= currentBranch.sub.size(); i += 2)
 	{
 		if(isInt(currentBranch.sub.at(i).name) && isInt(currentBranch.sub.at(i + 2).name))
 		{
@@ -175,12 +159,10 @@ branch optimize(branch currentBranch, bool nested)
 			i -= 2;
 		}
 	}
-	if(currentBranch.sub.size() == 2 && nested)
+	if(currentBranch.sub.size() == 2 && nested && isInt(currentBranch.sub.at(1).name))
 	{
 		branch obj = currentBranch.sub.at(1);
 		currentBranch = obj;
 	}
-	
-	return currentBranch;
 }
 

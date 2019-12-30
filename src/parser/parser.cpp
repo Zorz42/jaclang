@@ -18,13 +18,13 @@ std::unordered_map<std::string, int> parser::primitiveDatatypeSizes;
 void parser::main(std::string rootName)
 {
     auto parserFunctions = {
-            parser::e::systemFunctionCall,
-            parser::e::functionDeclaration,
-            parser::e::variableDeclaration,
-            parser::e::beginScope,
-            parser::e::endScope,
-            parser::e::variableSetting,
-            parser::e::returnStatement,
+            &parser::e::systemFunctionCall,
+            &parser::e::functionDeclaration,
+            &parser::e::variableDeclaration,
+            &parser::e::beginScope,
+            &parser::e::endScope,
+            &parser::e::variableSetting,
+            &parser::e::returnStatement,
     };
 
     currentBranchScope = &mainBranch;

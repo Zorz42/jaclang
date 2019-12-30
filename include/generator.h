@@ -3,9 +3,12 @@
 struct variable
 {
     std::string indent; // indent
-    //int8_t type; // type of value
+    std::string type;   // datatype
     int position; // position on stack
-    int8_t size;
+    int8_t size()
+    {
+        return parser::primitiveDatatypeSizes[this->type];
+    }
 };
 
 struct function
@@ -39,5 +42,7 @@ namespace generator
 
 	void nextRegister();
     void prevRegister();
-	std::string availableRegister32();
+	std::string availableRegister(int8_t size);
+
+    extern std::unordered_map<int8_t, std::string> sizeKeywords;
 }

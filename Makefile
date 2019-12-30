@@ -15,8 +15,7 @@ clean:
 fullinstall:
 	@$(PYTHON) install/main.py dependencies
 	@python3 install/installjpm.py
-	@python3 install/main.py build
-	@python3 install/main.py install
+	@python3 install/main.py buildinstall
 
 init:
 	@$(PYTHON) install/main.py dependencies
@@ -32,6 +31,5 @@ uninstall:
 
 skipjpm:
 	@$(PYTHON) install/main.py dependencies
-	@python3 install/main.py build
-	@python3 install/main.py install
+	@python3 install/main.py buildinstall
 

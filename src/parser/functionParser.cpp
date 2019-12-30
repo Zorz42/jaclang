@@ -4,9 +4,15 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
+bool test(bool output)
+{
+    std::cout << "test" << std::endl;
+    return output;
+}
+
 bool parser::e::functionCall(branch& target)
 {
-    if(parser::tokCount == lexer::tokens.size())
+    if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
     if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).text == "(") // if its function -> indent followed by '('
 	{
@@ -28,7 +34,7 @@ bool parser::e::functionCall(branch& target)
 
 bool parser::e::systemFunctionCall()
 {
-    if(parser::tokCount == lexer::tokens.size())
+    if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
     if(current.type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 1).type == TYPE_STRING) // if its systemFunction -> indent followed by string
 	{
@@ -52,7 +58,7 @@ bool parser::e::systemFunctionCall()
 
 bool parser::e::functionDeclaration()
 {
-    if(parser::tokCount == lexer::tokens.size())
+    if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
     if(current.text == "int" && lexer::tokens.at(parser::tokCount + 1).type == TYPE_INDENT && lexer::tokens.at(parser::tokCount + 2).text == "(") // if first text is int
 	{

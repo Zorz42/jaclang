@@ -17,7 +17,10 @@ elif len(sys.argv) == 2:
 
     elif sys.argv[1] == "install":
         install()
-
+    elif sys.argv[1] == "buildinstall":
+        build()
+        install()
+    
     else:
         print("Invalid argument: " + sys.argv[1])
 else:

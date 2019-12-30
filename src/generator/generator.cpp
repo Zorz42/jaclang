@@ -9,6 +9,8 @@ bool generator::inFunction = false;
 
 unsigned long currentScopeOnStack = 0;
 
+std::unordered_map<int8_t, std::string> generator::sizeKeywords;
+
 void generator::main()
 {
 	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
@@ -35,7 +37,7 @@ void generator::main()
 			currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
 			while(generator::stack.size() > stackLength) // remove elements from stack that were in scope
 			{
-				stackPointer -= generator::stack.at(generator::stack.size() - 1).size;
+				stackPointer -= generator::stack.at(generator::stack.size() - 1).size();
 				generator::stack.pop_back();
 			}
 			currentBranchScope = prevScope; // retrieve current branch scope
@@ -53,7 +55,29 @@ void generator::main()
 
 void generator::pushToStack(variable source) // push to stack
 {
-	generator::stackPointer += source.size;
+	generator::stackPointer += source.size();
 	source.position = generator::stackPointer;
 	generator::stack.push_back(source);
+}
+
+void generator::nextRegister()
+{
+    generator::currentRegister++;
+    if(generator::currentRegister == generator::availableRegisters[2].size())
+        error::treeError("register overflow");
+}
+
+void generator::prevRegister()
+{
+    generator::currentRegister--;
+    if(generator::currentRegister == -1)
+        error::treeError("register overflow");
+}
+
+std::string generator::availableRegister(int8_t size)
+{
+    int index = 0;
+    for (int i = size; i != 1; i /= 2)
+        index++;
+    return generator::availableRegisters[index].at(generator::currentRegister);
 }

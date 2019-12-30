@@ -21,16 +21,16 @@ void generator::e::calculation(branch& calculation)
 		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
 			generator::e::functionCall(calculation.sub.at(1).sub.at(0).name);
 		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
-			file::append_instruction("mov", generator::availableRegister32(), value_variable(calculation.sub.at(1).name)); // mov first value to register
+			file::append_instruction("mov", generator::availableRegister(4), value_variable(calculation.sub.at(1).name)); // mov first value to register
 		else if(calculation.sub.at(1).name == "calculation")
 		{
 			generator::nextRegister(); // its just nested calculation
 			generator::e::calculation(calculation.sub.at(1));
-			file::append_instruction("mov", generator::availableRegisters[2].at(generator::currentRegister - 1), generator::availableRegister32());
+			file::append_instruction("mov", generator::availableRegisters[2].at(generator::currentRegister - 1), generator::availableRegister(4));
 			generator::prevRegister();
 		}
 		else // else its just constant
-            file::append_instruction("mov", generator::availableRegister32(), calculation.sub.at(1).name);
+            file::append_instruction("mov", generator::availableRegister(4), calculation.sub.at(1).name);
         
 		
 		
@@ -72,50 +72,31 @@ void generator::e::calculation(branch& calculation)
 	}
 }
 
-void generator::nextRegister()
-{
-	generator::currentRegister++;
-	if(generator::currentRegister == generator::availableRegisters[2].size())
-		error::treeError("register overflow");
-}
-
-void generator::prevRegister()
-{
-    generator::currentRegister--;
-    if(generator::currentRegister == -1)
-        error::treeError("register overflow");
-}
-
-std::string generator::availableRegister32()
-{
-	return generator::availableRegisters[2].at(generator::currentRegister);
-}
-
 void operator_add(const std::string& value)
 {
-    file::append_instruction("add", generator::availableRegister32(), value);
+    file::append_instruction("add", generator::availableRegister(4), value);
 }
 
 void operator_sub(const std::string& value)
 {
-    file::append_instruction("sub", generator::availableRegister32(), value);
+    file::append_instruction("sub", generator::availableRegister(4), value);
 }
 
 void operator_mul(const std::string& value)
 {
     file::append_instruction("mov", "eax", value);
-    file::append_text("	imul " + generator::availableRegister32());
-    file::append_instruction("mov", generator::availableRegister32(), "eax");
+    file::append_text("	imul " + generator::availableRegister(4));
+    file::append_instruction("mov", generator::availableRegister(4), "eax");
 }
 void operator_div(const std::string& value)
 {
-    file::append_instruction("mov", "eax", generator::availableRegister32());
+    file::append_instruction("mov", "eax", generator::availableRegister(4));
     generator::nextRegister();
-    if(generator::availableRegister32() != value)
-        file::append_instruction("mov", generator::availableRegister32(), value);
-    file::append_text("	idiv " + generator::availableRegister32());
+    if(generator::availableRegister(4) != value)
+        file::append_instruction("mov", generator::availableRegister(4), value);
+    file::append_text("	idiv " + generator::availableRegister(4));
     generator::prevRegister();
-    file::append_instruction("mov", generator::availableRegister32(), "eax");
+    file::append_instruction("mov", generator::availableRegister(4), "eax");
 }
 
 std::string value_variable(const std::string& variableName)
