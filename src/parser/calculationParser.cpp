@@ -22,6 +22,7 @@ branch parser::calculation(bool nested) // parse calculation
 	if(current.text == "-")
 	{
 		appendBranch("0", currentBranch);
+        appendBranch("int", currentBranch);
 		appendBranch("-", currentBranch);
 		parser::tokCount++;
 	}
