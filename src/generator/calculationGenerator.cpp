@@ -10,41 +10,51 @@ void operator_sub(const std::string& value);
 void operator_mul(const std::string& value);
 void operator_div(const std::string& value);
 
-std::string value_variable(const std::string& variableName);
+int8_t currentValueAsmSize;
 
 void generator::e::calculation(branch& calculation)
 {
 	if(calculation.name == "calc") // if branch is calculation
 	{
-		if(calculation.sub.at(0).name != "int") // for now equations only support int
-			error::treeError("calculation must be int");
-		if(calculation.sub.at(1).name == "functionCall") // check if its function call at the beginning
-			generator::e::functionCall(calculation.sub.at(1).sub.at(0).name);
-		else if(calculation.sub.at(1).name.at(0) == ':') // variables will have : at the beginning
-			file::append_instruction("mov", generator::availableRegister(4), value_variable(calculation.sub.at(1).name)); // mov first value to register
-		else if(calculation.sub.at(1).name == "calculation")
+		if(calculation.sub.at(0).name == "functionCall") // check if its function call at the beginning
+			generator::e::functionCall(calculation.sub.at(0).sub.at(0).name);
+		else if(calculation.sub.at(0).name.at(0) == ':') // variables will have : at the beginning
+        {
+            std::string value = calculation.sub.at(0).name; // variable name
+            value.erase(value.begin()); // remove :
+            variable curr = generator::get_variable(value);
+            file::append_instruction("mov", generator::availableRegister(curr.size()),
+                                     onStack(curr.position)); // mov first value to register
+        }
+		else if(calculation.sub.at(0).name == "calculation")
 		{
 			generator::nextRegister(); // its just nested calculation
-			generator::e::calculation(calculation.sub.at(1));
+			generator::e::calculation(calculation.sub.at(0));
 			file::append_instruction("mov", generator::availableRegisters[2].at(generator::currentRegister - 1), generator::availableRegister(4));
 			generator::prevRegister();
 		}
 		else // else its just constant
-            file::append_instruction("mov", generator::availableRegister(4), calculation.sub.at(1).name);
+            file::append_instruction("mov", generator::availableRegister(4), calculation.sub.at(0).name);
         
 		
 		
 		#define currentValue calculation.sub.at(i).name
 		#define currentOperator calculation.sub.at(i - 1).name
 		
-		for(unsigned long i = 3; i <= calculation.sub.size(); i += 2)
+		for(unsigned long i = 2; i <= calculation.sub.size(); i += 2)
 		{
 			std::string currentValueAsm = currentValue;
+			currentValueAsmSize = 4; // default - int (4 bytes)
 			if(currentValueAsm.at(0) == ':') // if its variable
-				currentValueAsm = value_variable(currentValueAsm);
-			if(currentValue.at(0) == '.') // if current value is string
-				error::treeError("int cannot add string");
-			else if(currentValue == "calc") // if value is calculation
+            {
+                std::string value = currentValueAsm; // variable name
+                value.erase(value.begin()); // remove :
+                variable curr = generator::get_variable(value);
+                currentValueAsm = onStack(curr.position);
+                currentValueAsmSize = curr.size();
+            }
+
+			if(currentValue == "calc") // if value is calculation
             {
                 generator::nextRegister();
                 generator::e::calculation(calculation.sub.at(i));
@@ -53,7 +63,7 @@ void generator::e::calculation(branch& calculation)
                 currentValueAsm = generator::availableRegisters[2].at(generator::currentRegister + 1);
             }
 
-			if(currentValue == "functionCall") // check if its function call at the beginning
+			else if(currentValue == "functionCall")
                 generator::e::functionCall(calculation.sub.at(i).sub.at(0).name);
 			else
             {
@@ -74,50 +84,27 @@ void generator::e::calculation(branch& calculation)
 
 void operator_add(const std::string& value)
 {
-    file::append_instruction("add", generator::availableRegister(4), value);
+    file::append_instruction("add", generator::availableRegister(currentValueAsmSize), value);
 }
 
 void operator_sub(const std::string& value)
 {
-    file::append_instruction("sub", generator::availableRegister(4), value);
+    file::append_instruction("sub", generator::availableRegister(currentValueAsmSize), value);
 }
 
 void operator_mul(const std::string& value)
 {
     file::append_instruction("mov", "eax", value);
-    file::append_text("	imul " + generator::availableRegister(4));
-    file::append_instruction("mov", generator::availableRegister(4), "eax");
+    file::append_text("	imul " + generator::availableRegister(currentValueAsmSize));
+    file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
 }
 void operator_div(const std::string& value)
 {
-    file::append_instruction("mov", "eax", generator::availableRegister(4));
+    file::append_instruction("mov", "eax", generator::availableRegister(currentValueAsmSize));
     generator::nextRegister();
-    if(generator::availableRegister(4) != value)
-        file::append_instruction("mov", generator::availableRegister(4), value);
-    file::append_text("	idiv " + generator::availableRegister(4));
+    if(generator::availableRegister(currentValueAsmSize) != value)
+        file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), value);
+    file::append_text("	idiv " + generator::availableRegister(currentValueAsmSize));
     generator::prevRegister();
-    file::append_instruction("mov", generator::availableRegister(4), "eax");
-}
-
-std::string value_variable(const std::string& variableName)
-{
-    std::string value = variableName; // variable name
-    
-    
-    value.erase(value.begin()); // remove :
-    bool varExists = false; // go through stack and check if variable exists
-    for(const variable& iter : generator::stack)
-        if(iter.indent == value)
-        {
-            varExists = true;
-            value = onStack(iter.position);
-            break;
-        }
-    if(!varExists)
-    {
-        std::string errorString = variableName;
-        errorString += " does not exist";
-        error::treeError(errorString);
-    }
-    return value;
+    file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
 }

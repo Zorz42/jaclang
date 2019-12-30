@@ -45,4 +45,6 @@ namespace generator
 	std::string availableRegister(int8_t size);
 
     extern std::unordered_map<int8_t, std::string> sizeKeywords;
+
+    variable get_variable(const std::string& name);
 }

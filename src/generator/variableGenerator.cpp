@@ -27,9 +27,6 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	
 	if(current.sub.at(2).name == "calc")
 	{
-		if(current.sub.at(2).sub.at(0).name != "int") // if calculation type is not int report error
-			error::treeError("int declaration must be type int");
-		
 		generator::e::calculation(current.sub.at(2)); // do calculation
 		
 		file::append_instruction("mov", generator::sizeKeywords[obj.size()] + " " + onStack(generator::stackPointer), generator::availableRegister(obj.size())); // set variable on stack
@@ -78,4 +75,24 @@ void generator::e::variableSetting()
         
         file::append_instruction("mov", generator::sizeKeywords[currentVariable.size()] + " " + onStack(currentVariable.position), current.sub.at(1).name);
     }
+}
+
+variable generator::get_variable(const std::string& name)
+{
+    variable obj;
+    bool varExists = false; // go through stack and check if variable exists
+    for(const variable& iter : generator::stack)
+        if(iter.indent == name)
+        {
+            varExists = true;
+            obj = iter;
+            break;
+        }
+    if(!varExists)
+    {
+        std::string errorString = name;
+        errorString += " does not exist";
+        error::treeError(errorString);
+    }
+    return obj;
 }
