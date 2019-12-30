@@ -12,6 +12,8 @@ void init() // initialize global variables
     cacheDir = ".jlcache";
 
     generator::availableRegisters[0] = {
+            "bl",
+            "cl",
             "sil",
             "dil",
             "r8b",
@@ -24,6 +26,8 @@ void init() // initialize global variables
             "r15b",
     };
     generator::availableRegisters[1] = {
+            "bx",
+            "cx",
             "si",
             "di",
             "r8w",
@@ -36,6 +40,8 @@ void init() // initialize global variables
             "r15w",
     };
     generator::availableRegisters[2] = {
+            "ebx",
+            "ecx",
             "esi",
             "edi",
             "r8d",
@@ -48,6 +54,8 @@ void init() // initialize global variables
             "r15d",
     };
     generator::availableRegisters[3] = {
+            "rbx",
+            "rcx",
             "rsi",
             "rdi",
             "r8",

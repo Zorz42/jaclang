@@ -12,10 +12,18 @@ void operator_div(const std::string& value);
 
 int8_t currentValueAsmSize;
 
+std::pair<std::string, std::vector<std::string>> getCalculationTypes(branch& calculation);
+
 void generator::e::calculation(branch& calculation)
 {
 	if(calculation.name == "calc") // if branch is calculation
 	{
+	    // Getting types
+        std::pair<std::string, std::vector<std::string>> calculationTypePair = getCalculationTypes(calculation);
+	    std::vector<std::string>* calculationTypes = &calculationTypePair.second;
+	    std::string* calculationType = &calculationTypePair.first;
+
+	    // Actual calculation
 		if(calculation.sub.at(0).name == "functionCall") // check if its function call at the beginning
 			generator::e::functionCall(calculation.sub.at(0).sub.at(0).name);
 		else if(calculation.sub.at(0).name.at(0) == ':') // variables will have : at the beginning
@@ -79,6 +87,8 @@ void generator::e::calculation(branch& calculation)
                     error::treeError("unrecognized operator");
             }
 		}
+		delete calculationType;
+		delete calculationTypes;
 	}
 }
 
@@ -107,4 +117,28 @@ void operator_div(const std::string& value)
     file::append_text("	idiv " + generator::availableRegister(currentValueAsmSize));
     generator::prevRegister();
     file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
+}
+
+std::pair<std::string, std::vector<std::string>> getCalculationTypes(branch& calculation)
+{
+    std::pair<std::string, std::vector<std::string>> output;
+    std::vector<std::string> calculationTypes;
+    std::string calculationType;
+#define current calculation.sub.at(i).name
+    for(int i = 0; i < calculation.sub.size(); i += 2)
+    {
+        if(current == "calc")
+            calculationTypes.push_back(getCalculationTypes(calculation.sub.at(i)).first);
+        else if(current.at(0) == ':')
+        {
+            std::string variableName = current;
+            variableName.erase(variableName.begin());
+            variable currentVariable = generator::get_variable(variableName);
+        }
+        std::cout << current << std::endl;
+    }
+#undef current
+    output.first = calculationType;
+    output.second = calculationTypes;
+    return output;
 }
