@@ -45,7 +45,7 @@ void generator::e::functionDeclaration()
 	line += ".:";
 	file::append(line);
 	
-	file::append_instruction("push", "rbp");
+	file::append_instruction("pusha");
 	file::append_instruction("mov", "rbp", "rsp");
 	file::append("");
 	
@@ -54,7 +54,7 @@ void generator::e::functionDeclaration()
 	generator::main();
 	
 	file::append("");
-	file::append_instruction("pop", "rbp");
+	file::append_instruction("popa");
 	file::append_instruction("ret");
 	file::append("");
 	

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#define VERSION_STR "BETA 2.3.0"
+#define VERSION_STR "BETA 2.3.1"
 #define VERSION_INT 10
 
 #include <iostream>
