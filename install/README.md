@@ -27,3 +27,13 @@ To execute seperate stages of installation:
 All together:
 
     make
+
+If you want to skip jpm installation:
+
+    make init
+    make build
+    make install
+    
+Or all together:
+
+    make skipjpm
