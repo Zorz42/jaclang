@@ -1,14 +1,13 @@
 #pragma once
 
+#include "jaclang.h"
+
 struct variable
 {
     std::string name; // name
     std::string type;   // datatype
     int position; // position on stack
-    int8_t size()
-    {
-        return parser::primitiveDatatypeSizes[this->type];
-    }
+    int8_t size();
 };
 
 struct function
@@ -25,7 +24,7 @@ namespace generator
 		void systemFunctionCall();
 		void functionDeclaration();
 		void variableDeclaration(unsigned long scopeOnStack);
-		void calculation(branch& calculation);
+		std::string calculation(branch& calculation);
         void functionCall(const std::string& variableName);
         void variableSetting();
         void returnStatement();
@@ -47,4 +46,8 @@ namespace generator
     extern std::unordered_map<int8_t, std::string> sizeKeywords;
 
     variable get_variable(const std::string& name);
+
+    extern std::unordered_map<std::string, int> primitiveDatatypeSizes;
+    extern std::unordered_map<std::string, std::string> operatorMatches;
+    extern std::vector<std::string> primitiveDatatypes;
 }

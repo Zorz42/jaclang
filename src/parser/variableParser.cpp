@@ -8,7 +8,7 @@ bool parser::e::variableDeclaration()
 {
     if(parser::tokCount == lexer::tokens.size() - 1)
         return false;
-	if(contains(parser::primitiveDatatypes, current.text)) // if first text is a primitive datatype
+	if(contains(generator::primitiveDatatypes, current.text)) // if first text is a primitive datatype
 	{
 		branch currentBranch;
 		currentBranch.name = "variableDeclaration"; // set to variableDeclaration

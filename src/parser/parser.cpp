@@ -8,10 +8,8 @@ std::vector<branch*> parser::scopes;
 branch* currentBranchScope;
 branch mainBranch;
 
-std::unordered_map<std::string, std::string> parser::operatorMatches;
-std::vector<std::string> parser::primitiveDatatypes;
-
-std::unordered_map<std::string, int> parser::primitiveDatatypeSizes;
+std::unordered_map<std::string, std::string> generator::operatorMatches;
+std::vector<std::string> generator::primitiveDatatypes;
 
 #define current lexer::tokens.at(parser::tokCount)
 

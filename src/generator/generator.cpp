@@ -7,6 +7,8 @@ std::vector<variable> generator::stack; // the stack, not actual just for alloca
 std::vector<function> generator::functionVector;
 bool generator::inFunction = false;
 
+std::unordered_map<std::string, int> generator::primitiveDatatypeSizes;
+
 unsigned long currentScopeOnStack = 0;
 
 std::unordered_map<int8_t, std::string> generator::sizeKeywords;
@@ -80,4 +82,9 @@ std::string generator::availableRegister(int8_t size)
     for (int i = size; i != 1; i /= 2)
         index++;
     return generator::availableRegisters[index].at(generator::currentRegister);
+}
+
+int8_t variable::size()
+{
+    return generator::primitiveDatatypeSizes[this->type];
 }
