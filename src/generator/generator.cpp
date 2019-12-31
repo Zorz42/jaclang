@@ -65,7 +65,7 @@ void generator::pushToStack(variable source) // push to stack
 void generator::nextRegister()
 {
     generator::currentRegister++;
-    if(generator::currentRegister == generator::availableRegisters[2].size())
+    if(generator::currentRegister == generator::availableRegisters[0].size())
         error::treeError("register overflow");
 }
 
@@ -76,12 +76,12 @@ void generator::prevRegister()
         error::treeError("register overflow");
 }
 
-std::string generator::availableRegister(int8_t size)
+std::string generator::availableRegister(int8_t size, int8_t offset)
 {
     int index = 0;
     for (int i = size; i != 1; i /= 2)
         index++;
-    return generator::availableRegisters[index].at(generator::currentRegister);
+    return generator::availableRegisters[index].at(generator::currentRegister + offset);
 }
 
 int8_t variable::size()

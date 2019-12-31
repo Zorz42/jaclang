@@ -41,7 +41,7 @@ namespace generator
 
 	void nextRegister();
     void prevRegister();
-	std::string availableRegister(int8_t size);
+	std::string availableRegister(int8_t size, int8_t offset=0);
 
     extern std::unordered_map<int8_t, std::string> sizeKeywords;
 

@@ -20,6 +20,8 @@ std::string generator::e::calculation(branch& calculation)
     std::string currentValueType;
     std::string thisValueType;
 
+    file::append_instruction("mov", generator::availableRegister(8), "0");
+
     if(calculation.sub.at(0).name == "functionCall") // check if its function call at the beginning
     {
         generator::e::functionCall(calculation.sub.at(0).sub.at(0).name);
@@ -38,7 +40,7 @@ std::string generator::e::calculation(branch& calculation)
     {
         generator::nextRegister(); // its just nested calculation
         currentValueType = generator::e::calculation(calculation.sub.at(0));
-        file::append_instruction("mov", generator::availableRegisters[3].at(generator::currentRegister - 1), generator::availableRegister(8));
+        file::append_instruction("mov", generator::availableRegister(8, -1), generator::availableRegister(8));
         generator::prevRegister();
     }
     else // else its just constant
@@ -69,7 +71,7 @@ std::string generator::e::calculation(branch& calculation)
             thisValueType = generator::e::calculation(calculation.sub.at(i));
             generator::prevRegister();
 
-            currentValueAsm = generator::availableRegisters[2].at(generator::currentRegister + 1);
+            currentValueAsm = generator::availableRegister(8, 1);
         }
         else if(currentValue == "functionCall")
         {
