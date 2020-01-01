@@ -15,6 +15,21 @@ struct function
     std::string name;
 };
 
+struct match
+{
+    std::string type;
+    std::string result;
+    explicit match(std::vector<std::string> input) : type(input.at(0)), result(input.at(1)) {};
+};
+
+struct datatypeMatches
+{
+    std::string datatype;
+    std::vector<match> matches;
+    datatypeMatches(std::string datatype, std::vector<match> matches) : datatype(std::move(datatype)), matches(std::move(matches)) {};
+    datatypeMatches() = default;
+};
+
 namespace generator
 {
 	void main();
@@ -48,6 +63,7 @@ namespace generator
     variable get_variable(const std::string& name);
 
     extern std::unordered_map<std::string, int> primitiveDatatypeSizes;
-    extern std::unordered_map<std::string, std::string> operatorMatches;
+    extern std::vector<datatypeMatches> operatorMatches;
     extern std::vector<std::string> primitiveDatatypes;
+    extern std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
 }

@@ -105,13 +105,15 @@ void init() // initialize global variables
     };
     
     for(const std::string& primitiveDatatype : generator::primitiveDatatypes)
+    {
+        for (const std::string &currOperator : {"+", "-"})
+            generator::operatorMatches.push_back(
+                    datatypeMatches(primitiveDatatype + currOperator, {match({primitiveDatatype, primitiveDatatype})}));
         for(const std::string& primitiveDatatype2 : generator::primitiveDatatypes)
-        {
-            std::string target = primitiveDatatype;
-            target += "+";
-            target += primitiveDatatype2;
-            generator::operatorMatches[target] = primitiveDatatype;
-        }
+            if(primitiveDatatype != primitiveDatatype2)
+                generator::implicitConversations[primitiveDatatype].push_back(primitiveDatatype2);
+    }
+
     generator::sizeKeywords[1] = "BYTE";
     generator::sizeKeywords[2] = "WORD";
     generator::sizeKeywords[4] = "DWORD";

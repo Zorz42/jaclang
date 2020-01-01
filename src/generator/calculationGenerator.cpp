@@ -12,7 +12,6 @@ void operator_div(const std::string& value);
 
 int8_t currentValueAsmSize;
 
-bool operatorMatchMapHasKey(const std::string& key);
 std::string getTypeMatch(const std::string& type1, const std::string& matchOperator, const std::string& type2);
 
 std::string generator::e::calculation(branch& calculation)
@@ -123,16 +122,23 @@ void operator_div(const std::string& value)
     file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
 }
 
-bool operatorMatchMapHasKey(const std::string& key)
-{
-    auto it = generator::operatorMatches.find(key);
-    return it != generator::operatorMatches.end();
-}
-
 std::string getTypeMatch(const std::string& type1, const std::string& matchOperator, const std::string& type2)
 {
-    std::string key = type1 + matchOperator + type2;
-    if(!operatorMatchMapHasKey(key))
-        error::treeError("No match for operator '" + matchOperator + "' between '" + type1 + "' and '" + type2 + "'");
-    return generator::operatorMatches[key];
+    datatypeMatches current;
+    for(const datatypeMatches& currDatatypeMatches : generator::operatorMatches)
+        if(currDatatypeMatches.datatype == type1 + matchOperator)
+        {
+            current = currDatatypeMatches;
+            break;
+        }
+    for(const match& currMatch : current.matches) // its repeated, because it needs to first look at passing values without implicit conversation
+        if(currMatch.type == type2)
+            return currMatch.result;
+
+    for(const match& currMatch : current.matches)
+        for(const std::string& implicitConversionResult : generator::implicitConversations[type2])
+            if(implicitConversionResult == currMatch.type)
+                return currMatch.result;
+    error::treeError("No match for operator '" + matchOperator + "' between '" + type1 + "' and '" + type2 + "'");
+    return ""; // to avoid warnings
 }

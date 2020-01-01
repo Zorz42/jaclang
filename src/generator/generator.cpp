@@ -1,5 +1,7 @@
 // this generates ast into asm code
 
+#include <generator.h>
+
 #include "jaclang.h"
 
 int generator::stackPointer = 0; // top of stack
@@ -12,6 +14,7 @@ std::unordered_map<std::string, int> generator::primitiveDatatypeSizes;
 unsigned long currentScopeOnStack = 0;
 
 std::unordered_map<int8_t, std::string> generator::sizeKeywords;
+std::unordered_map<std::string, std::vector<std::string>> generator::implicitConversations;
 
 void generator::main()
 {
