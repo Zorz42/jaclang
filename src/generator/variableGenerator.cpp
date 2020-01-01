@@ -4,6 +4,8 @@
 
 #define current currentBranchScope->sub.at(currentBranchScope->count)
 
+void checkForImplicitConversion(const std::string& dest, const std::string& source);
+
 void generator::e::variableDeclaration(unsigned long scopeOnStack)
 {
 	variable obj; // obj variable
@@ -27,7 +29,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack)
 	
 	if(current.sub.at(2).name == "calc")
 	{
-		generator::e::calculation(current.sub.at(2)); // do calculation
+		checkForImplicitConversion(obj.type, generator::e::calculation(current.sub.at(2)));  // do calculation
 		
 		file::append_instruction("mov", generator::sizeKeywords[obj.size()] + " " + onStack(generator::stackPointer), generator::availableRegister(obj.size())); // set variable on stack
 	}
@@ -61,17 +63,14 @@ void generator::e::variableSetting()
     
     if(current.sub.at(1).name == "calc")
     {
-        if(current.sub.at(1).sub.at(0).name != "int") // if calculation type is not int report error
-            error::treeError("int declaration must be type int");
-        
-        generator::e::calculation(current.sub.at(1)); // do calculation
+        checkForImplicitConversion(currentVariable.type, generator::e::calculation(current.sub.at(1))); // do calculation
         
         file::append_instruction("mov", generator::sizeKeywords[currentVariable.size()] + " " + onStack(currentVariable.position), generator::availableRegister(currentVariable.size())); // set variable on stack
     }
     else
     {
         if(!isInt(current.sub.at(1).name))
-            error::treeError("int declaration must be type int");
+            error::treeError("int setting must be type int");
         
         file::append_instruction("mov", generator::sizeKeywords[currentVariable.size()] + " " + onStack(currentVariable.position), current.sub.at(1).name);
     }
@@ -95,4 +94,15 @@ variable generator::get_variable(const std::string& name)
         error::treeError(errorString);
     }
     return obj;
+}
+
+void checkForImplicitConversion(const std::string& dest, const std::string& source)
+{
+    bool success = dest == source;
+    if(!success)
+        for(const std::string& conversation : generator::implicitConversations[source])
+            if(dest == conversation)
+                success = true;
+    if(!success)
+        error::treeError("Could not convert '" + source + "' to '" + dest + "'");
 }
