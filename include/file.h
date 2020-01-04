@@ -8,9 +8,6 @@ namespace file
 	extern unsigned long asm_func;
 	
 	extern std::string inputText; // Text of the input file
-	extern unsigned int inputLineCount; // How many lines does the input file have
-	//extern std::string input;  // Path to input file
-	//extern std::string output; // Path to output file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
 	
 	void read(const std::string& text); // Read input file and put result in inputFileVector

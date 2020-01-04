@@ -11,8 +11,6 @@ struct stat info;
 bool cacheDirExisted;
 std::string cacheDir;
 
-unsigned int file::inputLineCount = 0; // number of lines in input file
-
 // if compilation is being debugged (default: false)
 bool debug_show_tokens = false;
 bool debug_show_ast = false;
@@ -49,8 +47,6 @@ void create_cache_dir();
 void remove_cache_dir(bool exitSuccess);
 
 std::string getFormat(std::string& file);
-
-std::vector<std::string> args; // vector of command line arguments
 
 std::string join(const std::string& filename, const std::string& end)
 {
@@ -120,6 +116,7 @@ void end_timer()
 
 void handle_arguments(int argc, char **argv)
 {
+    std::vector<std::string> args; // vector of command line arguments
     for(int i = 1; i < argc; i++) // go through arguments
     {
         if(argv[i][0] == '-') // if option
