@@ -36,7 +36,6 @@ void parser::main(std::string rootName)
 
 	while(true) // go through all tokens
 	{
-	    std::cout << currToken->text << std::endl;
         bool knownBranch = false;
 		for(auto i : parserFunctions)
 		{
