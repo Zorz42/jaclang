@@ -68,7 +68,7 @@ void appendBranch(std::string source, branch& target) // function for appending 
 	target.sub.push_back(obj);
 }
 
-std::_List_iterator<token> parser::peekNextToken()
+std::list<token>::iterator parser::peekNextToken()
 {
     auto result = parser::nextToken();
     parser::prevToken();
