@@ -1,4 +1,3 @@
-global _start
 section .data
 
 stdoutchar: db 0
@@ -6,6 +5,7 @@ section .bss
 
 section .text
 
+    global _start
 _start:
 
    mov rbp, rsp

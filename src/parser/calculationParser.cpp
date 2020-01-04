@@ -6,13 +6,6 @@
 
 void optimize(branch& currentBranch, const bool& nested);
 
-/*void insertBranchAtBegin(std::string name, branch& target)
-{
-	branch obj;
-	obj.name = std::move(name);
-	target.sub.insert(target.sub.begin(), obj);
-}*/
-
 branch parser::calculation(bool nested) // parse calculation
 {
     std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation

@@ -12,10 +12,10 @@ void file::read(const std::string& text) // read file
     }
 
     std::string line;
-    std::vector<std::string> rawInputFile;
+    std::list<std::string> rawInputFile;
     while(std::getline(inputFileObj,line)) // iterate through lines of input file
         rawInputFile.push_back(line);
-    inputFileObj.close(); // close the file - file have been read
+    inputFileObj.close(); // close the file - file has been read
     preprocessor::main(rawInputFile); // call preprocessor
 }
 
@@ -64,11 +64,6 @@ void file::add(const std::string& line, unsigned long position)
 {
     file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
 }
-
-/*void file::add(const std::string& line)
-{
-	file::outputVector.push_back(line); // append line of code into asm file
-}*/
 
 std::string file::getLine(int LINE) // get line of code
 {

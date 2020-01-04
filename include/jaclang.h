@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <vector>
+#include <list>
 #include <unordered_map>
 
 struct branch;
@@ -26,4 +27,3 @@ extern bool debug_show_ast;
 #include "lexer.h"        // breaks it into tokens
 #include "parser.h"       // parses it into syntax tree
 #include "generator.h"    // generates asm code
-#include "main.h"         // main file where everything happens

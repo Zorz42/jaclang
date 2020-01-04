@@ -39,9 +39,9 @@ void start_timer();
 void end_timer();
 void handle_arguments(int argc, char **argv);
 
-void compile_jaclang(const std::string& jaclangInput, const std::string& jaclangToNasm2);
-void compile_assembly(const std::string& inputFile, const std::string& outputFile);
-void link_object(const std::string& inputFile, const std::string& outputFile);
+void compile_jaclang();
+void compile_assembly();
+void link_object();
 
 void create_cache_dir();
 void remove_cache_dir(bool exitSuccess);
@@ -55,20 +55,24 @@ std::string join(const std::string& filename, const std::string& end)
 
 int main(int argc, char **argv)
 {
-    init();
+    cacheDir = ".jlcache";
+
     if(!quiet)
         start_timer();
 
     handle_arguments(argc, argv);
-    
+
+    if(!jaclangInput.empty() && !jaclangToNasm.empty())
+        init();
+
     create_cache_dir();
     
     if(!jaclangInput.empty() && !jaclangToNasm.empty())
-        compile_jaclang(jaclangInput, jaclangToNasm);
+        compile_jaclang();
     if(!jaclangToNasm.empty() && !nasmToLinker.empty())
-        compile_assembly(jaclangToNasm, nasmToLinker);
+        compile_assembly();
     if(!nasmToLinker.empty() &&!binaryOutput.empty())
-        link_object(nasmToLinker, binaryOutput);
+        link_object();
 	
     if(!quiet)
         std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
@@ -82,18 +86,21 @@ int main(int argc, char **argv)
 	return 0; // exit success
 }
 
-void compile_jaclang(const std::string& jaclangInput2, const std::string& jaclangToNasm2)
+void compile_jaclang()
 {
     file::read(jaclangInput); // Read file
 
     lexer::main(); // convert code into tokens
+    file::inputText.clear();
     parser::main(jaclangInput); // convert tokens into syntax tree
+    lexer::tokens.clear();
     if (debug_show_ast)
         printAST(mainBranch);
     currentBranchScope = &mainBranch;
     generator::main(); // generate assembly code out of syntax tree
 
-    file::write(jaclangToNasm2); // Writes to file
+
+    file::write(jaclangToNasm); // Writes to file
 }
 
 void start_timer()
@@ -250,21 +257,21 @@ void handle_arguments(int argc, char **argv)
         binaryOutput = outputFileName;
 }
 
-void compile_assembly(const std::string& inputFile, const std::string& outputFile)
+void compile_assembly()
 {
     std::string command = OS_NASM;
-    command += inputFile;
+    command += jaclangToNasm;
     command += " -o ";
-    command += outputFile;
+    command += nasmToLinker;
     system(command.c_str());
 }
 
-void link_object(const std::string& inputFile, const std::string& outputFile)
+void link_object()
 {
     std::string command = OS_LINKER; // link assembly code
-    command += outputFile;
+    command += binaryOutput;
     command += " ";
-    command += inputFile;
+    command += nasmToLinker;
     system(command.c_str());
 }
 

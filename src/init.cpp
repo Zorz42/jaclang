@@ -4,13 +4,6 @@
 
 void init() // initialize global variables
 {
-    jaclangInput = "";
-    jaclangToNasm = "";
-    nasmToLinker = "";
-    binaryOutput = "";
-
-    cacheDir = ".jlcache";
-
     generator::availableRegisters[0] = {
             "bl",
             "cl",
