@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-#define current parser::tokCount
+#define current parser::currToken
 
 bool parser::e::beginScope()
 {

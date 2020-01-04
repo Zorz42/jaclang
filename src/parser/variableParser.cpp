@@ -2,25 +2,25 @@
 
 #include "jaclang.h"
 
-#define current parser::tokCount
+#define current parser::currToken
 
 bool parser::e::variableDeclaration()
 {
-    if(parser::peekNextToken() == lexer::tokens.end())
+    if(parser::currToken == --lexer::tokens.end())
         return false;
 	if(contains(generator::primitiveDatatypes, current->text)) // if first text is a primitive datatype
 	{
 		branch currentBranch;
 		currentBranch.name = "variableDeclaration"; // set to variableDeclaration
         appendBranch(current->text, currentBranch);
-		parser::tokCount++;
+		parser::nextToken();
 		if(current->type != TYPE_INDENT) // check if everything is working out and append it to main branch
 			error::syntaxError("Expected name after value type name in variable declaration");
 		appendBranch(current->text, currentBranch);
-		parser::tokCount++;
+		parser::nextToken();
 		if(current->text != "=")
 			error::syntaxError("Expected '=' after value type name in variable declaration");
-		parser::tokCount++;
+		parser::nextToken();
 		branch equationBranch = parser::calculation(true);
 		appendBranch(equationBranch, currentBranch);
 		
@@ -33,15 +33,15 @@ bool parser::e::variableDeclaration()
 
 bool parser::e::variableSetting()
 {
-    if(parser::peekNextToken() == lexer::tokens.end())
+    if(parser::currToken == --lexer::tokens.end())
         return false;
     if(current->type == TYPE_INDENT && parser::peekNextToken()->text == "=")
     {
         branch currentBranch;
         currentBranch.name = "variableSetting";
         appendBranch(current->text, currentBranch);
-        parser::tokCount++;
-        parser::tokCount++;
+        parser::nextToken();
+        parser::nextToken();
         branch equationBranch = parser::calculation(true);
         appendBranch(equationBranch, currentBranch);
         appendBranch(currentBranch, *currentBranchScope);

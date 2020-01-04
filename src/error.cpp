@@ -6,13 +6,13 @@ void remove_cache_dir(bool exitSuccess);
 
 void error::syntaxError(const std::string& error) // Print out syntax error
 {
-	std::cerr << "\033[1;31mSyntax error, line " << lexer::tokens.at(parser::tokCount).line << ": " // syntax error in red
+	std::cerr << "\033[1;31mSyntax error, line " << parser::currToken->line << ": " // syntax error in red
 	<< error << std::endl << std::endl; // actual error
-	std::string errorLine = file::getLine(lexer::tokens.at(parser::tokCount).line);
+	std::string errorLine = file::getLine(parser::currToken->line);
 	while(errorLine.at(0) == ' ' || errorLine.at(0) == '	')
 		errorLine.erase(errorLine.begin());
 	std::cerr << errorLine << std::endl; // find line of error
-	for(unsigned long i = 0; i < lexer::tokens.at(parser::tokCount).pos; i++) // point to error token
+	for(unsigned long i = 0; i < parser::currToken->pos; i++) // point to error token
 		std::cerr << " ";
 	std::cerr << "^" << "\033[0m" << std::endl; // reset to white
 	

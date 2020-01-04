@@ -2,11 +2,11 @@
 
 #include "jaclang.h"
 
-#define current parser::tokCount
+#define current parser::currToken
 
 bool parser::e::functionCall(branch& target)
 {
-    if(parser::peekNextToken() == lexer::tokens.end())
+    if(parser::currToken == --lexer::tokens.end())
         return false;
     if(current->type == TYPE_INDENT && parser::peekNextToken()->text == "(") // if its function -> name followed by '('
 	{
@@ -15,9 +15,9 @@ bool parser::e::functionCall(branch& target)
 			return false;
 		else
 			currentBranch.name = "functionCall";
-		appendBranch(current.text, currentBranch); // append name to branch
-		parser::tokCount++;
-        parser::tokCount++;
+		appendBranch(current->text, currentBranch); // append name to branch
+		parser::nextToken();
+        parser::nextToken();
 		if(current->text != ")")
 			error::syntaxError("Function call cannot have arguments (for now)");
 		appendBranch(currentBranch, target); // append branch to root
@@ -28,10 +28,11 @@ bool parser::e::functionCall(branch& target)
 }
 
 bool parser::e::systemFunctionCall() {
-    if (parser::peekNextToken() == lexer::tokens.end())
+    auto i = parser::tokCount;
+    if(parser::currToken == --lexer::tokens.end())
         return false;
-    if (current->type == TYPE_INDENT &&
-            parser::peekNextToken()->type == TYPE_STRING) // if its systemFunction -> name followed by string
+    parser::peekNextToken();
+    if(current->type == TYPE_INDENT && parser::peekNextToken()->type == TYPE_STRING) // if its systemFunction -> name followed by string
     {
         branch currentBranch; // make branch for function
         if (isSystemIndent(current->text))  // check if its system function call
@@ -39,7 +40,7 @@ bool parser::e::systemFunctionCall() {
         else
             return false;
         appendBranch(current->text, currentBranch); // append name to branch
-        parser::tokCount++; // go to argument
+        parser::nextToken(); // go to argument
         if (current->type != TYPE_STRING)
             error::syntaxError("Expected one string argument on system function");
         else
@@ -53,29 +54,29 @@ bool parser::e::systemFunctionCall() {
 
 bool parser::e::functionDeclaration()
 {
-    if(parser::peekNextToken() == lexer::tokens.end())
+    if(parser::currToken == --lexer::tokens.end())
         return false;
-    parser::tokCount++;
-    parser::tokCount++;
-    auto nextNextToken = parser::tokCount;
-    parser::tokCount--;
-    parser::tokCount--;
+    parser::nextToken();
+    parser::nextToken();
+    auto nextNextToken = parser::currToken;
+    parser::prevToken();
+    parser::prevToken();
     if(current->text == "int" && parser::peekNextToken()->type == TYPE_INDENT && nextNextToken->text == "(") // if first text is int
 	{
 		branch currentBranch;
 		currentBranch.name = "functionDeclaration"; // set to variableDeclaration
-		parser::tokCount++;
-        parser::tokCount++;
-        parser::tokCount++;
+		parser::nextToken();
+        parser::nextToken();
+        parser::nextToken();
 		if(current->text != ")") // check if everything is working out and append it to main branch
 			error::syntaxError("No arguments allowed in function declaration (for now)");
 		
 		appendBranch("int", currentBranch);
-        parser::tokCount--;
-        parser::tokCount--;
-        auto prevPrevToken = parser::tokCount;
-        parser::tokCount++;
-        parser::tokCount++;
+        parser::prevToken();
+        parser::prevToken();
+        auto prevPrevToken = parser::currToken;
+        parser::nextToken();
+        parser::nextToken();
 		appendBranch(prevPrevToken->text, currentBranch);
 		
 		appendBranch(currentBranch, *currentBranchScope);

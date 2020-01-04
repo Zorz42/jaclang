@@ -2,16 +2,20 @@
 
 #include "jaclang.h"
 
-std::list<token>::iterator parser::tokCount;
+std::list<token>::iterator parser::currToken;
 std::vector<branch*> parser::scopes;
 
 branch* currentBranchScope;
 branch mainBranch;
 
+unsigned long parser::tokCount;
+
 std::vector<datatypeMatches> generator::operatorMatches;
 std::vector<std::string> generator::primitiveDatatypes;
 
 #define current lexer::tokens.at(parser::tokCount)
+
+bool parser::breakLoop = false;
 
 void parser::main(std::string rootName)
 {
@@ -27,18 +31,28 @@ void parser::main(std::string rootName)
 
     currentBranchScope = &mainBranch;
 	mainBranch.name = std::move(rootName); // root name is input file name
-	
-	for(;parser::tokCount != lexer::tokens.end(); parser::tokCount++) // go through all tokens
+
+	parser::currToken = lexer::tokens.begin();
+
+	while(true) // go through all tokens
 	{
+	    std::cout << currToken->text << std::endl;
         bool knownBranch = false;
 		for(auto i : parserFunctions)
-            if(i())
+		{
+		    if(breakLoop)
+		        break;
+		    if(i())
             {
                 knownBranch = true;
                 break;
             }
+        }
+		if(breakLoop)
+		    break;
 		if(!knownBranch)
 			appendBranch(parser::calculation(), *currentBranchScope);
+        parser::nextToken();
 	}
 }
 
@@ -56,7 +70,21 @@ void appendBranch(std::string source, branch& target) // function for appending 
 
 std::_List_iterator<token> parser::peekNextToken()
 {
-    auto result = ++parser::tokCount;
-    parser::tokCount--;
+    auto result = parser::nextToken();
+    parser::prevToken();
     return result;
+}
+
+std::list<token>::iterator parser::nextToken()
+{
+    if(parser::currToken == lexer::tokens.end())
+        parser::breakLoop = true;
+    parser::tokCount++;
+    return ++parser::currToken;
+}
+
+std::list<token>::iterator parser::prevToken()
+{
+    parser::tokCount--;
+    return --parser::currToken;
 }

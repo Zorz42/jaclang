@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-#define current parser::tokCount
+#define current parser::currToken
 
 void optimize(branch& currentBranch, const bool& nested);
 
@@ -15,9 +15,9 @@ branch parser::calculation(bool nested) // parse calculation
 	{
 		appendBranch("0", currentBranch);
 		appendBranch("-", currentBranch);
-		parser::tokCount++;
+		parser::nextToken();
 	}
-	while(parser::tokCount != lexer::tokens.end())
+	while(parser::currToken != lexer::tokens.end())
     {
 		if(parser::e::functionCall(currentBranch));
 		else if(current->type == TYPE_CONST) // if its constant
@@ -26,27 +26,27 @@ branch parser::calculation(bool nested) // parse calculation
             appendBranch(":" + current->text, currentBranch);
 		else if(current->text == "(") // then its nested within the operation
         {
-            parser::tokCount++;
+            parser::nextToken();
             branch obj = parser::calculation(true); // make equation until ')'
             appendBranch(obj, currentBranch);
         }
 		else
             error::syntaxError("Value expected");
-        parser::tokCount++;
-        if(parser::tokCount == lexer::tokens.end())
+        parser::nextToken();
+		if(parser::currToken == lexer::tokens.end())
             break;
-        if(parser::peekNextToken() == lexer::tokens.end())
+		if(parser::currToken == --lexer::tokens.end())
             error::syntaxError("File ends with a operator");
         if(find(equationSymbols, current->text) != equationSymbols.size()) // if there is valid operator
             appendBranch(current->text, currentBranch);
         else
             break;
-		parser::tokCount++;
+		parser::nextToken();
 	}
 
-	if(parser::tokCount != lexer::tokens.end())
+	if(parser::currToken != lexer::tokens.end())
         if(current->text != ")" && parser::peekNextToken() != lexer::tokens.end())
-            parser::tokCount--;
+            parser::prevToken();
 	
 	#define curr(x) currentBranch.sub.at(x).name
 	#define currentObj(x) currentBranch.sub.at(x)
