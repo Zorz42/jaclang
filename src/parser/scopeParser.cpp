@@ -2,11 +2,11 @@
 
 #include "jaclang.h"
 
-#define current lexer::tokens.at(parser::tokCount)
+#define current parser::tokCount
 
 bool parser::e::beginScope()
 {
-	if(current.text == "{")
+	if(current->text == "{")
 	{
 		branch scope;
 		scope.name = "scope";
@@ -21,7 +21,7 @@ bool parser::e::beginScope()
 
 bool parser::e::endScope()
 {
-	if(current.text == "}")
+	if(current->text == "}")
 	{
 		if(scopes.size() < 2)
 			error::syntaxError("There is no scope to end");

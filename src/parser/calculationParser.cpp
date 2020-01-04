@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-#define current lexer::tokens.at(parser::tokCount)
+#define current parser::tokCount
 
 void optimize(branch& currentBranch, const bool& nested);
 
@@ -11,20 +11,20 @@ branch parser::calculation(bool nested) // parse calculation
     std::vector<std::string> equationSymbols = {"+", "-", "*", "/"}; // valid operators in calculation
 	branch currentBranch; // current branch in operation
 	currentBranch.name = "calc"; // sets current branch to calculation
-	if(current.text == "-")
+	if(current->text == "-")
 	{
 		appendBranch("0", currentBranch);
 		appendBranch("-", currentBranch);
 		parser::tokCount++;
 	}
-	while(parser::tokCount != lexer::tokens.size())
+	while(parser::tokCount != lexer::tokens.end())
     {
 		if(parser::e::functionCall(currentBranch));
-		else if(current.type == TYPE_CONST) // if its constant
-            appendBranch(current.text, currentBranch);
-		else if(current.type == TYPE_INDENT)
-            appendBranch(":" + current.text, currentBranch);
-		else if(current.text == "(") // then its nested within the operation
+		else if(current->type == TYPE_CONST) // if its constant
+            appendBranch(current->text, currentBranch);
+		else if(current->type == TYPE_INDENT)
+            appendBranch(":" + current->text, currentBranch);
+		else if(current->text == "(") // then its nested within the operation
         {
             parser::tokCount++;
             branch obj = parser::calculation(true); // make equation until ')'
@@ -33,19 +33,19 @@ branch parser::calculation(bool nested) // parse calculation
 		else
             error::syntaxError("Value expected");
         parser::tokCount++;
-        if(parser::tokCount == lexer::tokens.size())
+        if(parser::tokCount == lexer::tokens.end())
             break;
-        if(parser::tokCount + 1 == lexer::tokens.size())
+        if(parser::peekNextToken() == lexer::tokens.end())
             error::syntaxError("File ends with a operator");
-        if(find(equationSymbols, current.text) != equationSymbols.size()) // if there is valid operator
-            appendBranch(current.text, currentBranch);
+        if(find(equationSymbols, current->text) != equationSymbols.size()) // if there is valid operator
+            appendBranch(current->text, currentBranch);
         else
             break;
 		parser::tokCount++;
 	}
 
-	if(parser::tokCount != lexer::tokens.size())
-        if(current.text != ")" && parser::tokCount + 1 != lexer::tokens.size())
+	if(parser::tokCount != lexer::tokens.end())
+        if(current->text != ")" && parser::peekNextToken() != lexer::tokens.end())
             parser::tokCount--;
 	
 	#define curr(x) currentBranch.sub.at(x).name

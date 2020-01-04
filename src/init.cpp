@@ -86,6 +86,7 @@ void init() // initialize global variables
     file::asm_func = file::outputVector.size();
 
 #undef find
+    generator::primitiveDatatypeSizes.reserve(4);
     generator::primitiveDatatypeSizes["char"] = 1;
     generator::primitiveDatatypeSizes["short"] = 2;
     generator::primitiveDatatypeSizes["int"] = 4;
@@ -96,17 +97,20 @@ void init() // initialize global variables
         "int",
         "long",
     };
-    
+    generator::operatorMatches.reserve(2);
+    generator::implicitConversations.reserve(generator::primitiveDatatypes.size());
     for(const std::string& primitiveDatatype : generator::primitiveDatatypes)
     {
         for (const std::string &currOperator : {"+", "-"})
             generator::operatorMatches.push_back(
                     datatypeMatches(primitiveDatatype + currOperator, {match({primitiveDatatype, primitiveDatatype})}));
+        generator::implicitConversations[primitiveDatatype].reserve(generator::primitiveDatatypes.size() - 1);
         for(const std::string& primitiveDatatype2 : generator::primitiveDatatypes)
-            if(primitiveDatatype != primitiveDatatype2)
+            if (primitiveDatatype != primitiveDatatype2)
                 generator::implicitConversations[primitiveDatatype].push_back(primitiveDatatype2);
     }
 
+    generator::sizeKeywords.reserve(4);
     generator::sizeKeywords[1] = "BYTE";
     generator::sizeKeywords[2] = "WORD";
     generator::sizeKeywords[4] = "DWORD";

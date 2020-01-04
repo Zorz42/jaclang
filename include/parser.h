@@ -18,8 +18,10 @@ namespace parser
 	void main(std::string rootName);
 	branch calculation(bool nested=false);
 	
-	extern unsigned long tokCount;
-	
+	extern std::list<token>::iterator tokCount;
+
+    std::_List_iterator<token> peekNextToken();
+
 	namespace e 
 	{
 		bool functionCall(branch& target);

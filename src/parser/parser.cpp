@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-unsigned long parser::tokCount = 0;
+std::list<token>::iterator parser::tokCount;
 std::vector<branch*> parser::scopes;
 
 branch* currentBranchScope;
@@ -28,7 +28,7 @@ void parser::main(std::string rootName)
     currentBranchScope = &mainBranch;
 	mainBranch.name = std::move(rootName); // root name is input file name
 	
-	for(;parser::tokCount < lexer::tokens.size(); parser::tokCount++) // go through all tokens
+	for(;parser::tokCount != lexer::tokens.end(); parser::tokCount++) // go through all tokens
 	{
         bool knownBranch = false;
 		for(auto i : parserFunctions)
@@ -52,4 +52,11 @@ void appendBranch(std::string source, branch& target) // function for appending 
 	branch obj;
 	obj.name = std::move(source);
 	target.sub.push_back(obj);
+}
+
+std::_List_iterator<token> parser::peekNextToken()
+{
+    auto result = ++parser::tokCount;
+    parser::tokCount--;
+    return result;
 }
