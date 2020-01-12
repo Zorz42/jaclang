@@ -4,6 +4,8 @@ import platform
 
 from decision import *
 
+packages_to_install = []
+
 bin_paths = environ["PATH"].split(":")
 
 if python3:
@@ -21,6 +23,16 @@ def check_for_package(name, binary, install_command):
             system(install_command)
         else:
             exit(1)
+            
+def add_package(package_name, binary):
+    print(package_name.upper() + ' ... ', end='')
+    for bin_path in bin_paths:
+        if path.isfile(bin_path + "/" + binary):
+            print("OK")
+            break
+    else:
+        print("FAILED")
+        packages_to_install.append(package_name)
 
 
 def dependencies():
@@ -58,21 +70,36 @@ def dependencies():
             ("python3-pip", "pip3"),
         )
         for package in packages:
-            check_for_package(package[0], package[1], "sudo " + current_package_manager + package[0])
-
+            add_package(package[0], package[1])
+        
+        if packages_to_install:
+            if decision("Do you want me to install " + " ".join(packages_to_install) + "?"):
+                print("Installing...")
+                system("sudo " + current_package_manager + " ".join(packages_to_install))
+            else:
+                print("Aborting")
+                exit(1)
+        
     elif platform.system() == 'Darwin':
         check_for_package("brew", "brew",
                           '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/'
                           'Homebrew/install/master/install)"')
-        packages = [
+        packages = (
             ("nasm", "nasm"),
-            ("gcc", "g++"),
             ("binutils", "ld"),
             ("unzip", "unzip"),
             ("python3", "python3"),
-        ]
+        )
         for package in packages:
-            check_for_package(package[0], package[1], "brew install " + package[0])
+            add_package(package[0], package[1])
+            
+        if packages_to_install:
+            if decision("Do you want me to install " + "".join(packages_to_install) + "?"):
+                print("Installing...")
+                system("brew install " + " ".join(packages_to_install))
+            else:
+                print("Aborting")
+                exit(1)
     else:
         print("Unsupported os!")
         exit(1)
