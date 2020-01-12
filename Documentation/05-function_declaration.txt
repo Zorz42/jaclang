@@ -1,7 +1,6 @@
 You can declare (define) function like:
 
-int function_name()
-{
+int function_name() {
 	;function body
 }
 

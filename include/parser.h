@@ -1,7 +1,6 @@
 #pragma once
 
-struct branch
-{
+struct branch  {
     std::string name;
     std::vector<branch> sub;
     unsigned int count = 0;
@@ -13,8 +12,7 @@ extern branch* currentBranchScope;
 void appendBranch(const branch& source, branch& target);
 void appendBranch(std::string source, branch& target);
 
-namespace parser
-{
+namespace parser  {
 	void main(std::string rootName);
 	branch calculation(bool nested=false);
 	
@@ -28,8 +26,7 @@ namespace parser
     std::list<token>::iterator prevToken();
 
 
-    namespace e
-	{
+    namespace e {
 		bool functionCall(branch& target);
 		bool systemFunctionCall();
 		bool variableDeclaration();
