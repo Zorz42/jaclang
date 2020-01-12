@@ -20,7 +20,7 @@ unsigned long file::asm_bss;
 unsigned long file::asm_text;
 unsigned long file::asm_func;
 
-std::string file::inputText; // input file
+std::list<char> file::inputText; // input file
 std::vector<std::string> file::outputVector; // prefix for asm file
 
 std::string jaclangInput;
@@ -48,13 +48,11 @@ void remove_cache_dir(bool exitSuccess);
 
 std::string getFormat(std::string& file);
 
-std::string join(const std::string& filename, const std::string& end)
-{
+std::string join(const std::string& filename, const std::string& end) {
     return filename + std::string(".") + end;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     cacheDir = ".jlcache";
 
     if(!quiet)
@@ -86,14 +84,13 @@ int main(int argc, char **argv)
 	return 0; // exit success
 }
 
-void compile_jaclang()
-{
+void compile_jaclang() {
     file::read(jaclangInput); // Read file
 
     lexer::main(); // convert code into tokens
-    file::inputText.clear();
     parser::main(jaclangInput); // convert tokens into syntax tree
     lexer::tokens.clear();
+    file::inputText.clear();
     if (debug_show_ast)
         printAST(mainBranch);
     currentBranchScope = &mainBranch;
@@ -103,14 +100,12 @@ void compile_jaclang()
     file::write(jaclangToNasm); // Writes to file
 }
 
-void start_timer()
-{
+void start_timer() {
     using namespace std::chrono;
     start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // get current time in milliseconds for timing compilation
 }
 
-void end_timer()
-{
+void end_timer() {
     using namespace std::chrono;
     long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // end timer
     std::string ms = std::to_string((end - start) % 1000); // get milliseconds time difference
@@ -121,17 +116,12 @@ void end_timer()
     std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s" << std::endl; // tell compilation time
 }
 
-void handle_arguments(int argc, char **argv)
-{
+void handle_arguments(int argc, char **argv) {
     std::vector<std::string> args; // vector of command line arguments
-    for(int i = 1; i < argc; i++) // go through arguments
-    {
-        if(argv[i][0] == '-') // if option
-        {
-            for(int i2 = 1; argv[i][i2] != 0; i2++) // go through options
-            {
-                switch(argv[i][i2])
-                {
+    for(int i = 1; i < argc; i++) { // go through arguments
+        if(argv[i][0] == '-') { // if option
+            for(int i2 = 1; argv[i][i2] != 0; i2++) { // go through options
+                switch(argv[i][i2]) {
                     case 'd': // debug (show tokens and ast)
                         debug_show_tokens = true;
                         debug_show_ast = true;
@@ -158,38 +148,32 @@ void handle_arguments(int argc, char **argv)
             args.emplace_back(argv[i]); // append it to args
     }
 
-    if(args.empty()) // if there are no arguments
-    {
+    if(args.empty()) { // if there are no arguments
         std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
-        if(helpFile.is_open())
-        {
+        if(helpFile.is_open()) {
             std::cout << helpFile.rdbuf(); // print help text
         }
-        else
-        {
+        else {
             std::cout << "\033[1;31mCannot open help-text file (/usr/local/bin/jaclang-data/help-text.txt)!\033[0m" << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
         exit(0);
     }
 
-    else if(args.size() == 1) // if there is misc option
-    {
+    else if(args.size() == 1) { // if there is misc option
         if(args.at(0) == "version") // check for every misc option
             std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
         else if(args.at(0) == "versionid")
             std::cout << VERSION_INT << std::endl;
         else if(args.at(0) == "versionstr")
             std::cout << VERSION_STR << std::endl;
-        else
-        {
+        else {
             std::cout << "\033[1;31mInvalid option: " << args.at(0) << "\033[0m" << std::endl;
             error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
         }
         exit(0);
     }
-    else if (args.size() > 2) // if there is more args than 2
-    {
+    else if (args.size() > 2) { // if there is more args than 2
         std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
         error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
     }
@@ -197,8 +181,7 @@ void handle_arguments(int argc, char **argv)
     std::string outputFileName = args.at(1);
     std::string outputFormat = getFormat(args.at(1));
     std::string inputFormat = getFormat(args.at(0));
-    if(!outputFormat.empty())
-    {
+    if(!outputFormat.empty()) {
         for(;outputFileName.at(outputFileName.size()-1) != '.';)
             outputFileName.pop_back();
         outputFileName.pop_back();

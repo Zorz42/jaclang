@@ -1,7 +1,5 @@
 // this generates ast into asm code
 
-#include <generator.h>
-
 #include "jaclang.h"
 
 int generator::stackPointer = 0; // top of stack

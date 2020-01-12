@@ -4,8 +4,7 @@
 
 #define current parser::currToken
 
-bool parser::e::functionCall(branch& target)
-{
+bool parser::e::functionCall(branch& target) {
     if(parser::currToken == --lexer::tokens.end())
         return false;
     if(current->type == TYPE_INDENT && parser::peekNextToken()->text == "(") // if its function -> name followed by '('
@@ -28,7 +27,6 @@ bool parser::e::functionCall(branch& target)
 }
 
 bool parser::e::systemFunctionCall() {
-    auto i = parser::tokCount;
     if(parser::currToken == --lexer::tokens.end())
         return false;
     parser::peekNextToken();
@@ -52,8 +50,7 @@ bool parser::e::systemFunctionCall() {
         return false;
 }
 
-bool parser::e::functionDeclaration()
-{
+bool parser::e::functionDeclaration() {
     if(parser::currToken == --lexer::tokens.end())
         return false;
     parser::nextToken();
@@ -86,8 +83,7 @@ bool parser::e::functionDeclaration()
 		return false;
 }
 
-bool parser::e::returnStatement()
-{
+bool parser::e::returnStatement() {
     if(current->text == "return")
     {
         branch currentBranch;

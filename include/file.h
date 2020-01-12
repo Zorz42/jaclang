@@ -7,7 +7,7 @@ namespace file
 	extern unsigned long asm_text;
 	extern unsigned long asm_func;
 	
-	extern std::string inputText; // Text of the input file
+	extern std::list<char> inputText; // Text of the input file
 	extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
 	
 	void read(const std::string& text); // Read input file and put result in inputFileVector

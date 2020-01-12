@@ -37,17 +37,20 @@ std::string lexer::inNumber;
 
 unsigned long prevC = 0;
 unsigned long c = 0;
+std::list<char>::iterator cIter;
+
+char peekNextChar();
 
 void lexer::main() // main lexer function
 {
     bool inStringQ = false;  // if in string with single quotes
     bool inStringDQ = false; // if in string with double quotes
 
-#define CHAR file::inputText.at(c) // shortcut to get current character of string that for loop is parsing
-#define nextChar c++
-#define prevChar c--
+#define CHAR *cIter // shortcut to get current character of string that for loop is parsing
+#define nextChar cIter++; c--
+#define prevChar cIter--; c++
 
-    for(; c < file::inputText.length(); c++) // the for loop parses through input file
+    for(cIter = file::inputText.begin(); cIter != file::inputText.end(); cIter++) // the for loop parses through input file
     {
         if((CHAR == ' ' || CHAR == '	' || CHAR == '\n') && !IN_STRING) // tabs and spaces separate tokens if not in string
         {
@@ -109,7 +112,7 @@ void lexer::main() // main lexer function
             const unsigned long OPERATOR = lexer::operators.find(CHAR); // finds in operators
             newToken(); // dumps the token
             currentToken = CHAR; // sets token to that operator
-            if(CHAR == ':' && file::inputText.at(c + 1) == ':') // there is operator ':' and symbol '::'
+            if(CHAR == ':' && peekNextChar() == ':') // there is operator ':' and symbol '::'
             {
                 nextChar; // increment
                 currentToken += ':'; // add ':' to token, so its '::'
@@ -135,7 +138,7 @@ void lexer::main() // main lexer function
                     if(CHAR == '=' || CHAR == lexer::operators[OPERATOR])
                     {
                         currentToken += CHAR; // if it is variant, cool
-                        if((CHAR == '<' || CHAR == '>') && file::inputText.at(c + 1) == '=') // there are 2 three-char operators '<<=' and '>>='
+                        if((CHAR == '<' || CHAR == '>') && peekNextChar() == '=') // there are 2 three-char operators '<<=' and '>>='
                         {
                             nextChar;
                             currentToken += '=';
@@ -156,6 +159,7 @@ void lexer::main() // main lexer function
             currentLine++; // new line
             prevC = c + 1; // and update offset
         }
+        c++;
     }
 #undef CHAR
 
@@ -164,7 +168,7 @@ void lexer::main() // main lexer function
     {
         if(iter.type == TYPE_UNDEF) // if type is undefined
         {
-            if(isDec(iter.text)) // constant
+            if(isFloat(iter.text)) // constant
                 iter.type = TYPE_CONST;
             else if(iter.text == "*" || iter.text == "&") // unresolved '*' and '&'
             {
@@ -206,7 +210,7 @@ void newToken(int TYPE)
     currentToken = ""; // reset token
 }
 
-/*unsigned long toDec(std::string text) // not going to explain it is a little too complex and i don't really want to
+/*unsigned long toFloat(std::string text) // not going to explain it is a little too complex and i don't really want to
 {
 	char* p;
 	unsigned long converted = strtol(text.c_str(), &p, 10);
@@ -243,7 +247,7 @@ bool isInt(const std::string& text) // converts to integer
     return *p == 0;
 }
 
-bool isDec(const std::string& text) // checks if its decimal
+bool isFloat(const std::string& text) // checks if its decimal
 {
     int dot = 0;
     for(char i : text)
@@ -257,4 +261,11 @@ bool isDec(const std::string& text) // checks if its decimal
     }
 
     return true;
+}
+
+char peekNextChar()
+{
+    char result = *(++cIter);
+    cIter--;
+    return result;
 }
