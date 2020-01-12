@@ -8,7 +8,7 @@ INSTALLATION PROCESS:
 
 * Download zip file and unzip it or clone it via git,
 * open terminal and go to unzipped/cloned folder,
-* you will need command make and python2 or python3 (if you do not have python install python3 for faster install time),
+* you will need command make and python2 or python3 (if you do not have python, install python3 for faster install time),
 * execute command:
 
       make
