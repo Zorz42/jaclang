@@ -2,8 +2,7 @@
 
 #include <fstream>
 
-void init() // initialize global variables
-{
+void init() { // initialize global variables
     generator::availableRegisters[0] = {
             "bl",
             "cl",
@@ -68,12 +67,11 @@ void init() // initialize global variables
     std::ifstream readFile(fileToRead);
 
     std::string line;
-    if(!readFile.is_open())
-    {
+    if (!readFile.is_open()) {
         std::cout << "\033[1;31mCannot open empty assembly framework file!\033[0m" << std::endl; // file missing
         error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
     }
-    while(std::getline(readFile, line))
+    while (std::getline(readFile, line))
         file::outputVector.push_back(line);
 
     parser::scopes = {&mainBranch};
@@ -81,7 +79,7 @@ void init() // initialize global variables
 #define find(x) find(file::outputVector, x)
 
     file::asm_data = find("section .data") + 1; // locate each section
-    file::asm_bss  = find("section .bss")  + 1;
+    file::asm_bss = find("section .bss") + 1;
     file::asm_text = find("section .text") + 4;
     file::asm_func = file::outputVector.size();
 
@@ -92,20 +90,19 @@ void init() // initialize global variables
     generator::primitiveDatatypeSizes["int"] = 4;
     generator::primitiveDatatypeSizes["long"] = 8;
     generator::primitiveDatatypes = {
-        "char",
-        "short",
-        "int",
-        "long",
+            "char",
+            "short",
+            "int",
+            "long",
     };
     generator::operatorMatches.reserve(2);
     generator::implicitConversations.reserve(generator::primitiveDatatypes.size());
-    for(const std::string& primitiveDatatype : generator::primitiveDatatypes)
-    {
+    for (const std::string &primitiveDatatype : generator::primitiveDatatypes) {
         for (const std::string &currOperator : {"+", "-"})
             generator::operatorMatches.push_back(
                     datatypeMatches(primitiveDatatype + currOperator, {match({primitiveDatatype, primitiveDatatype})}));
         generator::implicitConversations[primitiveDatatype].reserve(generator::primitiveDatatypes.size() - 1);
-        for(const std::string& primitiveDatatype2 : generator::primitiveDatatypes)
+        for (const std::string &primitiveDatatype2 : generator::primitiveDatatypes)
             if (primitiveDatatype != primitiveDatatype2)
                 generator::implicitConversations[primitiveDatatype].push_back(primitiveDatatype2);
     }

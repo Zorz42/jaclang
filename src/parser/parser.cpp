@@ -3,9 +3,9 @@
 #include "jaclang.h"
 
 std::list<token>::iterator parser::currToken;
-std::vector<branch*> parser::scopes;
+std::vector<branch *> parser::scopes;
 
-branch* currentBranchScope;
+branch *currentBranchScope;
 branch mainBranch;
 
 unsigned long parser::tokCount;
@@ -17,8 +17,7 @@ std::vector<std::string> generator::primitiveDatatypes;
 
 bool parser::breakLoop = false;
 
-void parser::main(std::string rootName)
-{
+void parser::main(std::string rootName) {
     auto parserFunctions = {
             &parser::e::systemFunctionCall,
             &parser::e::functionDeclaration,
@@ -30,60 +29,52 @@ void parser::main(std::string rootName)
     };
 
     currentBranchScope = &mainBranch;
-	mainBranch.name = std::move(rootName); // root name is input file name
+    mainBranch.name = std::move(rootName); // root name is input file name
 
-	parser::currToken = lexer::tokens.begin();
+    parser::currToken = lexer::tokens.begin();
 
-	while(true) // go through all tokens
-	{
+    while (true) { // go through all tokens
         bool knownBranch = false;
-		for(auto i : parserFunctions)
-		{
-		    if(breakLoop)
-		        break;
-		    if(i())
-            {
+        for (auto i : parserFunctions) {
+            if (breakLoop)
+                break;
+            if (i()) {
                 knownBranch = true;
                 break;
             }
         }
-		if(breakLoop)
-		    break;
-		if(!knownBranch)
-			appendBranch(parser::calculation(), *currentBranchScope);
+        if (breakLoop)
+            break;
+        if (!knownBranch)
+            appendBranch(parser::calculation(), *currentBranchScope);
         parser::nextToken();
-	}
+    }
 }
 
-void appendBranch(const branch& source, branch& target) // function for appending branch to another branch
-{
-	target.sub.push_back(source);
+void appendBranch(const branch &source, branch &target) { // function for appending branch to another branch
+    target.sub.push_back(source);
 }
 
-void appendBranch(std::string source, branch& target) // function for appending empty branch with name to branch
-{
-	branch obj;
-	obj.name = std::move(source);
-	target.sub.push_back(obj);
+void appendBranch(std::string source, branch &target) { // function for appending empty branch with name to branch
+    branch obj;
+    obj.name = std::move(source);
+    target.sub.push_back(obj);
 }
 
-std::list<token>::iterator parser::peekNextToken()
-{
+std::list<token>::iterator parser::peekNextToken() {
     auto result = parser::nextToken();
     parser::prevToken();
     return result;
 }
 
-std::list<token>::iterator parser::nextToken()
-{
-    if(parser::currToken == lexer::tokens.end())
+std::list<token>::iterator parser::nextToken() {
+    if (parser::currToken == lexer::tokens.end())
         parser::breakLoop = true;
     parser::tokCount++;
     return ++parser::currToken;
 }
 
-std::list<token>::iterator parser::prevToken()
-{
+std::list<token>::iterator parser::prevToken() {
     parser::tokCount--;
     return --parser::currToken;
 }

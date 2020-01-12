@@ -19,6 +19,7 @@ namespace parser
 	branch calculation(bool nested=false);
 	
 	extern std::list<token>::iterator currToken;
+
     std::list<token>::iterator peekNextToken();
     extern unsigned long tokCount;
     extern bool breakLoop;

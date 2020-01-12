@@ -60,7 +60,7 @@ void file::add(const std::string& line, unsigned long position) {
 std::string file::getLine(int LINE) { // get line of code
     int currentLine = 1;
     std::string currentString;
-    std::list<char>::iterator iter = file::inputText.begin();
+    auto iter = file::inputText.begin();
     for(; currentLine != LINE; iter++) // until we are in the line desired
         if(*iter == '\n')
             currentLine++; // if '\n' (newline) then it is next line

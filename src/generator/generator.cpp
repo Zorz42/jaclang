@@ -14,13 +14,11 @@ unsigned long currentScopeOnStack = 0;
 std::unordered_map<int8_t, std::string> generator::sizeKeywords;
 std::unordered_map<std::string, std::vector<std::string>> generator::implicitConversations;
 
-void generator::main()
-{
+void generator::main() {
 	#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
     if(currentBranchScope == &mainBranch)
 		file::append_text("   mov rbp, rsp");
-	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) // iterate though branches
-    {
+	for(; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) { // iterate though branches
 		if(!file::outputVector.at(file::asm_text - 1).empty())
 			file::append_text("");
 		if(current.name == "systemFunctionCall")  // choose appropriate generator for branch
@@ -29,8 +27,7 @@ void generator::main()
 			generator::e::variableDeclaration(currentScopeOnStack);
 		else if(current.name == "calc")
 			generator::e::calculation(current);
-		else if(current.name == "scope") // if branch is scope
-        {
+		else if(current.name == "scope") { // if branch is scope
 			branch* prevScope = currentBranchScope; // save current scope
 			currentBranchScope = &(current);        // move to new scope
 			unsigned long stackLength = generator::stack.size();  // save stack length

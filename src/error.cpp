@@ -4,8 +4,7 @@
 
 void remove_cache_dir(bool exitSuccess);
 
-void error::syntaxError(const std::string& error) // Print out syntax error
-{
+void error::syntaxError(const std::string& error) { // Print out syntax error
 	std::cerr << "\033[1;31mSyntax error, line " << parser::currToken->line << ": " // syntax error in red
 	<< error << std::endl << std::endl; // actual error
 	std::string errorLine = file::getLine(parser::currToken->line);
@@ -19,8 +18,7 @@ void error::syntaxError(const std::string& error) // Print out syntax error
 	terminate("SYNTAX ERROR", ERROR_SYNTAX_ERROR);
 }
 
-void error::treeError(const std::string& error) // print out syntax error
-{
+void error::treeError(const std::string& error) { // print out syntax error
 	std::cerr << "\033[1;31mTree error: " // tree error in red
 	<< error << std::endl // actual error
 	<< "\033[0m"; // reset to white
@@ -28,8 +26,7 @@ void error::treeError(const std::string& error) // print out syntax error
 }
 
 
-void error::terminate(const std::string& reason, int exitCode) // exit if error
-{
+void error::terminate(const std::string& reason, int exitCode) { // exit if error
 	std::cerr << "Jaclang terminated with exit code " << exitCode << "." << std::endl // Terminated
 	<< "Reason: " << reason << "." << std::endl; // reason
     remove_cache_dir(false);
