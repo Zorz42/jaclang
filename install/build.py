@@ -107,7 +107,7 @@ def build():
         for thread in threads:
             thread.join()
             if return_fail:
-                exit(0)
+                exit(1)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
         for i in range(columns + 2):
             print(" ", end='')
