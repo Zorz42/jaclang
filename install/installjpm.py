@@ -4,7 +4,10 @@ import wget
 
 
 def installjpm_main():
-    ssl._create_default_https_context = ssl._create_unverified_context
+    try:
+        ssl._create_default_https_context = ssl._create_unverified_context
+    except AttributeError:
+        pass
 
     print()
     print("Downloading jpm ... ", end='', flush=True)
