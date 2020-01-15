@@ -1,5 +1,4 @@
 from os import system
-from decision import python3
 
 
 def install():

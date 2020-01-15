@@ -1,5 +1,5 @@
-from os import system, path
 import platform
+from os import system, path
 
 alias_file_name = ""
 if platform.system() == 'Linux':

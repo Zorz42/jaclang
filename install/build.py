@@ -1,11 +1,11 @@
 from __future__ import print_function
-from os import system, path, listdir, popen
-from subprocess import Popen, call
-from threading import Thread
-from sys import stdout
-import platform
 
+import platform
+from os import system, path, listdir, popen
 from settings import *
+from subprocess import call
+from sys import stdout
+from threading import Thread
 
 compiled_count = 0
 

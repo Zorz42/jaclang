@@ -1,8 +1,8 @@
 from __future__ import print_function
-from os import system, popen, environ, path
-import platform
 
+import platform
 from decision import *
+from os import system, popen, environ, path
 
 packages_to_install = []
 
@@ -24,7 +24,8 @@ def check_for_package(name, binary, install_command):
             system(install_command)
         else:
             exit(1)
-            
+
+
 def add_package(package_name, binary):
     print(package_name.upper() + ' ... ', end='')
     for bin_path in bin_paths:
@@ -72,7 +73,7 @@ def dependencies():
         )
         for package in packages:
             add_package(package[0], package[1])
-        
+
         if packages_to_install:
             if decision("Do you want me to install " + " ".join(packages_to_install) + "?"):
                 print("Installing...")
@@ -80,7 +81,7 @@ def dependencies():
             else:
                 print("Aborting")
                 exit(1)
-        
+
     elif platform.system() == 'Darwin':
         check_for_package("brew", "brew",
                           '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/'
@@ -93,7 +94,7 @@ def dependencies():
         )
         for package in packages:
             add_package(package[0], package[1])
-            
+
         if packages_to_install:
             if decision("Do you want me to install " + "".join(packages_to_install) + "?"):
                 print("Installing...")
