@@ -1,6 +1,7 @@
 import sys
 from build import *
 from dependencies import *
+from install import *
 
 if len(sys.argv) == 1:
     print("Input an argument such as install, uninstall, dependencies!")
