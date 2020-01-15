@@ -1,6 +1,7 @@
 from os import system
 from decision import python3
 
+
 def install():
     system("sudo mv jaclang /usr/local/bin/jaclang")
     system("sudo cp -r jaclang-data /usr/local/bin/")

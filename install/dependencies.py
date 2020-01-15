@@ -9,6 +9,7 @@ bin_paths = environ["PATH"].split(":")
 if python3:
     from checkforpippackages import *
 
+
 def check_for_package(name, binary, install_command):
     print(name.upper() + ' ... ', end='')
     for bin_path in bin_paths:

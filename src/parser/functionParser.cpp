@@ -7,7 +7,8 @@
 bool parser::e::functionCall(branch &target) {
     if (parser::currToken == --lexer::tokens.end())
         return false;
-    if (current->type == TYPE_INDENT && parser::peekNextToken()->text == "(") { // if its function -> name followed by '('
+    if (current->type == TYPE_INDENT &&
+        parser::peekNextToken()->text == "(") { // if its function -> name followed by '('
         branch currentBranch; // make branch for function
         if (isSystemIndent(current->text))  // check if its system function call or just function call
             return false;

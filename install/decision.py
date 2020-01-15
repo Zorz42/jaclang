@@ -2,6 +2,7 @@ from sys import version_info
 
 python3 = version_info.major == 3
 
+
 def decision(question):
     yes_options = ["Y", "YES"]
     no_options = ["N", "NO"]
@@ -15,4 +16,3 @@ def decision(question):
             return True
         elif yndecision.upper() in no_options:
             return False
-

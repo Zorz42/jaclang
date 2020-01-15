@@ -66,26 +66,26 @@ def print_progress_bar(compiled, total, length):
 def build():
     print()
     print("Preparing build...")
-    
+
     if not path.isdir(objdir):
         system("mkdir " + objdir)
     files = [file.split('.')[0] for file in listdir(srcdir) if len(file.split('.')) == 2]
     srcfilesdirs = [Dir for Dir in listdir(srcdir) if len(Dir.split('.')) == 1]
-    
+
     for Dir in srcfilesdirs:
         if not path.isdir(objdir + Dir):
             system("mkdir " + objdir + Dir)
         files += [Dir + "/" + str(file.split('.')[0]) for file in listdir(srcdir + Dir) if len(file.split('.')) == 2]
-    
+
     count = 0
     threads = []
     build_header = False
-    
+
     for file in listdir(includedir):
         if not path.isfile(objdir + "jaclang.h.gch") or path.getctime(objdir + "jaclang.h.gch") < \
-            path.getctime(includedir + file):
+                path.getctime(includedir + file):
             build_header = True
-            
+
     for file in files:
         count += 1
         if build_header or not path.isfile(objdir + file + ".o") or path.getctime(objdir + file + ".o") < path.getctime(
@@ -98,7 +98,7 @@ def build():
             system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w")
         elif osplatform == "OSX":
             system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
-    
+
     if threads:
         print("Building jaclang...")
         for thread in threads:
@@ -112,7 +112,7 @@ def build():
         for i in range(columns + 2):
             print(" ", end='')
         print('\r', end='')
-    
+
     objfiles = [objdir + file + ".o " for file in files]
     print("Linking object files ... ", end='')
     stdout.flush()
