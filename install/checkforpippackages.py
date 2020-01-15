@@ -27,7 +27,8 @@ def checkforpippackages_main():
         "setuptools",
         "wget",
         "httplib2",
-        "zipfile"
+        "zipfile",
+        "bs4"
     ]
     for package in packages:
         check_for_pip_package(package)
