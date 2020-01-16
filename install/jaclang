@@ -1,12 +1,9 @@
-_jaclang() 
+_myprogram()
 {
-    local cur prev opts
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="$(python3 ./jaclang.py $COMP_CWORD ${COMP_WORDS[*]})"
-
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
-    return 0
+    # init bash-completion's stuff
+    _init_completion || return
+    
+    # fill COMPREPLY using bash-completion's routine
+    _filedir '@(.jl)'
 }
-complete -F _jaclang jaclang
+complete -F _myprogram jaclang
