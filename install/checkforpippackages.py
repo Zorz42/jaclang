@@ -23,14 +23,14 @@ def check_for_pip_package(name):
 
 
 def checkforpippackages_main():
-    packages = [
+    needed_packages = [
         "setuptools",
         "wget",
         "httplib2",
         "zipfile",
         "bs4"
     ]
-    for package in packages:
+    for package in needed_packages:
         check_for_pip_package(package)
 
 

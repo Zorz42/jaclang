@@ -1,9 +1,0 @@
-_myprogram()
-{
-    # init bash-completion's stuff
-    _init_completion || return
-    
-    # fill COMPREPLY using bash-completion's routine
-    _filedir '@(.jl)'
-}
-complete -F _myprogram jaclang
