@@ -1,5 +1,6 @@
 _jpm() 
 {
+    set +m
     local cur prev opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -9,6 +10,7 @@ _jpm()
 
     # shellcheck disable=SC2207
     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    python3 /usr/local/bin/jaclang-data/cache-update.py& 2>/dev/null
     return 0
 }
 complete -F _jpm jpm
