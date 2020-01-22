@@ -9,5 +9,7 @@ def install():
     system("sudo python3 install/makealias.py")
     if platform.system() == 'Linux':
         system("sudo cp data/jpm.bash /etc/bash_completion.d/")
+    system("sudo jpm repair")
+    system("sudo jpm updatedatabase")
     print()
     print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
