@@ -158,6 +158,7 @@ void handle_arguments(int argc, char **argv) {
     if (args.empty()) { // if there are no arguments
         std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
+            std::cout << VERSION << std::endl;
             std::cout << helpFile.rdbuf(); // print help text
         } else {
             std::cout << "\033[1;31mCannot open help-text file (/usr/local/bin/jaclang-data/help-text.txt)!\033[0m"
@@ -165,21 +166,9 @@ void handle_arguments(int argc, char **argv) {
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
         exit(0);
-    } else if (args.size() == 1) { // if there is misc option
-        if (args.at(0) == "version") // check for every misc option
-            std::cout << VERSION_STR << " ID:" << VERSION_INT << std::endl;
-        else if (args.at(0) == "versionid")
-            std::cout << VERSION_INT << std::endl;
-        else if (args.at(0) == "versionstr")
-            std::cout << VERSION_STR << std::endl;
-        else {
-            std::cout << "\033[1;31mInvalid option: " << args.at(0) << "\033[0m" << std::endl;
-            error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
-        }
-        exit(0);
-    } else if (args.size() > 2) { // if there is more args than 2
-        std::cout << "\033[1;31mMust input 2 arguments or less!\033[0m" << std::endl;
-        error::terminate("TOO MANY ARGUMENTS", ERROR_ARGUMENT_COUNT);
+    } else if (args.size() != 2) { // if there is more args than 2
+        std::cout << "\033[1;31mMust input 2 arguments or none!\033[0m" << std::endl;
+        error::terminate("INVALI ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
     }
 
     std::string outputFileName = args.at(1);

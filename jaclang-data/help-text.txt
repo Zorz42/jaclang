@@ -8,8 +8,3 @@ options:
    -d - debug - get more detailed compilation (for nerds)
    -k - keep  - keep cache (asm, object file located in .jlcache)
    -q - quiet - say nothing except errors and debug messages if specified
-
-misc options:
-   version    - check the version name and id
-   versionid  - show only version id
-   versionstr - show only version name

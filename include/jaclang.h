@@ -2,8 +2,7 @@
 
 #pragma once
 
-#define VERSION_STR "BETA 2.3.6"
-#define VERSION_INT 10
+#define VERSION "BETA 2.4.0"
 
 #include <iostream>
 #include <vector>

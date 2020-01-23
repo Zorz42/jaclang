@@ -16,7 +16,8 @@ def installjpm_main():
 
     print("Installing jpm ... ", end='', flush=True)
     os.system("unzip -q jpm-master.zip")
-    os.system("cd jpm-master && python3 install.py quietinstall")
+    os.system("sudo cp -r jpm-master/jpm-sources /usr/local/bin/")
+    os.system("sudo cp -r jpm-master/jpm /usr/local/bin/")
     os.system("rm jpm-master.zip; rm -r jpm-master")
     print("DONE")
 
