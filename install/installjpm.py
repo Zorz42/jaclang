@@ -2,6 +2,7 @@ import os
 import ssl
 import wget
 import platform
+from getpass import getuser
 
 
 def installjpm_main():
@@ -21,17 +22,17 @@ def installjpm_main():
 
     dirs = ['to_install', 'librarysources', 'metadatas']
     for Dir in dirs:
-        if not path.isdir("jpm-sources/" + Dir):
-            mkdir('jpm-sources/' + Dir)
+        if not os.path.isdir("jpm-master/" + Dir):
+            os.mkdir('jpm-master/' + Dir)
     if platform.system() == 'Linux':
-        system("sudo cp -r jpm-sources/ /usr/local/bin")
+        os.system("sudo cp -r jpm-master/ /usr/local/bin")
     elif platform.system() == 'Darwin':
-        system("sudo cp -r jpm-sources/ /usr/local/bin/jpm-sources")
+        os.system("sudo cp -r jpm-master/ /usr/local/bin/jpm-master")
     else:
         print("Unsupported os!")
-    system("sudo cp jpm /usr/local/bin")
-    system("sudo chown " + getuser() + " /usr/local/bin/jpm-sources")
-    system("sudo chmod +x /usr/local/bin/jpm")
+    os.system("sudo cp jpm /usr/local/bin")
+    os.system("sudo chown " + getuser() + " /usr/local/bin/jpm-master")
+    os.system("sudo chmod +x /usr/local/bin/jpm")
 
 
     os.system("rm jpm-master.zip; rm -r jpm-master")
