@@ -30,7 +30,7 @@ def installjpm_main():
         os.system("sudo cp -r jpm-master/ /usr/local/bin/jpm-master")
     else:
         print("Unsupported os!")
-    os.system("sudo cp jpm /usr/local/bin")
+    os.system("sudo cp jpm-master/jpm /usr/local/bin")
     os.system("sudo chown " + getuser() + " /usr/local/bin/jpm-master")
     os.system("sudo chmod +x /usr/local/bin/jpm")
 
