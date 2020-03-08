@@ -25,9 +25,9 @@ def installjpm_main():
         if not os.path.isdir("jpm-master/" + Dir):
             os.mkdir('jpm-master/' + Dir)
     if platform.system() == 'Linux':
-        os.system("sudo cp -r jpm-master/ /usr/local/bin")
+        os.system("sudo cp -r jpm-master/jpm-sources /usr/local/bin")
     elif platform.system() == 'Darwin':
-        os.system("sudo cp -r jpm-master/ /usr/local/bin/jpm-master")
+        os.system("sudo cp -r jpm-master/jpm-sources /usr/local/bin/jpm-sources")
     else:
         print("Unsupported os!")
     os.system("sudo cp jpm-master/jpm /usr/local/bin")
