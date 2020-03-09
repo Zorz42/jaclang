@@ -1,4 +1,4 @@
-import os
+from os import system
 from pkgutil import iter_modules
 
 yesOptions = ["Y", "YES"]
@@ -16,7 +16,7 @@ def check_for_pip_package(name):
         while True:
             decision = input("Do you want me to install pip3-" + name + "? [y,n]")
             if decision.upper() in yesOptions:
-                os.system("sudo pip3 install " + name)
+                system("sudo pip3 install " + name)
                 break
             elif decision.upper() in noOptions:
                 exit(1)

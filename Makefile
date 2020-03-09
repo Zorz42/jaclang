@@ -13,23 +13,24 @@ clean:
 	@rm -rf obj
 
 fullinstall:
-	@$(PYTHON) install/main.py dependencies
+	@$(PYTHON) install/dependencies.py
 	@python3 install/installjpm.py
-	@python3 install/main.py buildinstall
+	@python3 install/build.py
+	@python3 install/install.py
 
 init:
-	@$(PYTHON) install/main.py dependencies
+	@$(PYTHON) install/dependencies.py
 jpm:
 	@python3 install/installjpm.py
 build:
-	@python3 install/main.py build
+	@python3 install/build.py
 install:
-	@python3 install/main.py install
+	@python3 install/install.py
 
 uninstall:
 	@sudo rm /usr/local/bin/jaclang
 
 skipjpm:
-	@$(PYTHON) install/main.py dependencies
-	@python3 install/main.py buildinstall
-
+	@$(PYTHON) install/dependencies.py
+	@python3 install/build.py
+	@python3 install/install.py

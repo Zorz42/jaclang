@@ -1,15 +1,15 @@
 from __future__ import print_function
 
-import platform
-from decision import *
-from os import system, popen, environ, path
+from platform import system as sys
+from decision import decision, python3
+from os import popen, environ, path, system
 
 packages_to_install = []
 
 bin_paths = environ["PATH"].split(":")
 
 if python3:
-    from checkforpippackages import *
+    from checkforpippackages import checkforpippackages_main
 
 
 def check_for_package(name, binary, install_command):
@@ -40,7 +40,7 @@ def add_package(package_name, binary):
 def dependencies():
     system("sudo echo")
     print("Checking for dependencies:")
-    if platform.system() == 'Linux':
+    if sys() == 'Linux':
         current_package_manager = ''
         package_managers = ['zypper', 'apt', 'yum', 'emerge', 'pacman']
         for package_manager in package_managers:
@@ -67,7 +67,6 @@ def dependencies():
         packages = (
             ("nasm", "nasm"),
             ("binutils", "ld"),
-            ("unzip", "unzip"),
             ("python3", "python3"),
             ("python3-pip", "pip3"),
         )
@@ -82,14 +81,13 @@ def dependencies():
                 print("Aborting")
                 exit(1)
 
-    elif platform.system() == 'Darwin':
+    elif sys() == 'Darwin':
         check_for_package("brew", "brew",
                           '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/'
                           'Homebrew/install/master/install)"')
         packages = (
             ("nasm", "nasm"),
             ("binutils", "ld"),
-            ("unzip", "unzip"),
             ("python3", "python3"),
         )
         for package in packages:
@@ -110,3 +108,7 @@ def dependencies():
         checkforpippackages_main()
     else:
         system("python3 install/checkforpippackages.py")
+
+
+if __name__ == "__main__":
+    dependencies()

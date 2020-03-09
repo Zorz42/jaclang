@@ -1,7 +1,7 @@
-import os
+from os import getcwd, path, mkdir, system
 import ssl
-import wget
-import platform
+from wget import download
+from platform import system as sys
 from getpass import getuser
 
 
@@ -13,29 +13,30 @@ def installjpm_main():
 
     print()
     print("Downloading jpm ... ", end='', flush=True)
-    wget.download("https://github.com/Zorz42/jpm/archive/master.zip", bar=None)
+    download("https://github.com/Zorz42/jpm/archive/master.zip", bar=None)
     print("DONE")
 
     print("Installing jpm ... ", end='', flush=True)
-    os.system("unzip -q jpm-master.zip")
-
+    from zipfile import ZipFile
+    with ZipFile(getcwd() + "/jpm-master.zip", 'r') as zip_ref:
+        zip_ref.extractall(getcwd())
 
     dirs = ['to_install', 'librarysources', 'metadatas']
     for Dir in dirs:
-        if not os.path.isdir("jpm-master/" + Dir):
-            os.mkdir('jpm-master/' + Dir)
-    if platform.system() == 'Linux':
-        os.system("sudo cp -r jpm-master/jpm-sources /usr/local/bin")
-    elif platform.system() == 'Darwin':
-        os.system("sudo cp -r jpm-master/jpm-sources /usr/local/bin/jpm-sources")
+        if not path.isdir("jpm-master/" + Dir):
+            mkdir('jpm-master/' + Dir)
+    if sys() == 'Linux':
+        system("sudo cp -r jpm-master/jpm-sources /usr/local/bin")
+    elif sys() == 'Darwin':
+        system("sudo cp -r jpm-master/jpm-sources /usr/local/bin/jpm-sources")
     else:
         print("Unsupported os!")
-    os.system("sudo cp jpm-master/jpm /usr/local/bin")
-    os.system("sudo chown " + getuser() + " /usr/local/bin/jpm-master")
-    os.system("sudo chmod +x /usr/local/bin/jpm")
+    system("sudo cp jpm-master/jpm /usr/local/bin")
+    system("sudo chown " + getuser() + " /usr/local/bin/jpm-sources")
+    system("sudo chmod +x /usr/local/bin/jpm")
 
 
-    os.system("rm jpm-master.zip; rm -r jpm-master")
+    system("rm jpm-master.zip; rm -r jpm-master")
     print("DONE")
 
 

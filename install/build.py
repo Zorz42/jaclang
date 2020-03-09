@@ -1,11 +1,14 @@
 from __future__ import print_function
 
-import platform
+from platform import system as sys
 from os import system, path, listdir, popen
-from settings import *
 from subprocess import call
 from sys import stdout
 from threading import Thread
+
+objdir = "obj/"
+srcdir = "src/"
+includedir = "include/"
 
 compiled_count = 0
 
@@ -13,9 +16,9 @@ return_fail = False
 
 osplatform = None
 
-if platform.system() == "Linux":
+if sys() == "Linux":
     osplatform = "linux"
-elif platform.system() == "Darwin":
+elif sys() == "Darwin":
     osplatform = "OSX"
 else:
     print("Unsupported platform!")
@@ -123,3 +126,6 @@ def build():
         exit(1)
     else:
         print("DONE")
+
+if __name__ == "__main__":
+    build()
