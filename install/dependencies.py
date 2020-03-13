@@ -1,8 +1,8 @@
 from __future__ import print_function
 
-from platform import system as sys
 from decision import decision, python3
 from os import popen, environ, path, system
+from platform import system as sys
 
 packages_to_install = []
 

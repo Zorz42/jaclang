@@ -4,6 +4,10 @@
 
 #include <chrono>   // time
 #include <fstream>  // read/write to file
+#include <unistd.h>
+#include <pwd.h>
+
+std::string homeDir;
 
 // if compilation is being debugged (default: false)
 bool debug_show_tokens = false;
@@ -120,7 +124,7 @@ void handle_arguments(int argc, char **argv) {
             std::string currArg;
             if (argsWithParams.at(i).size() == 2) {
                 i++;
-                if(i == argsWithParams.size()) {
+                if (i == argsWithParams.size()) {
                     std::cout << "\033[1;31m-" << currArgName << " has no argument!\033[0m"
                               << std::endl; // error
                     error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
@@ -145,12 +149,14 @@ void handle_arguments(int argc, char **argv) {
     }
 
     if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
-        std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
+        passwd *pw = getpwuid(getuid());
+        homeDir = pw->pw_dir;
+        std::ifstream helpFile(homeDir + "/.local/share/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
             std::cout << VERSION << std::endl;
             std::cout << helpFile.rdbuf(); // print help text
         } else {
-            std::cout << "\033[1;31mCannot open help-text file (/usr/local/bin/jaclang-data/help-text.txt)!\033[0m"
+            std::cout << "\033[1;31mCannot open help-text file (~/.local/share/jaclang-data/help-text.txt)!\033[0m"
                       << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }

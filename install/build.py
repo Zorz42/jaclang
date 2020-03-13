@@ -1,7 +1,7 @@
 from __future__ import print_function
 
-from platform import system as sys
 from os import system, path, listdir, popen
+from platform import system as sys
 from subprocess import call
 from sys import stdout
 from threading import Thread
@@ -36,10 +36,10 @@ class BuildThread(Thread):
         global compiled_count
         compile_command = None
         if osplatform == "linux":
-            compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -I" + objdir + " -o " + objdir + \
+            compile_command = "g++ -w -Ofast -pipe -m64 -std=gnu++11 -I" + includedir + " -I" + objdir + " -o " + objdir + \
                               self.name + ".o -c " + srcdir + self.name + ".cpp"
         elif osplatform == "OSX":
-            compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
+            compile_command = "g++ -w -Ofast -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
                               ".o -c " + srcdir + self.name + ".cpp -include-pch " + objdir + "jaclang.h.gch"
         current_thread = call(compile_command, shell=True)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
@@ -126,6 +126,7 @@ def build():
         exit(1)
     else:
         print("DONE")
+
 
 if __name__ == "__main__":
     build()

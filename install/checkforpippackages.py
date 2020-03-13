@@ -28,7 +28,6 @@ def checkforpippackages_main():
         "wget",
         "httplib2",
         "zipfile",
-        "bs4"
     ]
     for package in needed_packages:
         check_for_pip_package(package)

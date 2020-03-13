@@ -1,5 +1,5 @@
-from sys import argv
 from os import popen
+from sys import argv
 
 curr_word = int(argv[1])
 args = argv[3:]
@@ -10,7 +10,7 @@ def main():
         return ["install", "remove", "list", "cleanup", "upgrade", "repair", "listall", "version"]
     elif curr_word == 2:
         if args[0] == "install":
-            with open("/usr/local/bin/jaclang-data/jpm-database.txt") as cacheFile:
+            with open("~/.local/share/jaclang-data/jpm-database.txt") as cacheFile:
                 packages = cacheFile.read().split("\n")
             return packages
         elif args[0] == "remove":

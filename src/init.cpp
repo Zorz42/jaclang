@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+extern std::string homeDir;
+
 void init() { // initialize global variables
     generator::availableRegisters[0] = {
             "bl",
@@ -60,9 +62,9 @@ void init() { // initialize global variables
             "r15",
     };
 #if OS_TYPE == 0 // Linux
-    std::string fileToRead = "/usr/local/bin/jaclang-data/empty-gnu.asm";
+    std::string fileToRead = homeDir + "/.local/share/jaclang-data/empty-gnu.asm";
 #elif OS_TYPE == 1 // MACOS
-    std::string fileToRead = "/usr/local/bin/jaclang-data/empty-macho.asm";
+    std::string fileToRead = homeDir + "/.local/share/jaclang-data/empty-macho.asm";
 #endif
     std::ifstream readFile(fileToRead);
 
