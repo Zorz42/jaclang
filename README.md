@@ -7,9 +7,9 @@ FULL INSTALLATION GUIDE: https://github.com/Zorz42/jaclang/blob/master/install/R
 Quick installation guide:
 
     make init
-    make jpm
     make build
     make install
+    make jpm
     
 Or all together:
 

@@ -20,9 +20,9 @@ INSTALLATION PROCESS:
 To execute seperate stages of installation:
 
     make init
-    make jpm
     make build
     make install
+    make jpm
     
 All together:
 

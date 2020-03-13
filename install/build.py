@@ -39,7 +39,7 @@ class BuildThread(Thread):
             compile_command = "g++ -w -Ofast -pipe -m64 -std=gnu++11 -I" + includedir + " -I" + objdir + " -o " + objdir + \
                               self.name + ".o -c " + srcdir + self.name + ".cpp"
         elif osplatform == "OSX":
-            compile_command = "g++ -w -Ofast -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
+            compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
                               ".o -c " + srcdir + self.name + ".cpp -include-pch " + objdir + "jaclang.h.gch"
         current_thread = call(compile_command, shell=True)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
@@ -98,9 +98,9 @@ def build():
     if build_header:
         print("Building jaclang header...")
         if osplatform == "linux":
-            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w")
+            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w -Ofast")
         elif osplatform == "OSX":
-            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w")
+            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w -Ofast")
 
     if threads:
         print("Building jaclang...")

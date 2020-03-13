@@ -14,9 +14,9 @@ clean:
 
 fullinstall:
 	@$(PYTHON) install/dependencies.py
-	@python3 install/installjpm.py
 	@python3 install/build.py
 	@python3 install/install.py
+	@python3 install/installjpm.py
 
 init:
 	@$(PYTHON) install/dependencies.py
