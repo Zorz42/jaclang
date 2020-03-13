@@ -87,7 +87,7 @@ void end_timer() {
 }
 
 void handle_arguments(int argc, char **argv) {
-    bool help = false;
+    bool help = false, displayVersion = false;
     std::vector<std::string> args, completeArgs, argsWithParams; // vector of command line arguments
     for (int i = 1; i < argc; i++)
         completeArgs.emplace_back(argv[i]);
@@ -104,6 +104,8 @@ void handle_arguments(int argc, char **argv) {
                 debug_show_ast = true;
             else if (i == "--quiet")
                 quiet = true;
+            else if (i == "--version")
+                displayVersion = true;
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl; // error
@@ -161,7 +163,11 @@ void handle_arguments(int argc, char **argv) {
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
         exit(0);
-    } else if (args.size() > 1) { // if there is more args than 1
+    } else if(displayVersion) {
+        std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
+        exit(0);
+    }
+    else if (args.size() > 1) { // if there is more args than 1
         std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
         error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
     } else if (args.empty()) {
