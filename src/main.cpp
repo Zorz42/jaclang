@@ -150,7 +150,11 @@ void handle_arguments(int argc, char **argv) {
             args.emplace_back(argsWithParams.at(i));
     }
 
-    if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
+    if(displayVersion) {
+        std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
+        exit(0);
+    }
+    else if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
         passwd *pw = getpwuid(getuid());
         homeDir = pw->pw_dir;
         std::ifstream helpFile(homeDir + "/.local/share/jaclang-data/help-text.txt");
@@ -162,9 +166,6 @@ void handle_arguments(int argc, char **argv) {
                       << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
-        exit(0);
-    } else if(displayVersion) {
-        std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
         exit(0);
     }
     else if (args.size() > 1) { // if there is more args than 1
