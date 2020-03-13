@@ -44,8 +44,8 @@ def installjpm_main():
     print("DONE")
     print("Initializing jpm...")
     print()
-    system("sudo jpm repair")
-    system("sudo jpm updatedatabase")
+    system("jpm repair")
+    system("jpm updatedatabase")
 
 
 if __name__ == "__main__":
