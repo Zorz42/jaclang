@@ -153,7 +153,7 @@ void handle_arguments(int argc, char **argv) {
         homeDir = pw->pw_dir;
         std::ifstream helpFile(homeDir + "/.local/share/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
-            std::cout << VERSION << std::endl;
+            std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
             std::cout << helpFile.rdbuf(); // print help text
         } else {
             std::cout << "\033[1;31mCannot open help-text file (~/.local/share/jaclang-data/help-text.txt)!\033[0m"

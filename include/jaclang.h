@@ -2,7 +2,7 @@
 
 #pragma once
 
-#define VERSION "BETA 2.6.1"
+#include "version.h"
 
 #include <iostream>
 #include <vector>
