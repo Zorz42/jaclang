@@ -3,13 +3,7 @@
 // the main file, where the main function is happening
 
 #include <chrono>   // time
-#include <sys/stat.h> // check if file/directory exists
-#include <fstream>
-
-struct stat info;
-
-bool cacheDirExisted;
-std::string cacheDir;
+#include <fstream>  // read/write to file
 
 // if compilation is being debugged (default: false)
 bool debug_show_tokens = false;
@@ -23,10 +17,8 @@ unsigned long file::asm_func;
 std::list<char> file::inputText; // input file
 std::vector<std::string> file::outputVector; // prefix for asm file
 
-std::string jaclangInput;
-std::string jaclangToNasm;
-std::string nasmToLinker;
-std::string binaryOutput;
+std::string inputFile;
+std::string outputFile;
 
 bool quiet = false;
 bool keep = false;
@@ -43,45 +35,14 @@ void handle_arguments(int argc, char **argv);
 
 void compile_jaclang();
 
-void compile_assembly();
-
-void link_object();
-
-void create_cache_dir();
-
-void remove_cache_dir(bool exitSuccess);
-
-std::string getFormat(std::string &file);
-
-std::string join(const std::string &filename, const std::string &end) {
-    return filename + std::string(".") + end;
-}
-
 int main(int argc, char **argv) {
-    cacheDir = ".jlcache";
-
     if (!quiet)
         start_timer();
 
     handle_arguments(argc, argv);
+    init();
 
-    if (!jaclangInput.empty() && !jaclangToNasm.empty())
-        init();
-
-    create_cache_dir();
-
-    if (!jaclangInput.empty() && !jaclangToNasm.empty())
-        compile_jaclang();
-    if (!jaclangToNasm.empty() && !nasmToLinker.empty())
-        compile_assembly();
-    if (!nasmToLinker.empty() && !binaryOutput.empty())
-        link_object();
-
-    if (!quiet)
-        std::cout << "\033[1;32mCompilation successful!\033[0m" << std::endl; // compilation successful!
-
-    if (!keep)
-        remove_cache_dir(true);
+    compile_jaclang();
 
     if (!quiet)
         end_timer();
@@ -90,10 +51,10 @@ int main(int argc, char **argv) {
 }
 
 void compile_jaclang() {
-    file::read(jaclangInput); // Read file
+    file::read(inputFile); // Read file
 
     lexer::main(); // convert code into tokens
-    parser::main(jaclangInput); // convert tokens into syntax tree
+    parser::main(inputFile); // convert tokens into syntax tree
     lexer::tokens.clear();
     file::inputText.clear();
     if (debug_show_ast)
@@ -102,7 +63,7 @@ void compile_jaclang() {
     generator::main(); // generate assembly code out of syntax tree
 
 
-    file::write(jaclangToNasm); // Writes to file
+    file::write(outputFile); // Writes to file
 }
 
 void start_timer() {
@@ -124,38 +85,33 @@ void end_timer() {
 }
 
 void handle_arguments(int argc, char **argv) {
+    bool help = false;
     std::vector<std::string> args; // vector of command line arguments
+    std::vector<file::param> temp;
     for (int i = 1; i < argc; i++) { // go through arguments
-        if (argv[i][0] == '-') { // if option
-            for (int i2 = 1; argv[i][i2] != 0; i2++) { // go through options
-                switch (argv[i][i2]) {
-                    case 'd': // debug (show tokens and ast)
-                        debug_show_tokens = true;
-                        debug_show_ast = true;
-                        break;
-                    case 't': // show tokens
-                        debug_show_tokens = true;
-                        break;
-                    case 'a': // show ast
-                        debug_show_ast = true;
-                        break;
-                    case 'q': // be quiet (still show errors)
-                        quiet = true;
-                        break;
-                    case 'k': // keep cache
-                        keep = true;
-                        break;
-                    default:
-                        std::cout << "\033[1;31m" << argv[i][i2] << " is not a valid argument!\033[0m"
-                                  << std::endl; // error
-                        error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
-                }
+        if (argv[i][0] == '-' && argv[i][1] == '-') { // if option
+            if(strcmp(argv[i], "--help"))
+                help = true;
+            else if(strcmp(argv[i], "--debug-all")) {
+                debug_show_tokens = true;
+                debug_show_ast = true;
+            }
+            else if(strcmp(argv[i], "--debug-tokens"))
+                debug_show_tokens = true;
+            else if(strcmp(argv[i], "--debug-ast"))
+                debug_show_ast = true;
+            else if(strcmp(argv[i], "--quiet"))
+                quiet = true;
+            else {
+                std::cout << "\033[1;31m" << argv[i] << " is not a valid argument!\033[0m"
+                          << std::endl; // error
+                error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
             }
         } else // if not option
             args.emplace_back(argv[i]); // append it to args
     }
 
-    if (args.empty()) { // if there are no arguments
+    if (args.empty() || help) { // if there are no arguments or help
         std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
             std::cout << VERSION << std::endl;
@@ -166,109 +122,11 @@ void handle_arguments(int argc, char **argv) {
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
         exit(0);
-    } else if (args.size() != 2) { // if there is more args than 2
-        std::cout << "\033[1;31mMust input 2 arguments or none!\033[0m" << std::endl;
-        error::terminate("INVALI ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
+    } else if (args.size() > 1) { // if there is more args than 1
+        std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
+        error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
     }
 
-    std::string outputFileName = args.at(1);
-    std::string outputFormat = getFormat(args.at(1));
-    std::string inputFormat = getFormat(args.at(0));
-    if (!outputFormat.empty()) {
-        for (; outputFileName.at(outputFileName.size() - 1) != '.';)
-            outputFileName.pop_back();
-        outputFileName.pop_back();
-    }
-    if (!inputFormat.empty()) {
-        if (inputFormat == "lj") { // because format gets read backwards
-            jaclangInput = args.at(0);
-            jaclangToNasm = cacheDir + "/" + join(outputFileName, "asm");
-            nasmToLinker = cacheDir + "/" + join(outputFileName, "o");
-            binaryOutput = cacheDir + "/" + outputFileName;
-        } else if (inputFormat == "msa") {
-            jaclangToNasm = args.at(0);
-            nasmToLinker = cacheDir + "/" + join(outputFileName, "o");
-            binaryOutput = cacheDir + "/" + outputFileName;
-        } else if (inputFormat == "o") {
-            nasmToLinker = join(outputFileName, "o");
-            binaryOutput = cacheDir + "/" + outputFileName;
-        } else {
-            std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
-            error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
-        }
-    } else {
-        std::cout << "\033[1;31mUnrecognized input file format!\033[0m" << std::endl;
-        error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
-    }
-    if (!outputFormat.empty()) {
-        if (outputFormat == "msa") { // because format gets read backwards
-            jaclangToNasm = join(outputFileName, "asm");
-            nasmToLinker = "";
-            binaryOutput = "";
-        } else if (outputFormat == "o") {
-            nasmToLinker = join(outputFileName, "o");
-            binaryOutput = "";
-        } else {
-            std::cout << "\033[1;31mUnrecognized output file format!\033[0m" << std::endl;
-            error::terminate("INVALID FORMAT", ERROR_INVALID_FORMAT);
-        }
-    } else
-        binaryOutput = outputFileName;
-}
-
-void compile_assembly() {
-    std::string command = OS_NASM;
-    command += jaclangToNasm;
-    command += " -o ";
-    command += nasmToLinker;
-    system(command.c_str());
-}
-
-void link_object() {
-    std::string command = OS_LINKER; // link assembly code
-    command += binaryOutput;
-    command += " ";
-    command += nasmToLinker;
-    system(command.c_str());
-}
-
-std::string getFormat(std::string &file) {
-    std::string format;
-    if (contains(file, '.'))
-        for (unsigned long i = file.length() - 1; file.at(i) != '.'; i--)
-            format += file.at(i);
-    return format;
-}
-
-void create_cache_dir() {
-    if (stat(cacheDir.c_str(), &info) != 0)
-        cacheDirExisted = false;
-    else if (info.st_mode & S_IFDIR)
-        cacheDirExisted = true;
-    else {
-        std::cout << "There is a file named " << cacheDir << "! ABORTING..." << std::endl;
-        error::terminate("CACHE ERROR", ERROR_CACHE_ERROR);
-    }
-
-    if (!cacheDirExisted) {
-        std::string command = "mkdir ";
-        command += cacheDir;
-        system(command.c_str());
-    }
-}
-
-void remove_cache_dir(bool exitSuccess) {
-    if (!cacheDirExisted) {
-        stat(cacheDir.c_str(), &info);
-        if (info.st_mode & S_IFDIR) {
-            std::string command = "rm -r ";
-            command += cacheDir;
-            system(command.c_str());
-        }
-    } else if (exitSuccess) {
-        if (jaclangToNasm.rfind(cacheDir + "/", 0) == 0)
-            remove(jaclangToNasm.c_str());
-        if (nasmToLinker.rfind(cacheDir + "/", 0) == 0)
-            remove(nasmToLinker.c_str());
-    }
+    std::string inputFile = args.at(0);
+    outputFile = "out.asm";
 }
