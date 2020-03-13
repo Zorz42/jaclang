@@ -28,7 +28,7 @@ All together:
 
     make
 
-If you want to skip jpm installation:
+If you want to install only jaclang:
 
     make init
     make build
@@ -36,4 +36,4 @@ If you want to skip jpm installation:
     
 Or all together:
 
-    make skipjpm
+    make onlyjaclang

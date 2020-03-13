@@ -1,10 +1,15 @@
 Jaclang help: 
 usage:
    jaclang - for help
-   jaclang [option] - for misc
-   jaclang [input file] [output file] - for compilation
+   jaclang [input file] - for compilation
 
 options:
-   -d - debug - get more detailed compilation (for nerds)
-   -k - keep  - keep cache (asm, object file located in .jlcache)
-   -q - quiet - say nothing except errors and debug messages if specified
+   --debug-* - get more detailed compilation (for nerds):
+      --debug-ast    - show ast
+      --debug-tokens - show tokens
+      --debug-all    - show ast and tokens
+   --quiet   - say nothing except errors and debug messages if specified
+   --version - display version
+
+parameters:
+   -o [output file] - set output file

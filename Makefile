@@ -30,7 +30,7 @@ install:
 uninstall:
 	@sudo rm /usr/local/bin/jaclang
 
-skipjpm:
+onlyjaclang:
 	@$(PYTHON) install/dependencies.py
 	@python3 install/build.py
 	@python3 install/install.py

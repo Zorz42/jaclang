@@ -8,10 +8,6 @@ def install():
 
     if sys() == 'Linux':
         system("sudo cp data/jpm.bash /etc/bash_completion.d/")
-    print()
-    system("sudo jpm repair")
-    system("sudo jpm updatedatabase")
-    print()
     print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
 
 if __name__ == "__main__":

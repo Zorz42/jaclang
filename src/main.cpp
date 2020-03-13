@@ -21,7 +21,6 @@ std::string inputFile;
 std::string outputFile;
 
 bool quiet = false;
-bool keep = false;
 
 long start;
 
@@ -62,7 +61,6 @@ void compile_jaclang() {
     currentBranchScope = &mainBranch;
     generator::main(); // generate assembly code out of syntax tree
 
-
     file::write(outputFile); // Writes to file
 }
 
@@ -86,32 +84,67 @@ void end_timer() {
 
 void handle_arguments(int argc, char **argv) {
     bool help = false;
-    std::vector<std::string> args; // vector of command line arguments
-    std::vector<file::param> temp;
-    for (int i = 1; i < argc; i++) { // go through arguments
-        if (argv[i][0] == '-' && argv[i][1] == '-') { // if option
-            if(strcmp(argv[i], "--help"))
+    std::vector<std::string> args, completeArgs, argsWithParams; // vector of command line arguments
+    for (int i = 1; i < argc; i++)
+        completeArgs.emplace_back(argv[i]);
+    for (const std::string &i : completeArgs) { // go through arguments
+        if (i[0] == '-' && i[1] == '-') { // if option
+            if (i == "--help")
                 help = true;
-            else if(strcmp(argv[i], "--debug-all")) {
+            else if (i == "--debug-all") {
                 debug_show_tokens = true;
                 debug_show_ast = true;
-            }
-            else if(strcmp(argv[i], "--debug-tokens"))
+            } else if (i == "--debug-tokens")
                 debug_show_tokens = true;
-            else if(strcmp(argv[i], "--debug-ast"))
+            else if (i == "--debug-ast")
                 debug_show_ast = true;
-            else if(strcmp(argv[i], "--quiet"))
+            else if (i == "--quiet")
                 quiet = true;
             else {
-                std::cout << "\033[1;31m" << argv[i] << " is not a valid argument!\033[0m"
+                std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl; // error
                 error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
             }
         } else // if not option
-            args.emplace_back(argv[i]); // append it to args
+            argsWithParams.emplace_back(i); // append it to args
+    }
+    completeArgs.clear();
+    outputFile = "out.asm";
+    for (unsigned long i = 0; i < argsWithParams.size(); i++) {
+        if (argsWithParams.at(i) == "-") {
+            std::cout << "\033[1;31m" << argsWithParams.at(i) << " is a forbidden argument!\033[0m"
+                      << std::endl; // error
+            error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+        } else if (argsWithParams.at(i)[0] == '-') {
+            char currArgName = argsWithParams.at(i)[1];
+            std::string currArg;
+            if (argsWithParams.at(i).size() == 2) {
+                i++;
+                if(i == argsWithParams.size()) {
+                    std::cout << "\033[1;31m-" << currArgName << " has no argument!\033[0m"
+                              << std::endl; // error
+                    error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+                }
+                currArg = argsWithParams.at(i);
+            } else {
+                currArg = argsWithParams.at(i);
+                currArg.erase(currArg.begin());
+                currArg.erase(currArg.begin());
+            }
+            switch (currArgName) {
+                case 'o':
+                    outputFile = currArg;
+                    break;
+                default:
+                    std::cout << "\033[1;31m-" << currArgName << " is not a valid argument!\033[0m"
+                              << std::endl; // error
+                    error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+            }
+        } else
+            args.emplace_back(argsWithParams.at(i));
     }
 
-    if (args.empty() || help) { // if there are no arguments or help
+    if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
         std::ifstream helpFile("/usr/local/bin/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
             std::cout << VERSION << std::endl;
@@ -125,8 +158,10 @@ void handle_arguments(int argc, char **argv) {
     } else if (args.size() > 1) { // if there is more args than 1
         std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
         error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
+    } else if (args.empty()) {
+        std::cout << "\033[1;31mNo input file!\033[0m" << std::endl;
+        error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
     }
-
-    std::string inputFile = args.at(0);
-    outputFile = "out.asm";
+    argsWithParams.clear();
+    inputFile = args.at(0);
 }

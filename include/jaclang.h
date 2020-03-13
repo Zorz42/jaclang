@@ -2,7 +2,7 @@
 
 #pragma once
 
-#define VERSION "BETA 2.4.0"
+#define VERSION "BETA 2.5.0"
 
 #include <iostream>
 #include <vector>

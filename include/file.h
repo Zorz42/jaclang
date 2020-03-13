@@ -28,9 +28,4 @@ namespace file {
     void add(const std::string &line, unsigned long position);
 
     void append_instruction(const std::string &instruction, const std::string &arg1 = "", const std::string &arg2 = "");
-
-    struct param {
-        char name;
-        std::string parameter;
-    };
 }

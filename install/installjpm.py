@@ -38,6 +38,10 @@ def installjpm_main():
 
     system("rm jpm-master.zip; rm -r jpm-master")
     print("DONE")
+    print("Initializing jpm...")
+    print()
+    system("sudo jpm repair")
+    system("sudo jpm updatedatabase")
 
 
 if __name__ == "__main__":
