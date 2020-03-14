@@ -31,6 +31,7 @@ def installjpm_main():
     for Dir in dirs:
         if not path.isdir("jpm-stable/jpm-sources/" + Dir):
             mkdir('jpm-stable/jpm-sources/' + Dir)
+    system("sudo rm -r " + install_folder + "/jpm-sources")
     if sys() == 'Linux':
         system("sudo cp -r jpm-stable/jpm-sources " + install_folder)
     elif sys() == 'Darwin':
