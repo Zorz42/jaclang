@@ -31,13 +31,16 @@ def installjpm_main():
     for Dir in dirs:
         if not path.isdir("jpm-stable/jpm-sources/" + Dir):
             mkdir('jpm-stable/jpm-sources/' + Dir)
+    if path.isdir(install_folder + "/jpm-sources"):
+        system("sudo rm -r " + install_folder + "/jpm-sources")
     if sys() == 'Linux':
         system("sudo cp -r jpm-stable/jpm-sources " + install_folder)
     elif sys() == 'Darwin':
         system("sudo cp -r jpm-stable/jpm-sources " + install_folder + "jpm-sources")
     else:
         print("Unsupported os!")
-    system("sudo rm /usr/local/bin/jpm")
+    if path.isfile("/usr/local/bin/jpm"):
+        system("sudo rm /usr/local/bin/jpm")
     system("sudo cp jpm-stable/jpm /usr/local/bin")
     system("sudo chown " + getuser() + " " + install_folder + "jpm-sources")
     system("sudo chmod +x /usr/local/bin/jpm")
