@@ -40,7 +40,7 @@ class BuildThread(Thread):
                               self.name + ".o -c " + srcdir + self.name + ".cpp"
         elif osplatform == "OSX":
             compile_command = "g++ -w -pipe -m64 -std=gnu++11 -I" + includedir + " -o " + objdir + self.name + \
-                              ".o -c " + srcdir + self.name + ".cpp -include-pch " + objdir + "jaclang.h.gch"
+                              ".o -c " + srcdir + self.name + ".cpp -include-pch " + objdir + "jaclang.h.gch -Ofast"
         current_thread = call(compile_command, shell=True)
         columns = int(popen('stty size', 'r').read().split()[1]) - 2
         for i in range(columns + 2):
