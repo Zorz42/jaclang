@@ -7,7 +7,7 @@ _jpm()
 
     # shellcheck disable=SC2034
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="$(python3 ~/.local/share/jaclang-data/jpm_completion.py $COMP_CWORD ${COMP_WORDS[*]})"
+    opts="$(python3 /usr/local/share/jaclang-data/jpm_completion.py $COMP_CWORD ${COMP_WORDS[*]})"
 
     # shellcheck disable=SC2207
     COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )

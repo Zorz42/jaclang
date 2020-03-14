@@ -10,7 +10,7 @@ def main():
         return ["install", "remove", "list", "cleanup", "upgrade", "repair", "listall", "version"]
     elif curr_word == 2:
         if args[0] == "install":
-            with open("~/.local/share/jaclang-data/jpm-database.txt") as cacheFile:
+            with open("/usr/local/share/jaclang-data/jpm-database.txt") as cacheFile:
                 packages = cacheFile.read().split("\n")
             return packages
         elif args[0] == "remove":
