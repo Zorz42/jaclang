@@ -34,7 +34,8 @@ def installjpm_main():
         system("sudo cp -r jpm-stable/jpm-sources " + install_folder + "jpm-sources")
     else:
         print("Unsupported os!")
-    system("sudo rm /usr/local/bin/jpm")
+    if path.isfile("/usr/local/bin/jpm"):
+        system("sudo rm /usr/local/bin/jpm")
     system("sudo cp jpm-stable/jpm /usr/local/bin")
     system("sudo chown " + getuser() + " " + install_folder + "jpm-sources")
     system("sudo chmod +x /usr/local/bin/jpm")
