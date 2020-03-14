@@ -1,22 +1,17 @@
-
 import ssl
 from getpass import getuser
 from os import getcwd, path, mkdir, system
 from platform import system as sys
 from wget import download
 
-home_folder = path.expanduser("~")
-install_folder = home_folder + "/.local/share/"
+install_folder = "/usr/local/share/"
+
 
 def installjpm_main():
     try:
         ssl._create_default_https_context = ssl._create_unverified_context
     except AttributeError:
         pass
-    if not path.isdir(home_folder + "/.local/"):
-        mkdir(home_folder + "/.local")
-    if not path.isdir(install_folder):
-        mkdir(install_folder)
     print()
     print("Downloading jpm ... ", end='', flush=True)
     download("https://github.com/Zorz42/jpm/archive/stable.zip", bar=None)
@@ -31,7 +26,8 @@ def installjpm_main():
     for Dir in dirs:
         if not path.isdir("jpm-stable/jpm-sources/" + Dir):
             mkdir('jpm-stable/jpm-sources/' + Dir)
-    system("sudo rm -r " + install_folder + "/jpm-sources")
+    if path.isdir(install_folder + "/jpm-sources"):
+        system("sudo rm -r " + install_folder + "/jpm-sources")
     if sys() == 'Linux':
         system("sudo cp -r jpm-stable/jpm-sources " + install_folder)
     elif sys() == 'Darwin':
