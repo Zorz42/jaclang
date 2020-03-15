@@ -62,7 +62,7 @@ void generator::pushToStack(variable source) // push to stack
 
 void generator::nextRegister() {
     generator::currentRegister++;
-    if (generator::currentRegister == generator::availableRegisters[0].size())
+    if ((uint8_t)generator::currentRegister == generator::availableRegisters[0].size())
         error::treeError("register overflow");
 }
 
@@ -80,5 +80,5 @@ std::string generator::availableRegister(int8_t size, int8_t offset) {
 }
 
 int8_t variable::size() {
-    return generator::primitiveDatatypeSizes[this->type];
+    return static_cast<int8_t>(generator::primitiveDatatypeSizes[this->type]);
 }

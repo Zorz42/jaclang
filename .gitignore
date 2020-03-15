@@ -7,4 +7,5 @@
 **/*.tmp
 **/venv
 **/*.pyc
+**/*.gch
 data/jpm.bash.save

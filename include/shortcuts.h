@@ -14,7 +14,6 @@ void printAST(branch &obj);
 //unsigned long toFloat(std::string text);
 bool isInt(const std::string &text);
 
-bool isFloat(const std::string &text);
 
 unsigned long find(std::vector<std::string> &source, const std::string &target);
 

@@ -112,10 +112,6 @@ void init() { // initialize global variables
     generator::sizeKeywords[2] = "WORD";
     generator::sizeKeywords[4] = "DWORD";
     generator::sizeKeywords[8] = "QWORD";
-
-    lexer::symbols = "()[]{},*&#.";
-    lexer::operators = "!%^=><+-*%&|/~?:$@";
-    lexer::inNumber = "0123456789.";
 }
 
 

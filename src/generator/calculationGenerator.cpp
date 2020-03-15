@@ -2,7 +2,7 @@
 
 #include "jaclang.h"
 
-unsigned int generator::currentRegister = 0;
+int8_t generator::currentRegister = 0;
 std::vector<std::string> generator::availableRegisters[4]; // all registers that equations can use
 
 void operator_add(const std::string &value);

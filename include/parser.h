@@ -1,8 +1,8 @@
 #pragma once
 
 struct branch {
-    std::string name;
-    std::vector<branch> sub;
+    std::string name{};
+    std::vector<branch> sub{};
     unsigned int count = 0;
 };
 
