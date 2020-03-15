@@ -10,15 +10,11 @@ struct token {
 
     explicit token(std::string TEXT) : type(TYPE_UNDEF), text(std::move(TEXT)) {}
 
-    token() : type(0), text("") {}
+    token() : type(0), text() {}
 };
 
 namespace lexer {
     void main();
 
     extern std::list<token> tokens;
-
-    extern std::string symbols;
-    extern std::string operators;
-    extern std::string inNumber;
 }

@@ -105,7 +105,7 @@ void handle_arguments(int argc, char **argv) {
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl; // error
-                error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+                error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
             }
         } else // if not option
             argsWithParams.emplace_back(i); // append it to args
@@ -146,11 +146,10 @@ void handle_arguments(int argc, char **argv) {
             args.emplace_back(argsWithParams.at(i));
     }
 
-    if(displayVersion) {
+    if (displayVersion) {
         std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
         exit(0);
-    }
-    else if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
+    } else if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
         std::ifstream helpFile("/usr/local/share/jaclang-data/help-text.txt");
         if (helpFile.is_open()) {
             std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
@@ -161,8 +160,7 @@ void handle_arguments(int argc, char **argv) {
             error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
         }
         exit(0);
-    }
-    else if (args.size() > 1) { // if there is more args than 1
+    } else if (args.size() > 1) { // if there is more args than 1
         std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
         error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
     } else if (args.empty()) {

@@ -56,7 +56,7 @@ namespace generator {
 
     void pushToStack(variable source);
 
-    extern unsigned int currentRegister;
+    extern int8_t currentRegister;
     extern std::vector<std::string> availableRegisters[4];
 
     void nextRegister();
