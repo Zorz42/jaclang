@@ -30,10 +30,11 @@ branch parser::calculation(bool nested) { // parse calculation
         parser::nextToken();
         if (parser::currToken == lexer::tokens.end())
             break;
-        if (parser::currToken == --lexer::tokens.end())
-            error::syntaxError("File ends with a operator");
-        if (find(equationSymbols, current->text) != equationSymbols.size()) // if there is valid operator
+        if (find(equationSymbols, current->text) != equationSymbols.size()) { // if there is valid operator
+            if (parser::currToken == --lexer::tokens.end())
+                error::syntaxError("File ends with a operator");
             appendBranch(current->text, currentBranch);
+        }
         else
             break;
         parser::nextToken();

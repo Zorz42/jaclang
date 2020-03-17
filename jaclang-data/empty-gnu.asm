@@ -8,8 +8,6 @@ section .text
     global _start
 _start:
 
-   mov rbp, rsp
-
    mov eax, 60
    mov edi, 0
    syscall
