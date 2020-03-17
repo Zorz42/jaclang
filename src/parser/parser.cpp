@@ -52,13 +52,13 @@ void parser::main(std::string rootName) {
 }
 
 void appendBranch(const branch &source, branch &target) { // function for appending branch to another branch
-    target.sub.push_back(source);
+    target.sub->push_back(source);
 }
 
 void appendBranch(std::string source, branch &target) { // function for appending empty branch with name to branch
     branch obj;
     obj.name = std::move(source);
-    target.sub.push_back(obj);
+    target.sub->push_back(obj);
 }
 
 std::list<token>::iterator parser::peekNextToken() {

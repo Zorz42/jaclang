@@ -2,9 +2,9 @@
 
 #include "jaclang.h"
 
-#define current currentBranchScope->sub.at(currentBranchScope->count) // function branch
-#define currentName  currentBranchScope->sub.at(currentBranchScope->count).sub.at(0).name // name of function
-#define currentName2 currentBranchScope->sub.at(currentBranchScope->count).sub.at(1).name
+#define current currentBranchScope->sub->at(currentBranchScope->count) // function branch
+#define currentName  currentBranchScope->sub->at(currentBranchScope->count).sub->at(0).name // name of function
+#define currentName2 currentBranchScope->sub->at(currentBranchScope->count).sub->at(1).name
 
 void f_asmtext();
 

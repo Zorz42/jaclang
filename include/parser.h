@@ -1,9 +1,31 @@
 #pragma once
 
 struct branch {
-    std::string name{};
-    std::vector<branch> sub{};
-    unsigned int count = 0;
+    std::string name;
+    std::vector<branch>* sub = nullptr;
+    unsigned int count;
+    branch() : name(""), count(0) {}
+    branch(const branch &input) {
+        if(input.sub != nullptr) {
+            sub = new std::vector<branch>;
+            *sub = *input.sub;
+        }
+        name = input.name;
+        count = input.count;
+    }
+
+    void alloc() {
+        sub = new std::vector<branch>;
+    }
+
+    ~branch() {
+        if(sub != nullptr) {
+            for(branch &i : *sub)
+                i.~branch();
+            delete sub;
+            sub = nullptr;
+        }
+    }
 };
 
 extern branch mainBranch;

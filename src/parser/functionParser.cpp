@@ -10,6 +10,7 @@ bool parser::e::functionCall(branch &target) {
     if (current->type == TYPE_INDENT &&
         parser::peekNextToken()->text == "(") { // if its function -> name followed by '('
         branch currentBranch; // make branch for function
+        currentBranch.alloc();
         if (isSystemIndent(current->text))  // check if its system function call or just function call
             return false;
         else
@@ -32,6 +33,7 @@ bool parser::e::systemFunctionCall() {
     if (current->type == TYPE_INDENT &&
         parser::peekNextToken()->type == TYPE_STRING) { // if its systemFunction -> name followed by string
         branch currentBranch; // make branch for function
+        currentBranch.alloc();
         if (isSystemIndent(current->text))  // check if its system function call
             currentBranch.name = "systemFunctionCall";
         else
@@ -59,6 +61,7 @@ bool parser::e::functionDeclaration() {
     if (current->text == "int" && parser::peekNextToken()->type == TYPE_INDENT &&
         nextNextToken->text == "(") { // if first text is int
         branch currentBranch;
+        currentBranch.alloc();
         currentBranch.name = "functionDeclaration"; // set to variableDeclaration
         parser::nextToken();
         parser::nextToken();

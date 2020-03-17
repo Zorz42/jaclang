@@ -23,30 +23,30 @@ std::string generator::e::calculation(branch &calculation) {
 
     file::append_instruction("mov", generator::availableRegister(8), "0");
 
-    if (calculation.sub.at(0).name == "functionCall") { // check if its function call at the beginning
-        generator::e::functionCall(calculation.sub.at(0).sub.at(0).name);
+    if (calculation.sub->at(0).name == "functionCall") { // check if its function call at the beginning
+        generator::e::functionCall(calculation.sub->at(0).sub->at(0).name);
         currentValueType = "int";
-    } else if (calculation.sub.at(0).name.at(0) == ':') { // variables will have : at the beginning
-        std::string value = calculation.sub.at(0).name; // variable name
+    } else if (calculation.sub->at(0).name.at(0) == ':') { // variables will have : at the beginning
+        std::string value = calculation.sub->at(0).name; // variable name
         value.erase(value.begin()); // remove :
         variable curr = generator::get_variable(value);
         file::append_instruction("mov", generator::availableRegister(curr.size()),
                                  onStack(curr.position)); // mov first value to register
         currentValueType = curr.type;
-    } else if (calculation.sub.at(0).name == "calculation") {
+    } else if (calculation.sub->at(0).name == "calculation") {
         generator::nextRegister(); // its just nested calculation
-        currentValueType = generator::e::calculation(calculation.sub.at(0));
+        currentValueType = generator::e::calculation(calculation.sub->at(0));
         file::append_instruction("mov", generator::availableRegister(8, -1), generator::availableRegister(8));
         generator::prevRegister();
     } else { // else its just constant
-        file::append_instruction("mov", generator::availableRegister(8), calculation.sub.at(0).name);
+        file::append_instruction("mov", generator::availableRegister(8), calculation.sub->at(0).name);
         currentValueType = "int";
     }
 
-#define currentValue calculation.sub.at(i).name
-#define currentOperator calculation.sub.at(i - 1).name
+#define currentValue calculation.sub->at(i).name
+#define currentOperator calculation.sub->at(i - 1).name
 
-    for (unsigned long i = 2; i <= calculation.sub.size(); i += 2) {
+    for (unsigned long i = 2; i <= calculation.sub->size(); i += 2) {
         std::string currentValueAsm = currentValue;
         currentValueAsmSize = 4; // default - int (4 bytes)
         if (currentValueAsm.at(0) == ':') { // if its variable
@@ -58,12 +58,12 @@ std::string generator::e::calculation(branch &calculation) {
             thisValueType = curr.type;
         } else if (currentValue == "calc") { // if value is calculation
             generator::nextRegister();
-            thisValueType = generator::e::calculation(calculation.sub.at(i));
+            thisValueType = generator::e::calculation(calculation.sub->at(i));
             generator::prevRegister();
 
             currentValueAsm = generator::availableRegister(8, 1);
         } else if (currentValue == "functionCall") {
-            generator::e::functionCall(calculation.sub.at(i).sub.at(0).name);
+            generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
         } else {
             thisValueType = "int";
             if (currentOperator == "+") // default cases for operators

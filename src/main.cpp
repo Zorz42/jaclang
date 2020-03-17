@@ -53,6 +53,7 @@ void compile_jaclang() {
     file::read(inputFile); // Read file
 
     lexer::main(); // convert code into tokens
+    mainBranch.alloc();
     parser::main(inputFile); // convert tokens into syntax tree
     lexer::tokens.clear();
     file::inputText.clear();

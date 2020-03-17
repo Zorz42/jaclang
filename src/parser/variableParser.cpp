@@ -9,6 +9,7 @@ bool parser::e::variableDeclaration() {
         return false;
     if (contains(generator::primitiveDatatypes, current->text)) { // if first text is a primitive datatype
         branch currentBranch;
+        currentBranch.alloc();
         currentBranch.name = "variableDeclaration"; // set to variableDeclaration
         appendBranch(current->text, currentBranch);
         parser::nextToken();
@@ -21,7 +22,6 @@ bool parser::e::variableDeclaration() {
         parser::nextToken();
         branch equationBranch = parser::calculation(true);
         appendBranch(equationBranch, currentBranch);
-
         appendBranch(currentBranch, *currentBranchScope);
         return true;
     } else
@@ -33,6 +33,7 @@ bool parser::e::variableSetting() {
         return false;
     if (current->type == TYPE_INDENT && parser::peekNextToken()->text == "=") {
         branch currentBranch;
+        currentBranch.alloc();
         currentBranch.name = "variableSetting";
         appendBranch(current->text, currentBranch);
         parser::nextToken();

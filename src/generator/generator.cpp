@@ -15,12 +15,12 @@ std::unordered_map<int8_t, std::string> generator::sizeKeywords;
 std::unordered_map<std::string, std::vector<std::string>> generator::implicitConversations;
 
 void generator::main() {
-#define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
+#define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
     file::append_instruction("mov rbp, rsp");
     file::append_instruction("sub", "rsp, ");
     unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text-1 : file::asm_func-1;
     file::append_instruction("");
-    for (; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) {
+    for (; currentBranchScope->count < currentBranchScope->sub->size(); currentBranchScope->count++) {
         // iterate though branches
         if (!file::outputVector.at(file::asm_text - 1).empty())
             file::append_text("");
