@@ -49,8 +49,6 @@ void generator::e::functionDeclaration() {
     file::append(line);
 
     file::append_instruction("pusha");
-    file::append_instruction("mov", "rbp", "rsp");
-    file::append("");
 
     branch *prevScope = currentBranchScope;
     currentBranchScope = &(current);

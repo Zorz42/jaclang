@@ -16,10 +16,12 @@ std::unordered_map<std::string, std::vector<std::string>> generator::implicitCon
 
 void generator::main() {
 #define current currentBranchScope->sub.at(currentBranchScope->count) // current branch
-    if (currentBranchScope == &mainBranch)
-        file::append_text("   mov rbp, rsp");
-    for (; currentBranchScope->count <
-           currentBranchScope->sub.size(); currentBranchScope->count++) { // iterate though branches
+    file::append_instruction("mov rbp, rsp");
+    file::append_instruction("sub", "rsp, ");
+    unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text-1 : file::asm_func-1;
+    file::append_instruction("");
+    for (; currentBranchScope->count < currentBranchScope->sub.size(); currentBranchScope->count++) {
+        // iterate though branches
         if (!file::outputVector.at(file::asm_text - 1).empty())
             file::append_text("");
         if (current.name == "systemFunctionCall")  // choose appropriate generator for branch
@@ -51,6 +53,7 @@ void generator::main() {
         else
             error::treeError("Unknown branch: " + current.name);
     }
+    file::outputVector.at(subRsp).append(std::to_string(generator::stackPointer));
 }
 
 void generator::pushToStack(variable source) // push to stack
