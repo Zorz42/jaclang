@@ -84,7 +84,7 @@ void file::append_instruction(const std::string &instruction, const std::string 
 }
 
 void file::append(const std::string &line) {
-    if (generator::inFunction) // if code should be in function append it to function section
+    if (generator::currentFunction != nullptr) // if code should be in function append it to function section
         file::append_func(line);
     else
         file::append_text(line);

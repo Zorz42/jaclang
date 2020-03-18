@@ -37,36 +37,36 @@ void generator::e::functionDeclaration() {
     for (const function &i : generator::functionVector)
         if (i.name == obj.name)
             error::treeError("Function already declared!");
+
     generator::functionVector.push_back(obj);
     currentBranchScope->count++;
+
     std::vector<variable> prevStack = generator::stack;
     int prevStackPointer = generator::stackPointer, prevBiggestStackPointer = generator::biggestStackPointer;
     generator::stackPointer = 0;
     generator::biggestStackPointer = 0;
     generator::stack = {};
+    branch *prevScope = currentBranchScope;
+    currentBranchScope = &(current);
+    int8_t prevCurrentRegister = currentRegister;
+    currentRegister = 0;
+
     if (current.name != "scope")
         error::treeError("Expected scope after function declaration!");
-    generator::inFunction = true;
+
     std::string line = obj.name;
     line += ".:";
     file::append(line);
-
     file::append_instruction("pusha");
 
-    branch *prevScope = currentBranchScope;
-    currentBranchScope = &(current);
-
-    int8_t prevCurrentRegister = currentRegister;
-    currentRegister = 0;
     generator::main();
-    currentRegister = prevCurrentRegister;
 
     file::append("");
     file::append_instruction("popa");
     file::append_instruction("ret");
     file::append("");
 
-    generator::inFunction = false;
+    currentRegister = prevCurrentRegister;
     currentBranchScope = prevScope;
     generator::stack = prevStack;
     generator::stackPointer = prevStackPointer;
@@ -74,13 +74,13 @@ void generator::e::functionDeclaration() {
     currentFunction = nullptr;
 }
 
-function* generator::e::functionCall(const std::string &functionName) {
+function *generator::e::functionCall(const std::string &functionName) {
     bool funcExists = false; // go through existing functions and check if it exists
-    function* target = nullptr;
+    function *target = nullptr;
     for (const function &iter : generator::functionVector)
         if (iter.name == functionName) {
             funcExists = true;
-            target = (function*)&iter;
+            target = (function *) &iter;
             break;
         }
     if (!funcExists)
@@ -91,7 +91,8 @@ function* generator::e::functionCall(const std::string &functionName) {
 
 void generator::e::returnStatement() {
     checkForImplicitConversion(currentFunction->type, generator::e::calculation(current.sub->at(0)));  // do calculation
-    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [rel returnvalue]", generator::availableRegister(currentFunction->size()));
+    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [rel returnvalue]",
+                             generator::availableRegister(currentFunction->size()));
 
     file::append_instruction("add", "rsp", std::to_string(generator::biggestStackPointer));
     file::append_instruction("popa"); // call function

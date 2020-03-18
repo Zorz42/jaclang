@@ -67,8 +67,7 @@ std::string generator::e::calculation(branch &calculation) {
             thisValueType = thisFunction->type;
             currentValueAsm = "[rel returnvalue]";
             currentValueAsmSize = thisFunction->size();
-        }
-        else
+        } else
             thisValueType = "int";
         if (currentOperator == "+") // default cases for operators
             operator_add(currentValueAsm);

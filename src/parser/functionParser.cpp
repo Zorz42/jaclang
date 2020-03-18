@@ -53,12 +53,12 @@ bool parser::e::systemFunctionCall() {
 bool parser::e::functionDeclaration() {
     if (parser::currToken == --lexer::tokens.end())
         return false;
-    const std::string& datatype = current->text;
+    const std::string &datatype = current->text;
     if (contains(generator::primitiveDatatypes, current->text)) {
         parser::nextToken();
-        const std::string& indent = parser::currToken->text;
+        const std::string &indent = parser::currToken->text;
         parser::nextToken();
-        const std::string& parenthesis = parser::currToken->text;
+        const std::string &parenthesis = parser::currToken->text;
         parser::prevToken();
         parser::prevToken();
         if (parser::peekNextToken()->type == TYPE_INDENT && parenthesis == "(") {

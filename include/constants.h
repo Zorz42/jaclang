@@ -13,3 +13,4 @@
 #define TYPE_STRING 3
 #define TYPE_SYMBOL 4
 #define TYPE_OPERATOR 5
+#define TYPE_KEYWORD 6
