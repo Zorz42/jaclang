@@ -25,6 +25,7 @@
 int currentLine = 1;
 
 std::list<token> lexer::tokens; // vector of tokens
+std::vector<std::string> lexer::keywords;
 
 void newToken(int TYPE); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
@@ -53,14 +54,13 @@ void lexer::main() { // main lexer function
         } else if (CHAR == '\'' && !inStringDQ) { // the same thing but for single quotes
             inStringQ = !inStringQ;
             newToken(inStringQ ? TYPE_UNDEF : TYPE_STRING);
-        } else if(!IN_STRING) {
+        } else if (!IN_STRING) {
             int isTokenResult = isToken(CHAR); // check if is operator or symbol
             if (isTokenResult != TYPE_UNDEF) {
                 newToken(TYPE_UNDEF);
                 currentToken = CHAR;
                 newToken(isTokenResult);
-            }
-            else
+            } else
                 currentToken += CHAR; // else just append character to token
         } else
             currentToken += CHAR; // else just append character to token
@@ -83,7 +83,7 @@ void lexer::main() { // main lexer function
             } else if (isInt(iter.text))
                 iter.type = TYPE_CONST;
             else
-                iter.type = TYPE_INDENT; // name is only left
+                iter.type = contains(lexer::keywords, iter.text) ? TYPE_KEYWORD : TYPE_INDENT; // name is only left
         }
 
 #define POS_OFFSET 15

@@ -35,8 +35,7 @@ branch parser::calculation(bool nested) { // parse calculation
             if (parser::currToken == --lexer::tokens.end())
                 error::syntaxError("File ends with a operator");
             appendBranch(current->text, currentBranch);
-        }
-        else
+        } else
             break;
         parser::nextToken();
     }
@@ -45,9 +44,9 @@ branch parser::calculation(bool nested) { // parse calculation
         if (current->text != ")" && parser::peekNextToken() != lexer::tokens.end())
             parser::prevToken();
 
-#define curr(x) currentBranch.sub->at(x).name
-#define currentObj(x) currentBranch.sub->at(x)
-#define eraseEl(x) currentBranch.sub->erase(currentBranch.sub->begin() + x)
+#define curr(x) (currentBranch.sub->at(x).name)
+#define currentObj(x) (currentBranch.sub->at(x))
+#define eraseEl(x) (currentBranch.sub->erase(currentBranch.sub->begin() + x))
 
     // make that multiplication and division get calculated first
     for (unsigned long i = 2; i < currentBranch.sub->size(); i += 2) {

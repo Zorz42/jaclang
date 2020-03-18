@@ -2,11 +2,13 @@
 
 struct branch {
     std::string name;
-    std::vector<branch>* sub = nullptr;
-    unsigned int count;
-    branch() : name(""), count(0) {}
+    std::vector<branch> *sub = nullptr;
+    unsigned int count = 0;
+
+    branch() = default;
+
     branch(const branch &input) {
-        if(input.sub != nullptr) {
+        if (input.sub != nullptr) {
             sub = new std::vector<branch>;
             *sub = *input.sub;
         }

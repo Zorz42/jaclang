@@ -100,7 +100,8 @@ def build():
         if osplatform == "linux":
             system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -w -Ofast")
         elif osplatform == "OSX":
-            system("g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w -Ofast")
+            system(
+                "g++ -c " + includedir + "jaclang.h -o " + objdir + "jaclang.h.gch -std=gnu++11 -stdlib=libc++ -w -Ofast")
 
     if threads:
         print("Building jaclang...")

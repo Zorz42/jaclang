@@ -6,8 +6,7 @@ int generator::stackPointer = 0; // top of stack
 int generator::biggestStackPointer = 0;
 std::vector<variable> generator::stack; // the stack, not actual just for allocation
 std::vector<function> generator::functionVector;
-bool generator::inFunction = false;
-function* generator::currentFunction = nullptr;
+function *generator::currentFunction = nullptr;
 
 std::unordered_map<std::string, int> generator::primitiveDatatypeSizes;
 
@@ -20,7 +19,7 @@ void generator::main() {
 #define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
     file::append_instruction("mov rbp, rsp");
     file::append_instruction("sub", "rsp, ");
-    unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text-1 : file::asm_func-1;
+    unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text - 1 : file::asm_func - 1;
     file::append_instruction("");
     for (; currentBranchScope->count < currentBranchScope->sub->size(); currentBranchScope->count++) {
         // iterate though branches
@@ -46,11 +45,11 @@ void generator::main() {
                 generator::stack.pop_back();
             }
             currentBranchScope = prevScope; // retrieve current branch scope
-        } else if (current.name == "functionDeclaration" && !generator::inFunction)
+        } else if (current.name == "functionDeclaration" && generator::currentFunction == nullptr)
             generator::e::functionDeclaration();
         else if (current.name == "variableSetting")
             generator::e::variableSetting();
-        else if (current.name == "returnStatement" && generator::inFunction)
+        else if (current.name == "returnStatement" && generator::currentFunction != nullptr)
             generator::e::returnStatement();
         else
             error::treeError("Unknown branch: " + current.name);
@@ -67,7 +66,7 @@ void generator::pushToStack(variable source) // push to stack
 
 void generator::nextRegister() {
     generator::currentRegister++;
-    if ((uint8_t)generator::currentRegister == generator::availableRegisters[0].size())
+    if ((uint8_t) generator::currentRegister == generator::availableRegisters[0].size())
         error::treeError("register overflow");
 }
 
@@ -81,10 +80,10 @@ std::string generator::availableRegister(int8_t size, int8_t offset) {
     int index = 0;
     for (int i = size; i != 1; i /= 2)
         index++;
-    return generator::availableRegisters[index].at(generator::currentRegister + offset);
+    return generator::availableRegisters[index].at((unsigned long) generator::currentRegister + offset);
 }
 
-int8_t getTypeSize(const std::string& type) {
+int8_t getTypeSize(const std::string &type) {
     return int8_t(generator::primitiveDatatypeSizes[type]);
 }
 
@@ -98,9 +97,10 @@ int8_t function::size() const {
 
 void generator::incStackPointer(int value) {
     stackPointer += value;
-    if(stackPointer > biggestStackPointer)
+    if (stackPointer > biggestStackPointer)
         biggestStackPointer = stackPointer;
 }
+
 void generator::decStackPointer(int value) {
     stackPointer -= value;
 }

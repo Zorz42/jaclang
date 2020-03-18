@@ -12,6 +12,7 @@ struct variable {
 struct function {
     std::string name;
     std::string type;
+
     int8_t size() const;
 };
 
@@ -35,7 +36,6 @@ struct datatypeMatches {
 namespace generator {
     void main();
 
-    extern bool inFunction;
     namespace e {
         void systemFunctionCall();
 
@@ -45,7 +45,7 @@ namespace generator {
 
         std::string calculation(branch &calculation);
 
-        function* functionCall(const std::string &functionName);
+        function *functionCall(const std::string &functionName);
 
         void variableSetting();
 
@@ -54,8 +54,11 @@ namespace generator {
 
     extern int stackPointer;
     extern int biggestStackPointer;
+
     void incStackPointer(int value);
+
     void decStackPointer(int value);
+
     extern std::vector<variable> stack;
     extern std::vector<function> functionVector;
 
@@ -79,7 +82,7 @@ namespace generator {
     extern std::vector<std::string> primitiveDatatypes;
     extern std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
 
-    extern function* currentFunction;
+    extern function *currentFunction;
 
     void checkForImplicitConversion(const std::string &dest, const std::string &source);
 }
