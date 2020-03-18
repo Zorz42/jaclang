@@ -91,7 +91,7 @@ function* generator::e::functionCall(const std::string &functionName) {
 
 void generator::e::returnStatement() {
     checkForImplicitConversion(currentFunction->type, generator::e::calculation(current.sub->at(0)));  // do calculation
-    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [returnvalue]", generator::availableRegister(currentFunction->size()));
+    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [rel returnvalue]", generator::availableRegister(currentFunction->size()));
 
     file::append_instruction("add", "rsp", std::to_string(generator::biggestStackPointer));
     file::append_instruction("popa"); // call function

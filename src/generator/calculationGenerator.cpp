@@ -65,7 +65,7 @@ std::string generator::e::calculation(branch &calculation) {
         } else if (currentValue == "functionCall") {
             function *thisFunction = generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
             thisValueType = thisFunction->type;
-            currentValueAsm = "[returnvalue]";
+            currentValueAsm = "[rel returnvalue]";
             currentValueAsmSize = thisFunction->size();
         }
         else
