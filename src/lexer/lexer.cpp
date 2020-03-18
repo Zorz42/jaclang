@@ -53,15 +53,17 @@ void lexer::main() { // main lexer function
         } else if (CHAR == '\'' && !inStringDQ) { // the same thing but for single quotes
             inStringQ = !inStringQ;
             newToken(inStringQ ? TYPE_UNDEF : TYPE_STRING);
-        } else {
+        } else if(!IN_STRING) {
             int isTokenResult = isToken(CHAR); // check if is operator or symbol
             if (isTokenResult != TYPE_UNDEF) {
                 newToken(TYPE_UNDEF);
                 currentToken = CHAR;
                 newToken(isTokenResult);
-            } else
+            }
+            else
                 currentToken += CHAR; // else just append character to token
-        }
+        } else
+            currentToken += CHAR; // else just append character to token
         if (CHAR == '\n') { // if character is newline
             currentLine++;
             prevC = c + 1; // and update offset

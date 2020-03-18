@@ -7,9 +7,11 @@
 bool parser::e::beginScope() {
     if (current->text == "{") {
         branch scope;
+        scope.alloc();
         scope.name = "scope";
         appendBranch(scope, *currentBranchScope);
-        currentBranchScope = &(currentBranchScope->sub.back());
+        currentBranchScope = &(currentBranchScope->sub->back());
+        currentBranchScope->alloc();
         scopes.push_back(currentBranchScope);
         return true;
     } else
