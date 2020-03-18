@@ -31,6 +31,8 @@ void generator::e::systemFunctionCall() // system function: __test__
 
 void generator::e::functionDeclaration() {
     function obj;
+    currentFunction = &obj;
+    obj.type = currentName;
     obj.name = currentName2;
     for (const function &i : generator::functionVector)
         if (i.name == obj.name)
@@ -38,8 +40,9 @@ void generator::e::functionDeclaration() {
     generator::functionVector.push_back(obj);
     currentBranchScope->count++;
     std::vector<variable> prevStack = generator::stack;
-    int prevStackPointer = generator::stackPointer;
+    int prevStackPointer = generator::stackPointer, prevBiggestStackPointer = generator::biggestStackPointer;
     generator::stackPointer = 0;
+    generator::biggestStackPointer = 0;
     generator::stack = {};
     if (current.name != "scope")
         error::treeError("Expected scope after function declaration!");
@@ -52,7 +55,11 @@ void generator::e::functionDeclaration() {
 
     branch *prevScope = currentBranchScope;
     currentBranchScope = &(current);
+
+    int8_t prevCurrentRegister = currentRegister;
+    currentRegister = 0;
     generator::main();
+    currentRegister = prevCurrentRegister;
 
     file::append("");
     file::append_instruction("popa");
@@ -63,22 +70,31 @@ void generator::e::functionDeclaration() {
     currentBranchScope = prevScope;
     generator::stack = prevStack;
     generator::stackPointer = prevStackPointer;
+    generator::biggestStackPointer = prevBiggestStackPointer;
+    currentFunction = nullptr;
 }
 
-void generator::e::functionCall(const std::string &variableName) {
+function* generator::e::functionCall(const std::string &functionName) {
     bool funcExists = false; // go through existing functions and check if it exists
+    function* target = nullptr;
     for (const function &iter : generator::functionVector)
-        if (iter.name == variableName) {
+        if (iter.name == functionName) {
             funcExists = true;
+            target = (function*)&iter;
             break;
         }
     if (!funcExists)
         error::treeError("Function does not exist!");
-    file::append_instruction("call", variableName + "."); // call function
+    file::append_instruction("call", functionName + "."); // call function
+    return target;
 }
 
 void generator::e::returnStatement() {
-    file::append_instruction("pop", "rbp"); // call function
+    checkForImplicitConversion(currentFunction->type, generator::e::calculation(current.sub->at(0)));  // do calculation
+    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [returnvalue]", generator::availableRegister(currentFunction->size()));
+
+    file::append_instruction("add", "rsp", std::to_string(generator::biggestStackPointer));
+    file::append_instruction("popa"); // call function
     file::append_instruction("ret");
 }
 

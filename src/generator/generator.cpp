@@ -3,9 +3,11 @@
 #include "jaclang.h"
 
 int generator::stackPointer = 0; // top of stack
+int generator::biggestStackPointer = 0;
 std::vector<variable> generator::stack; // the stack, not actual just for allocation
 std::vector<function> generator::functionVector;
 bool generator::inFunction = false;
+function* generator::currentFunction = nullptr;
 
 std::unordered_map<std::string, int> generator::primitiveDatatypeSizes;
 
@@ -40,7 +42,7 @@ void generator::main() {
             currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
             while (generator::stack.size() > stackLength) // remove elements from stack that were in scope
             {
-                stackPointer -= generator::stack.at(generator::stack.size() - 1).size();
+                decStackPointer(generator::stack.at(generator::stack.size() - 1).size());
                 generator::stack.pop_back();
             }
             currentBranchScope = prevScope; // retrieve current branch scope
@@ -53,12 +55,12 @@ void generator::main() {
         else
             error::treeError("Unknown branch: " + current.name);
     }
-    file::outputVector.at(subRsp).append(std::to_string(generator::stackPointer));
+    file::outputVector.at(subRsp).append(std::to_string(generator::biggestStackPointer));
 }
 
 void generator::pushToStack(variable source) // push to stack
 {
-    generator::stackPointer += source.size();
+    generator::incStackPointer(source.size());
     source.position = generator::stackPointer;
     generator::stack.push_back(source);
 }
@@ -82,6 +84,23 @@ std::string generator::availableRegister(int8_t size, int8_t offset) {
     return generator::availableRegisters[index].at(generator::currentRegister + offset);
 }
 
+int8_t getTypeSize(const std::string& type) {
+    return int8_t(generator::primitiveDatatypeSizes[type]);
+}
+
 int8_t variable::size() {
-    return static_cast<int8_t>(generator::primitiveDatatypeSizes[this->type]);
+    return getTypeSize(type);
+}
+
+int8_t function::size() const {
+    return getTypeSize(type);
+}
+
+void generator::incStackPointer(int value) {
+    stackPointer += value;
+    if(stackPointer > biggestStackPointer)
+        biggestStackPointer = stackPointer;
+}
+void generator::decStackPointer(int value) {
+    stackPointer -= value;
 }

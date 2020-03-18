@@ -19,12 +19,8 @@ struct branch {
     }
 
     ~branch() {
-        if(sub != nullptr) {
-            for(branch &i : *sub)
-                i.~branch();
-            delete sub;
-            sub = nullptr;
-        }
+        delete sub;
+        sub = nullptr;
     }
 };
 

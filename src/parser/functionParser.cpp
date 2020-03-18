@@ -53,40 +53,41 @@ bool parser::e::systemFunctionCall() {
 bool parser::e::functionDeclaration() {
     if (parser::currToken == --lexer::tokens.end())
         return false;
-    parser::nextToken();
-    parser::nextToken();
-    auto nextNextToken = parser::currToken;
-    parser::prevToken();
-    parser::prevToken();
-    if (current->text == "int" && parser::peekNextToken()->type == TYPE_INDENT &&
-        nextNextToken->text == "(") { // if first text is int
-        branch currentBranch;
-        currentBranch.alloc();
-        currentBranch.name = "functionDeclaration"; // set to variableDeclaration
+    const std::string& datatype = current->text;
+    if (contains(generator::primitiveDatatypes, current->text)) {
         parser::nextToken();
+        const std::string& indent = parser::currToken->text;
         parser::nextToken();
-        parser::nextToken();
-        if (current->text != ")") // check if everything is working out and append it to main branch
-            error::syntaxError("No arguments allowed in function declaration (for now)");
-
-        appendBranch("int", currentBranch);
+        const std::string& parenthesis = parser::currToken->text;
         parser::prevToken();
         parser::prevToken();
-        auto prevPrevToken = parser::currToken;
-        parser::nextToken();
-        parser::nextToken();
-        appendBranch(prevPrevToken->text, currentBranch);
+        if (parser::peekNextToken()->type == TYPE_INDENT && parenthesis == "(") {
+            branch currentBranch;
+            currentBranch.alloc();
+            currentBranch.name = "functionDeclaration"; // set to functionDeclaration
+            parser::nextToken();
+            parser::nextToken();
+            parser::nextToken();
+            if (current->text != ")") // check if everything is working out and append it to main branch
+                error::syntaxError("No arguments allowed in function declaration (for now)");
 
-        appendBranch(currentBranch, *currentBranchScope);
-        return true;
-    } else
-        return false;
+            appendBranch(datatype, currentBranch);
+            appendBranch(indent, currentBranch);
+
+            appendBranch(currentBranch, *currentBranchScope);
+            return true;
+        }
+    }
+    return false;
 }
 
 bool parser::e::returnStatement() {
     if (current->text == "return") {
         branch currentBranch;
+        currentBranch.alloc();
         currentBranch.name = "returnStatement";
+        nextToken();
+        appendBranch(calculation(), currentBranch);
         appendBranch(currentBranch, *currentBranchScope);
         return true;
     } else

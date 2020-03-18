@@ -4,8 +4,6 @@
 
 #define current currentBranchScope->sub->at(currentBranchScope->count)
 
-void checkForImplicitConversion(const std::string &dest, const std::string &source);
-
 void generator::e::variableDeclaration(unsigned long scopeOnStack) {
     variable obj; // obj variable
     obj.type = current.sub->at(0).name; // datatype
@@ -32,7 +30,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack) {
                                  generator::availableRegister(obj.size())); // set variable on stack
     } else {
         if (!isInt(current.sub->at(2).name))
-            error::treeError("int declaration must be type int");
+            error::treeError("variable declaration must be type int");
 
         file::append_instruction("mov", generator::sizeKeywords[obj.size()] + " " + onStack(generator::stackPointer),
                                  current.sub->at(2).name);
@@ -88,7 +86,7 @@ variable generator::get_variable(const std::string &name) {
     return obj;
 }
 
-void checkForImplicitConversion(const std::string &dest, const std::string &source) {
+void generator::checkForImplicitConversion(const std::string &dest, const std::string &source) {
     bool success = dest == source;
     if (!success)
         for (const std::string &conversation : generator::implicitConversations[source])

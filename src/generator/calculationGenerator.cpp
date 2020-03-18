@@ -63,20 +63,23 @@ std::string generator::e::calculation(branch &calculation) {
 
             currentValueAsm = generator::availableRegister(8, 1);
         } else if (currentValue == "functionCall") {
-            generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
-        } else {
-            thisValueType = "int";
-            if (currentOperator == "+") // default cases for operators
-                operator_add(currentValueAsm);
-            else if (currentOperator == "-")
-                operator_sub(currentValueAsm);
-            else if (currentOperator == "*")
-                operator_mul(currentValueAsm);
-            else if (currentOperator == "/")
-                operator_div(currentValueAsm);
-            else
-                error::treeError("unrecognized operator");
+            function *thisFunction = generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
+            thisValueType = thisFunction->type;
+            currentValueAsm = "[returnvalue]";
+            currentValueAsmSize = thisFunction->size();
         }
+        else
+            thisValueType = "int";
+        if (currentOperator == "+") // default cases for operators
+            operator_add(currentValueAsm);
+        else if (currentOperator == "-")
+            operator_sub(currentValueAsm);
+        else if (currentOperator == "*")
+            operator_mul(currentValueAsm);
+        else if (currentOperator == "/")
+            operator_div(currentValueAsm);
+        else
+            error::treeError("unrecognized operator");
         currentValueType = getTypeMatch(currentValueType, currentOperator, thisValueType);
     }
     return currentValueType;
