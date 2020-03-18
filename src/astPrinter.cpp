@@ -10,8 +10,8 @@ void printAST(branch &obj) { // print abstract syntax tree
         name += "	";
     name += obj.name;
     coutd << name << std::endl;
-    if(obj.sub != nullptr)
-        for (branch& iterator : *obj.sub) { // if there is another branch, print it
+    if (obj.sub != nullptr)
+        for (branch &iterator : *obj.sub) { // if there is another branch, print it
             nested++; // how deep is the program in ast
             printAST(iterator);
             nested--;
