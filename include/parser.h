@@ -26,8 +26,8 @@ struct branch {
     }
 };
 
-extern branch mainBranch;
-extern branch *currentBranchScope;
+inline branch mainBranch;
+inline branch *currentBranchScope;
 
 void appendBranch(const branch &source, branch &target);
 
@@ -38,12 +38,12 @@ namespace parser {
 
     branch calculation(bool nested = false);
 
-    extern std::list<token>::iterator currToken;
+    inline std::list<token>::iterator currToken;
 
     std::list<token>::iterator peekNextToken();
 
-    extern unsigned long tokCount;
-    extern bool breakLoop;
+    inline unsigned long tokCount;
+    inline bool breakLoop = false;
 
     std::list<token>::iterator nextToken();
 
@@ -68,5 +68,5 @@ namespace parser {
         bool returnStatement();
     }
 
-    extern std::vector<branch *> scopes;
+    inline std::vector<branch *> scopes;
 }

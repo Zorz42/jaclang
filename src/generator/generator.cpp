@@ -2,20 +2,8 @@
 
 #include "jaclang.h"
 
-int generator::stackPointer = 0; // top of stack
-int generator::biggestStackPointer = 0;
-std::vector<variable> generator::stack; // the stack, not actual just for allocation
-std::vector<function> generator::functionVector;
-function *generator::currentFunction = nullptr;
-
-std::unordered_map<std::string, int> generator::primitiveDatatypeSizes;
-
-unsigned long currentScopeOnStack = 0;
-
-std::unordered_map<int8_t, std::string> generator::sizeKeywords;
-std::unordered_map<std::string, std::vector<std::string>> generator::implicitConversations;
-
 void generator::main() {
+    static unsigned long currentScopeOnStack = 0;
 #define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
     file::append_instruction("mov rbp, rsp");
     file::append_instruction("sub", "rsp, ");

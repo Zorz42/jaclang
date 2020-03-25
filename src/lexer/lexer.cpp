@@ -24,9 +24,6 @@
 
 int currentLine = 1;
 
-std::list<token> lexer::tokens; // vector of tokens
-std::vector<std::string> lexer::keywords;
-
 void newToken(int TYPE); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
 

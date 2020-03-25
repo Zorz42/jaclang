@@ -52,20 +52,20 @@ namespace generator {
         void returnStatement();
     }
 
-    extern int stackPointer;
-    extern int biggestStackPointer;
+    inline int stackPointer = 0;
+    inline int biggestStackPointer = 0;
 
     void incStackPointer(int value);
 
     void decStackPointer(int value);
 
-    extern std::vector<variable> stack;
-    extern std::vector<function> functionVector;
+    inline std::vector<variable> stack;
+    inline std::vector<function> functionVector;
 
     void pushToStack(variable source);
 
-    extern int8_t currentRegister;
-    extern std::vector<std::string> availableRegisters[4];
+    inline int8_t currentRegister = 0;
+    inline std::vector<std::string> availableRegisters[4];
 
     void nextRegister();
 
@@ -73,16 +73,16 @@ namespace generator {
 
     std::string availableRegister(int8_t size, int8_t offset = 0);
 
-    extern std::unordered_map<int8_t, std::string> sizeKeywords;
+    inline std::unordered_map<int8_t, std::string> sizeKeywords;
 
     variable get_variable(const std::string &name);
 
-    extern std::unordered_map<std::string, int> primitiveDatatypeSizes;
-    extern std::vector<datatypeMatches> operatorMatches;
-    extern std::vector<std::string> primitiveDatatypes;
-    extern std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
+    inline std::unordered_map<std::string, int> primitiveDatatypeSizes;
+    inline std::vector<datatypeMatches> operatorMatches;
+    inline std::vector<std::string> primitiveDatatypes;
+    inline std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
 
-    extern function *currentFunction;
+    inline function *currentFunction = nullptr;
 
     void checkForImplicitConversion(const std::string &dest, const std::string &source);
 }

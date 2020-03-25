@@ -1,13 +1,13 @@
 #pragma once
 
 namespace file {
-    extern unsigned long asm_data;
-    extern unsigned long asm_bss;
-    extern unsigned long asm_text;
-    extern unsigned long asm_func;
+    inline unsigned long asm_data;
+    inline unsigned long asm_bss;
+    inline unsigned long asm_text;
+    inline unsigned long asm_func;
 
-    extern std::list<char> inputText; // Text of the input file
-    extern std::vector<std::string> outputVector; // Vector of lines of code (output file)
+    inline std::list<char> inputText; // Text of the input file
+    inline std::vector<std::string> outputVector; // Vector of lines of code (output file)
 
     void read(const std::string &text); // Read input file and put result in inputFileVector
     void

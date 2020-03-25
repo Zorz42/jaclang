@@ -16,6 +16,6 @@ struct token {
 namespace lexer {
     void main();
 
-    extern std::vector<std::string> keywords;
-    extern std::list<token> tokens;
+    inline std::vector<std::string> keywords;
+    inline std::list<token> tokens;
 }

@@ -2,20 +2,7 @@
 
 #include "jaclang.h"
 
-std::list<token>::iterator parser::currToken;
-std::vector<branch *> parser::scopes;
-
-branch *currentBranchScope;
-branch mainBranch;
-
-unsigned long parser::tokCount;
-
-std::vector<datatypeMatches> generator::operatorMatches;
-std::vector<std::string> generator::primitiveDatatypes;
-
 #define current lexer::tokens.at(parser::tokCount)
-
-bool parser::breakLoop = false;
 
 void parser::main(std::string rootName) {
     auto parserFunctions = {

@@ -5,18 +5,6 @@
 #include <chrono>   // time
 #include <fstream>  // read/write to file
 
-// if compilation is being debugged (default: false)
-bool debug_show_tokens = false;
-bool debug_show_ast = false;
-
-unsigned long file::asm_data; // integers for tracking sections in asm file
-unsigned long file::asm_bss;
-unsigned long file::asm_text;
-unsigned long file::asm_func;
-
-std::list<char> file::inputText; // input file
-std::vector<std::string> file::outputVector; // prefix for asm file
-
 std::string inputFile;
 std::string outputFile;
 

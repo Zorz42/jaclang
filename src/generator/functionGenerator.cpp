@@ -41,6 +41,9 @@ void generator::e::functionDeclaration() {
     generator::functionVector.push_back(obj);
     currentBranchScope->count++;
 
+    if (current.name != "scope")
+        error::treeError("Expected scope after function declaration!");
+
     std::vector<variable> prevStack = generator::stack;
     int prevStackPointer = generator::stackPointer, prevBiggestStackPointer = generator::biggestStackPointer;
     generator::stackPointer = 0;
@@ -50,9 +53,6 @@ void generator::e::functionDeclaration() {
     currentBranchScope = &(current);
     int8_t prevCurrentRegister = currentRegister;
     currentRegister = 0;
-
-    if (current.name != "scope")
-        error::treeError("Expected scope after function declaration!");
 
     std::string line = obj.name;
     line += ".:";
