@@ -18,7 +18,7 @@ std::string generator::e::calculation(branch &calculation) {
     std::string currentValueType;
     std::string thisValueType;
 
-    file::append_instruction("mov", generator::availableRegister(8), "0");
+    file::append_instruction("movq", "$0", generator::availableRegister(8));
 
     if (calculation.sub->at(0).name == "functionCall") { // check if its function call at the beginning
         generator::e::functionCall(calculation.sub->at(0).sub->at(0).name);
@@ -27,16 +27,15 @@ std::string generator::e::calculation(branch &calculation) {
         std::string value = calculation.sub->at(0).name; // variable name
         value.erase(value.begin()); // remove :
         variable curr = generator::get_variable(value);
-        file::append_instruction("mov", generator::availableRegister(curr.size()),
-                                 onStack(curr.position)); // mov first value to register
+        file::append_instruction("mov", onStack(curr.position), generator::availableRegister(curr.size())); // mov first value to register
         currentValueType = curr.type;
     } else if (calculation.sub->at(0).name == "calculation") {
         generator::nextRegister(); // its just nested calculation
         currentValueType = generator::e::calculation(calculation.sub->at(0));
-        file::append_instruction("mov", generator::availableRegister(8, -1), generator::availableRegister(8));
+        file::append_instruction("mov", generator::availableRegister(8), generator::availableRegister(8, -1));
         generator::prevRegister();
     } else { // else its just constant
-        file::append_instruction("mov", generator::availableRegister(8), calculation.sub->at(0).name);
+        file::append_instruction("mov", calculation.sub->at(0).name, generator::availableRegister(8));
         currentValueType = "int";
     }
 
@@ -64,8 +63,10 @@ std::string generator::e::calculation(branch &calculation) {
             thisValueType = thisFunction->type;
             currentValueAsm = "[rel returnvalue]";
             currentValueAsmSize = thisFunction->size();
-        } else
+        } else {
             thisValueType = "int";
+            currentValueAsm = "$" + currentValueAsm;
+        }
         if (currentOperator == "+") // default cases for operators
             operator_add(currentValueAsm);
         else if (currentOperator == "-")
@@ -82,27 +83,27 @@ std::string generator::e::calculation(branch &calculation) {
 }
 
 void operator_add(const std::string &value) {
-    file::append_instruction("add", generator::availableRegister(currentValueAsmSize), value);
+    file::append_instruction("add", value, generator::availableRegister(currentValueAsmSize));
 }
 
 void operator_sub(const std::string &value) {
-    file::append_instruction("sub", generator::availableRegister(currentValueAsmSize), value);
+    file::append_instruction("sub", value, generator::availableRegister(currentValueAsmSize));
 }
 
 void operator_mul(const std::string &value) {
-    file::append_instruction("mov", "eax", value);
+    file::append_instruction("movq", value, "%eax");
     file::append_text("	imul " + generator::availableRegister(currentValueAsmSize));
-    file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
+    file::append_instruction("mov", "%eax", generator::availableRegister(currentValueAsmSize));
 }
 
 void operator_div(const std::string &value) {
-    file::append_instruction("mov", "eax", generator::availableRegister(currentValueAsmSize));
+    file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "%eax");
     generator::nextRegister();
     if (generator::availableRegister(currentValueAsmSize) != value)
-        file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), value);
+        file::append_instruction("mov", value, generator::availableRegister(currentValueAsmSize));
     file::append_text("	idiv " + generator::availableRegister(currentValueAsmSize));
     generator::prevRegister();
-    file::append_instruction("mov", generator::availableRegister(currentValueAsmSize), "eax");
+    file::append_instruction("mov", "%eax", generator::availableRegister(currentValueAsmSize));
 }
 
 std::string getTypeMatch(const std::string &type1, const std::string &matchOperator, const std::string &type2) {

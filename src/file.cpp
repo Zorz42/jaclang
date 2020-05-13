@@ -75,7 +75,8 @@ void file::append_instruction(const std::string &instruction, const std::string 
     std::string expr; // returns asm instruction: instruction arg1, arg2
     expr = "   ";
     expr += instruction;
-    expr += " ";
+    if(!arg1.empty())
+        expr += " ";
     expr += arg1;
     if (!arg2.empty())
         expr += ", ";

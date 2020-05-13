@@ -5,8 +5,8 @@
 void generator::main() {
     static unsigned long currentScopeOnStack = 0;
 #define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
-    file::append_instruction("mov rbp, rsp");
-    file::append_instruction("sub", "rsp, ");
+    file::append_instruction("mov %rsp, %rbp");
+    file::append_instruction("sub $");
     unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text - 1 : file::asm_func - 1;
     file::append_instruction("");
     for (; currentBranchScope->count < currentBranchScope->sub->size(); currentBranchScope->count++) {
@@ -42,7 +42,8 @@ void generator::main() {
         else
             error::treeError("Unknown branch: " + current.name);
     }
-    file::outputVector.at(subRsp).append(std::to_string(generator::biggestStackPointer));
+    file::outputVector.at(subRsp).append(std::to_string(generator::biggestStackPointer) + ", %rsp");
+    
 }
 
 void generator::pushToStack(variable source) // push to stack
@@ -68,7 +69,7 @@ std::string generator::availableRegister(int8_t size, int8_t offset) {
     int index = 0;
     for (int i = size; i != 1; i /= 2)
         index++;
-    return generator::availableRegisters[index].at((unsigned long) generator::currentRegister + offset);
+    return "%" + generator::availableRegisters[index].at((unsigned long) generator::currentRegister + offset);
 }
 
 int8_t getTypeSize(const std::string &type) {

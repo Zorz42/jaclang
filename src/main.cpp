@@ -100,7 +100,7 @@ void handle_arguments(int argc, char **argv) {
             argsWithParams.emplace_back(i); // append it to args
     }
     completeArgs.clear();
-    outputFile = "out.asm";
+    outputFile = "out.s";
     for (unsigned long i = 0; i < argsWithParams.size(); i++) {
         if (argsWithParams.at(i) == "-") {
             std::cout << "\033[1;31m" << argsWithParams.at(i) << " is a forbidden argument!\033[0m"

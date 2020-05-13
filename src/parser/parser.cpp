@@ -19,7 +19,9 @@ void parser::main(std::string rootName) {
     mainBranch.name = std::move(rootName); // root name is input file name
 
     parser::currToken = lexer::tokens.begin();
-
+    if(parser::currToken == lexer::tokens.end())
+        return;
+    
     while (true) { // go through all tokens
         bool knownBranch = false;
         for (auto i : parserFunctions) {

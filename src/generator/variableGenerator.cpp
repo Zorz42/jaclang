@@ -26,14 +26,14 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack) {
     if (current.sub->at(2).name == "calc") {
         checkForImplicitConversion(obj.type, generator::e::calculation(current.sub->at(2)));  // do calculation
 
-        file::append_instruction("mov", generator::sizeKeywords[obj.size()] + " " + onStack(generator::stackPointer),
-                                 generator::availableRegister(obj.size())); // set variable on stack
+        file::append_instruction("mov" + generator::sizeKeywords[obj.size()],
+                                 generator::availableRegister(obj.size()), onStack(generator::stackPointer)); // set variable on stack
     } else {
         if (!isInt(current.sub->at(2).name))
             error::treeError("variable declaration must be type int");
 
-        file::append_instruction("mov", generator::sizeKeywords[obj.size()] + " " + onStack(generator::stackPointer),
-                                 current.sub->at(2).name);
+        file::append_instruction("mov" + generator::sizeKeywords[obj.size()],
+                                 "$" + current.sub->at(2).name, onStack(generator::stackPointer));
     }
 }
 

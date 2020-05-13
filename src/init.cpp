@@ -62,7 +62,7 @@ void init() { // initialize global variables
 #if OS_TYPE == 0 // Linux
     std::string fileToRead = "/usr/local/share/jaclang-data/empty-gnu.asm";
 #elif OS_TYPE == 1 // MACOS
-    std::string fileToRead = "/usr/local/share/jaclang-data/empty-macho.asm";
+    std::string fileToRead = "/usr/local/share/jaclang-data/empty-macho.s";
 #endif
     std::ifstream readFile(fileToRead);
 
@@ -78,9 +78,9 @@ void init() { // initialize global variables
 
 #define find(x) find(file::outputVector, x)
 
-    file::asm_data = find("section .data") + 1; // locate each section
-    file::asm_bss = find("section .bss") + 1;
-    file::asm_text = find("section .text") + 4;
+    file::asm_data = find(".section __DATA, __data") + 1; // locate each section
+    file::asm_bss = find(".section __BSS, __bss") + 1;
+    file::asm_text = find(".section __TEXT, __text") + 4;
     file::asm_func = file::outputVector.size();
 
 #undef find
@@ -108,10 +108,10 @@ void init() { // initialize global variables
     }
 
     generator::sizeKeywords.reserve(4);
-    generator::sizeKeywords[1] = "BYTE";
-    generator::sizeKeywords[2] = "WORD";
-    generator::sizeKeywords[4] = "DWORD";
-    generator::sizeKeywords[8] = "QWORD";
+    generator::sizeKeywords[1] = "b";
+    generator::sizeKeywords[2] = "w";
+    generator::sizeKeywords[4] = "l";
+    generator::sizeKeywords[8] = "q";
 
     lexer::keywords = {"return"};
 }
