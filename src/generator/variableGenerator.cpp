@@ -57,15 +57,16 @@ void generator::e::variableSetting() {
         checkForImplicitConversion(currentVariable.type,
                                    generator::e::calculation(current.sub->at(1))); // do calculation
 
-        file::append_instruction("mov", generator::sizeKeywords[currentVariable.size()] + " " +
-                                        onStack(currentVariable.position),
-                                 generator::availableRegister(currentVariable.size())); // set variable on stack
+        file::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
+                                        generator::availableRegister(currentVariable.size()),
+                                        onStack(currentVariable.position)); // set variable on stack
     } else {
         if (!isInt(current.sub->at(1).name))
             error::treeError("int setting must be type int");
 
-        file::append_instruction("mov", generator::sizeKeywords[currentVariable.size()] + " " +
-                                        onStack(currentVariable.position), current.sub->at(1).name);
+        file::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
+                                        "$" + current.sub->at(1).name,
+                                        onStack(currentVariable.position));
     }
 }
 

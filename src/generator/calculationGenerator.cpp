@@ -21,7 +21,8 @@ std::string generator::e::calculation(branch &calculation) {
     file::append_instruction("movq", "$0", generator::availableRegister(8));
 
     if (calculation.sub->at(0).name == "functionCall") { // check if its function call at the beginning
-        generator::e::functionCall(calculation.sub->at(0).sub->at(0).name);
+        function* curr = generator::e::functionCall(calculation.sub->at(0).sub->at(0).name);
+        file::append_instruction("mov", "(%rsp)", generator::availableRegister(curr->size())); // mov return value to register
         currentValueType = "int";
     } else if (calculation.sub->at(0).name.at(0) == ':') { // variables will have : at the beginning
         std::string value = calculation.sub->at(0).name; // variable name
@@ -35,7 +36,7 @@ std::string generator::e::calculation(branch &calculation) {
         file::append_instruction("mov", generator::availableRegister(8), generator::availableRegister(8, -1));
         generator::prevRegister();
     } else { // else its just constant
-        file::append_instruction("mov", calculation.sub->at(0).name, generator::availableRegister(8));
+        file::append_instruction("mov", "$" + calculation.sub->at(0).name, generator::availableRegister(8));
         currentValueType = "int";
     }
 
@@ -61,7 +62,7 @@ std::string generator::e::calculation(branch &calculation) {
         } else if (currentValue == "functionCall") {
             function *thisFunction = generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
             thisValueType = thisFunction->type;
-            currentValueAsm = "[rel returnvalue]";
+            currentValueAsm = "(%rsp)";
             currentValueAsmSize = thisFunction->size();
         } else {
             thisValueType = "int";

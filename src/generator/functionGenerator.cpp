@@ -91,15 +91,14 @@ function *generator::e::functionCall(const std::string &functionName) {
 
 void generator::e::returnStatement() {
     checkForImplicitConversion(currentFunction->type, generator::e::calculation(current.sub->at(0)));  // do calculation
-    file::append_instruction("mov", generator::sizeKeywords[currentFunction->size()] + " [rel returnvalue]",
-                             generator::availableRegister(currentFunction->size()));
+    file::append_instruction("mov" + generator::sizeKeywords[currentFunction->size()], generator::availableRegister(currentFunction->size()), "+112(%rbp)");
 
-    file::append_instruction("add", "rsp", std::to_string(generator::biggestStackPointer));
+    file::append_instruction("add", "$" + std::to_string(generator::biggestStackPointer), "%rsp");
     file::append_instruction("popa"); // call function
     file::append_instruction("ret");
 }
 
-std::string generateAsmText() // generate text for inline assembly [text]  ;;__asm__
+std::string generateAsmText() // generate text for inline assembly
 {
     std::string text = "   ";
     text += currentName2;
