@@ -3,6 +3,7 @@ from __future__ import print_function
 from os import system, path, listdir, popen
 from platform import system as sys
 from subprocess import call
+from sys import stdout
 from threading import Thread
 
 objdir = "obj/"
