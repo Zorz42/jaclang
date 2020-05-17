@@ -86,6 +86,8 @@ function *generator::e::functionCall(const std::string &functionName) {
     if (!funcExists)
         error::treeError("Function does not exist!");
     file::append_instruction("call", functionName + "."); // call function
+    if(generator::stackPointer + target->size() > generator::biggestStackPointer)
+        generator::biggestStackPointer = generator::stackPointer + target->size();
     return target;
 }
 
