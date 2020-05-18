@@ -51,7 +51,7 @@ class BuildThread(Thread):
     def run(self):
         global compiled_count
         if osplatform == "linux":
-            compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir}" + \
+            compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
                               f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp"
         elif osplatform == "OSX":
             compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
