@@ -1,2 +1,5 @@
  - function return value gets implemented (DONE 18.3 2020)
  - function will have arguments
+ - global variables
+ - classes
+ - standard library (on jpm repository)
