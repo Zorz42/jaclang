@@ -80,7 +80,7 @@ void handle_arguments(int argc, char **argv) {
         if (i[0] == '-' && i[1] == '-') { // if option
             if (i == "--help")
                 help = true;
-            else if (i == "--debug-all") {
+            else if (i == "--debug") {
                 debug_show_tokens = true;
                 debug_show_ast = true;
             } else if (i == "--debug-tokens")

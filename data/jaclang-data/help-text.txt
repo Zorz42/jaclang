@@ -7,7 +7,7 @@ options:
    --debug-* - get more detailed compilation (for nerds):
       --debug-ast    - show ast
       --debug-tokens - show tokens
-      --debug-all    - show ast and tokens
+      --debug        - show ast and tokens
    --quiet   - say nothing except errors and debug messages if specified
    --version - display version
 
