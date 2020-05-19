@@ -4,8 +4,8 @@ __asmdata__ for code in data section,
 __asmbss__ for code in bss section,
 __asm__ does the same thing as __asmtext__.
 
-__asm__("string");
+__asm__ "string"
 
-(String can be single or double quoted, semicolon is optional)
+String can be single or double quoted
 
 No equations or variables allowed!

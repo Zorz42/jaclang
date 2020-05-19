@@ -1,7 +1,5 @@
 #pragma once
 
-#include "jaclang.h"
-
 struct variable {
     std::string name; // name
     std::string type;   // datatype

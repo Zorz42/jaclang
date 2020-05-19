@@ -1,4 +1,6 @@
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #include <fstream>
 
@@ -113,7 +115,10 @@ void init() { // initialize global variables
     generator::sizeKeywords[4] = "l";
     generator::sizeKeywords[8] = "q";
 
-    lexer::keywords = {"return"};
+    lexer::keywords = {
+        "return",
+        "if",
+    };
 }
 
 

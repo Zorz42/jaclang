@@ -1,4 +1,6 @@
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 // the main file, where the main function is happening
 

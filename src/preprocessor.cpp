@@ -1,6 +1,8 @@
 // this file will preprocess the input code.
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #include <fstream>  // open file
 

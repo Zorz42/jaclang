@@ -1,6 +1,8 @@
 // this generates system functions
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current currentBranchScope->sub->at(currentBranchScope->count) // function branch
 #define currentName  currentBranchScope->sub->at(currentBranchScope->count).sub->at(0).name // name of function

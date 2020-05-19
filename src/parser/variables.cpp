@@ -1,6 +1,8 @@
 // this parses variable declaration
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current parser::currToken
 
@@ -29,7 +31,7 @@ bool parser::e::variableDeclaration() {
 }
 
 bool parser::e::variableSetting() {
-    if (parser::currToken == --lexer::tokens.end())
+    if (current == --lexer::tokens.end())
         return false;
     if (current->type == TYPE_INDENT && parser::peekNextToken()->text == "=") {
         branch currentBranch;

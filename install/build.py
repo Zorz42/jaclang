@@ -52,10 +52,10 @@ class BuildThread(Thread):
         global compiled_count
         if osplatform == "linux":
             compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
-                              f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp"
+                              f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp -D IGNORE_MAIN_INCLUDE"
         elif osplatform == "OSX":
             compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
-                              f"-c {srcdir}{self.name}.cpp -include-pch {objdir}jaclang.h.gch"
+                              f"-c {srcdir}{self.name}.cpp -include-pch {objdir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
         current_thread = call(compile_command, shell=True)
         if current_thread != 0:
             success = "FAILED"

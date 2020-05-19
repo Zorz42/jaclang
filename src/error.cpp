@@ -1,6 +1,8 @@
 // the error module, which reports syntax errors
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 void error::syntaxError(const std::string &error) { // Print out syntax error
     std::cerr << "\033[1;31mSyntax error, line " << parser::currToken->line << ": " // syntax error in red

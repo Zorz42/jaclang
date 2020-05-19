@@ -1,6 +1,8 @@
 // this file parses function calls, calculation calls that file too
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current parser::currToken
 

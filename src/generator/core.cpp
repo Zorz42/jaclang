@@ -1,6 +1,8 @@
 // this generates ast into asm code
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 void generator::main() {
     static unsigned long currentScopeOnStack = 0;

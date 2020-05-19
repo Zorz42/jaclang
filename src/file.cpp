@@ -1,4 +1,6 @@
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #include <fstream>  // open file
 

@@ -1,4 +1,6 @@
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 /* this is the LEXER which breaks code into lexer::tokens aka more readable code.
  * eg.

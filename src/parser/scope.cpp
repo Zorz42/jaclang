@@ -1,6 +1,8 @@
 // This will detect scopes
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current parser::currToken
 

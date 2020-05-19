@@ -1,6 +1,8 @@
 // this file parses equations
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current parser::currToken
 

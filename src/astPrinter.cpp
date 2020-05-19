@@ -1,6 +1,8 @@
 // this file prints out abstract syntax tree
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 int nested = 0;
 

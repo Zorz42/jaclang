@@ -1,12 +1,15 @@
 // the main loop of parser
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 #define current lexer::tokens.at(parser::tokCount)
 
 void parser::main(std::string rootName) {
     auto parserFunctions = {
             &parser::e::systemFunctionCall,
+            &parser::e::ifStatement,
             &parser::e::functionDeclaration,
             &parser::e::variableDeclaration,
             &parser::e::beginScope,

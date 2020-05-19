@@ -1,6 +1,8 @@
 // this generates tree calculation into asm code
 
+#ifndef IGNORE_MAIN_INCLUDE
 #include "jaclang.h"
+#endif
 
 void operator_add(const std::string &value);
 
