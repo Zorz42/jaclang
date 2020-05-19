@@ -39,7 +39,7 @@ Or all together:
 
     make onlyjaclang
 
-##Explanation of stages
+## Explanation of stages
 
     make init
 
