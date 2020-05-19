@@ -1,25 +1,25 @@
-.section __BSS, __bss
-.section __DATA, __data
+.bss
+.data
 
 stdoutchar:
    .asciz "0"
 
-.section __TEXT, __text
+.text
 
-.globl _main
-_main:
+.globl main
+main:
 
-   mov $0, %ebx
-   mov $0x2000001, %eax           # exit 0
+   movq $60, %rax
+   movq $0, %rdi
    syscall
 
 printchar:
    mov stdoutchar@GOTPCREL(%rip), %rsi
    mov %al, (%rsi)
-   mov $0x2000004, %eax
-   mov $1, %edi
-   mov stdoutchar@GOTPCREL(%rip), %rsi
-   mov $100, %rdx
+   mov $1, %rax
+   mov $1, %rdi
+   mov $stdoutchar, %rsi
+   mov $1, %rdx
    syscall
 
    ret
@@ -55,3 +55,4 @@ printchar:
    pop %rcx
    pop %rbx
 .endm
+
