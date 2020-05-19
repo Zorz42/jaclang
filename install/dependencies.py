@@ -65,8 +65,6 @@ def dependencies():
         else:
             check_for_package("g++", "g++", "sudo " + current_package_manager + " g++")
         packages = (
-            ("nasm", "nasm"),
-            ("binutils", "ld"),
             ("python3", "python3"),
             ("python3-pip", "pip3"),
         )
@@ -85,9 +83,8 @@ def dependencies():
         check_for_package("brew", "brew",
                           '/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/'
                           'Homebrew/install/master/install)"')
+        check_for_package("gcc", "gcc", 'xcode-select --install')
         packages = (
-            ("nasm", "nasm"),
-            ("binutils", "ld"),
             ("python3", "python3"),
         )
         for package in packages:
