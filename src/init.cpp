@@ -78,9 +78,9 @@ void init() { // initialize global variables
 
 #define find(x) find(file::outputVector, x)
 
-    file::asm_data = find(".section __DATA, __data") + 1; // locate each section
-    file::asm_bss = find(".section __BSS, __bss") + 1;
-    file::asm_text = find(".section __TEXT, __text") + 4;
+    file::asm_data = find(OS_SECTION_DATA) + 1; // locate each section
+    file::asm_bss = find(OS_SECTION_BSS) + 1;
+    file::asm_text = find(OS_SECTION_TEXT) + 4;
     file::asm_func = file::outputVector.size();
 
 #undef find
