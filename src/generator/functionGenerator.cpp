@@ -123,8 +123,9 @@ void f_asmbss() // append to bss section
 }
 
 void f_printchar() {
-    std::string text = "   mov ah, ";
+    std::string text = "   mov ";
     text += currentName2;
+    text += ", %al";
     file::append_text(text);
     file::append_text("   call printchar");
 

@@ -60,7 +60,7 @@ void init() { // initialize global variables
             "r15",
     };
 #if OS_TYPE == 0 // Linux
-    std::string fileToRead = "/usr/local/share/jaclang-data/empty-gnu.asm";
+    std::string fileToRead = "/usr/local/share/jaclang-data/empty-gnu.s";
 #elif OS_TYPE == 1 // MACOS
     std::string fileToRead = "/usr/local/share/jaclang-data/empty-macho.s";
 #endif
