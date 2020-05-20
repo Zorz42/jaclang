@@ -52,7 +52,7 @@ class BuildThread(Thread):
         global compiled_count
         if osplatform == "linux":
             compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
-                              f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp -D IGNORE_MAIN_INCLUDE"
+                              f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp"
         elif osplatform == "OSX":
             compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
                               f"-c {srcdir}{self.name}.cpp -include-pch {objdir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
