@@ -61,7 +61,7 @@ void generator::e::functionDeclaration() {
     file::append(line);
     file::append_instruction("pusha");
 
-    generator::main();
+    generator::main(true);
 
     file::append("");
     file::append_instruction("popa");

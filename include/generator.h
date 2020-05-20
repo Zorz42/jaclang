@@ -32,7 +32,7 @@ struct datatypeMatches {
 };
 
 namespace generator {
-    void main();
+    void main(bool inFunction=false);
 
     namespace e {
         void systemFunctionCall();
@@ -48,11 +48,15 @@ namespace generator {
         void variableSetting();
 
         void returnStatement();
+    
+        void ifStatement();
+        
+        void scope();
     }
 
     inline int stackPointer = 0;
     inline int biggestStackPointer = 0;
-
+    inline unsigned long currentScopeOnStack = 0;
     void incStackPointer(int value);
 
     void decStackPointer(int value);

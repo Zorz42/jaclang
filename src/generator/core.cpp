@@ -4,47 +4,42 @@
 #include "jaclang.h"
 #endif
 
-void generator::main() {
-    static unsigned long currentScopeOnStack = 0;
 #define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
-    file::append_instruction("mov %rsp, %rbp");
-    file::append_instruction("sub $");
-    unsigned long subRsp = currentBranchScope == &mainBranch ? file::asm_text - 1 : file::asm_func - 1;
+
+void generator::main(bool inFunction) {
+    if (inFunction) {
+        file::append_instruction("mov %rsp, %rbp");
+        file::append_instruction("sub $");
+    }
+    unsigned long subRsp = 0;
+    if (inFunction)
+        subRsp = currentBranchScope == &mainBranch ? file::asm_text - 1 : file::asm_func - 1;
     file::append_instruction("");
     for (; currentBranchScope->count < currentBranchScope->sub->size(); currentBranchScope->count++) {
         // iterate though branches
         if (!file::outputVector.at(file::asm_text - 1).empty())
             file::append_text("");
         if (current.name == "systemFunctionCall")  // choose appropriate generator for branch
-            generator::e::systemFunctionCall();
+            e::systemFunctionCall();
         else if (current.name == "variableDeclaration")
-            generator::e::variableDeclaration(currentScopeOnStack);
+            e::variableDeclaration(currentScopeOnStack);
         else if (current.name == "calc")
-            generator::e::calculation(current);
-        else if (current.name == "scope") { // if branch is scope
-            branch *prevScope = currentBranchScope; // save current scope
-            currentBranchScope = &(current);        // move to new scope
-            unsigned long stackLength = generator::stack.size();  // save stack length
-            unsigned long prevScopeOnStack = currentScopeOnStack; // save scope on stack
-            currentScopeOnStack = stackLength;  // set scope on stack
-            generator::main();
-            currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
-            while (generator::stack.size() > stackLength) // remove elements from stack that were in scope
-            {
-                decStackPointer(generator::stack.at(generator::stack.size() - 1).size());
-                generator::stack.pop_back();
-            }
-            currentBranchScope = prevScope; // retrieve current branch scope
-        } else if (current.name == "functionDeclaration" && generator::currentFunction == nullptr)
-            generator::e::functionDeclaration();
+            e::calculation(current);
+        else if (current.name == "scope") // if branch is scope
+            e::scope();
+        else if (current.name == "functionDeclaration" && currentFunction == nullptr)
+            e::functionDeclaration();
         else if (current.name == "variableSetting")
-            generator::e::variableSetting();
-        else if (current.name == "returnStatement" && generator::currentFunction != nullptr)
-            generator::e::returnStatement();
+            e::variableSetting();
+        else if (current.name == "returnStatement" && currentFunction != nullptr)
+            e::returnStatement();
+        else if (current.name == "ifStatement")
+            e::ifStatement();
         else
             error::treeError("Unknown branch: " + current.name);
     }
-    file::outputVector.at(subRsp).append(std::to_string(generator::biggestStackPointer) + ", %rsp");
+    if (inFunction) 
+        file::outputVector.at(subRsp).append(std::to_string(biggestStackPointer) + ", %rsp");
     
 }
 
@@ -94,4 +89,20 @@ void generator::incStackPointer(int value) {
 
 void generator::decStackPointer(int value) {
     stackPointer -= value;
+}
+
+void generator::e::scope() {
+    branch *prevScope = currentBranchScope; // save current scope
+    currentBranchScope = &(current);        // move to new scope
+    unsigned long stackLength = generator::stack.size();  // save stack length
+    unsigned long prevScopeOnStack = currentScopeOnStack; // save scope on stack
+    currentScopeOnStack = stackLength;  // set scope on stack
+    generator::main();
+    currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
+    while (generator::stack.size() > stackLength) // remove elements from stack that were in scope
+    {
+        decStackPointer(generator::stack.at(generator::stack.size() - 1).size());
+        generator::stack.pop_back();
+    }
+    currentBranchScope = prevScope; // retrieve current branch scope
 }
