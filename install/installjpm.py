@@ -6,6 +6,7 @@ from wget import download
 
 install_folder = "/usr/local/share/"
 
+jpm_version="1.5.3"
 
 def installjpm_main():
     try:
@@ -14,25 +15,22 @@ def installjpm_main():
         pass
     print()
     print("Downloading jpm ... ", end='', flush=True)
-    download("https://github.com/Zorz42/jpm/archive/stable.zip", bar=None)
+    download(f"https://github.com/Zorz42/jpm/archive/v{jpm_version}.zip", "newerjpm.zip", bar=None)
     print("DONE")
 
     print("Installing jpm ... ", end='', flush=True)
     from zipfile import ZipFile
-    with ZipFile(getcwd() + "/jpm-stable.zip", 'r') as zip_ref:
+    with ZipFile(getcwd() + "/newerjpm.zip", 'r') as zip_ref:
         zip_ref.extractall(getcwd())
+
+    
+    system(f"sudo cp -r jpm-{jpm_version}/jpm-sources {install_folder}")
 
     dirs = ['to_install', 'librarysources', 'metadatas']
     for Dir in dirs:
-        if not path.isdir("jpm-stable/jpm-sources/" + Dir):
-            mkdir('jpm-stable/jpm-sources/' + Dir)
-    if sys() == 'Linux':
-        system("sudo cp -r jpm-stable/jpm-sources " + install_folder)
-    elif sys() == 'Darwin':
-        system("sudo cp -r jpm-stable/jpm-sources " + install_folder + "jpm-sources")
-    else:
-        print("Unsupported os!")
-    system("sudo cp jpm-stable/jpm /usr/local/bin")
+        if not path.isdir(install_folder + "jpm-sources/" + Dir):
+            mkdir(install_folder + "jpm-sources/" + Dir)
+    system(f"sudo cp jpm-{jpm_version}/jpm /usr/local/bin")
     system("sudo chown " + getuser() + " " + install_folder + "jpm-sources")
     system("sudo chmod +x /usr/local/bin/jpm")
 
@@ -40,7 +38,7 @@ def installjpm_main():
     print("Initializing jpm...")
     print()
     system("jpm updatedatabase")
-    system("rm jpm-stable.zip; rm -r jpm-stable")
+    system(f"rm newerjpm.zip; rm -r jpm-{jpm_version}")
 
 
 if __name__ == "__main__":
