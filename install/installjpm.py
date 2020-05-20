@@ -6,7 +6,7 @@ from wget import download
 
 install_folder = "/usr/local/share/"
 
-jpm_version="1.5.3"
+jpm_version="1.5.4"
 
 def installjpm_main():
     try:
