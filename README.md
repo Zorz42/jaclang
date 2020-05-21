@@ -1,6 +1,8 @@
 # jaclang beta
 *project made by jakob*
 
+Jaclang is trying to achieve as small compiled binaries as possible. Is is also aiming to be fast and have a clean code with as less syntax elements as possible.
+
 ## Installation
 FULL INSTALLATION GUIDE: https://github.com/Zorz42/jaclang/blob/master/install/README.md
 
@@ -14,8 +16,6 @@ Quick installation guide:
 Or all together:
 
     make
-
-Jaclang is trying to achieve as small compiled binaries as possible.
 
 Support:
 
