@@ -5,7 +5,7 @@
 #include <fstream>
 
 void init() { // initialize global variables
-    generator::availableRegisters[0] = {
+    at::availableRegisters[0] = {
             "bl",
             "cl",
             "sil",
@@ -19,7 +19,7 @@ void init() { // initialize global variables
             "r14b",
             "r15b",
     };
-    generator::availableRegisters[1] = {
+    at::availableRegisters[1] = {
             "bx",
             "cx",
             "si",
@@ -33,7 +33,7 @@ void init() { // initialize global variables
             "r14w",
             "r15w",
     };
-    generator::availableRegisters[2] = {
+    at::availableRegisters[2] = {
             "ebx",
             "ecx",
             "esi",
@@ -47,7 +47,7 @@ void init() { // initialize global variables
             "r14d",
             "r15d",
     };
-    generator::availableRegisters[3] = {
+    at::availableRegisters[3] = {
             "rbx",
             "rcx",
             "rsi",

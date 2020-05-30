@@ -43,7 +43,6 @@ namespace parser {
     std::list<token>::iterator peekNextToken();
 
     inline unsigned long tokCount;
-    inline bool breakLoop = false;
 
     std::list<token>::iterator nextToken();
 

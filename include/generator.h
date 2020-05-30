@@ -57,25 +57,7 @@ namespace generator {
         void whileStatement();
     }
 
-    inline int stackPointer = 0;
-    inline int biggestStackPointer = 0;
-    inline unsigned long currentScopeOnStack = 0;
-
-    void incStackPointer(int value);
-    void decStackPointer(int value);
-
-    inline std::vector<variable> stack;
     inline std::vector<function> functionVector;
-
-    void pushToStack(variable source);
-
-    inline int8_t currentRegister = 0;
-    inline std::vector<std::string> availableRegisters[4];
-
-    void nextRegister();
-    void prevRegister();
-
-    std::string availableRegister(int8_t size, int8_t offset = 0);
 
     inline std::unordered_map<int8_t, std::string> sizeKeywords;
 

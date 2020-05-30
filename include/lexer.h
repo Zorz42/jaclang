@@ -10,7 +10,7 @@ struct token {
 
     token(tokenType TYPE, std::string TEXT) : type(TYPE), text(std::move(TEXT)) {}
 
-    explicit token(std::string TEXT) : type(tt_undefined), text(std::move(TEXT)) {}
+    /*explicit token(std::string TEXT) : type(tt_undefined), text(std::move(TEXT)) {}*/
 
     token() = default;
 };

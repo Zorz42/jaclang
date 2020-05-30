@@ -10,8 +10,7 @@ namespace file {
     inline std::vector<std::string> outputVector; // Vector of lines of code (output file)
 
     void read(const std::string &text); // Read input file and put result in inputFileVector
-    void
-    write(const std::string &output); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
+    void write(const std::string &output); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
 
     std::string getLine(int LINE); // Get text of line
 
@@ -25,7 +24,5 @@ namespace file {
 
     void append(const std::string &line);
 
-    void add(const std::string &line, unsigned long position);
-
-    void append_instruction(const std::string &instruction, const std::string &arg1 = "", const std::string &arg2 = "");
+    void insert(const std::string &line, unsigned long position);
 }

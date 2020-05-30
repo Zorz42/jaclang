@@ -6,24 +6,26 @@
 
 #define current lexer::tokens.at(parser::tokCount)
 
+bool breakLoop = false;
+
 void parser::main(std::string rootName) {
     auto parserFunctions = {
-        &parser::e::systemFunctionCall,
-        &parser::e::ifStatement,
-        &parser::e::whileStatement,
-        &parser::e::functionDeclaration,
-        &parser::e::variableDeclaration,
-        &parser::e::beginScope,
-        &parser::e::endScope,
-        &parser::e::variableSetting,
-        &parser::e::returnStatement,
+        &e::systemFunctionCall,
+        &e::ifStatement,
+        &e::whileStatement,
+        &e::functionDeclaration,
+        &e::variableDeclaration,
+        &e::beginScope,
+        &e::endScope,
+        &e::variableSetting,
+        &e::returnStatement,
     };
 
     currentBranchScope = &mainBranch;
     mainBranch.name = std::move(rootName); // root name is input file name
 
-    parser::currToken = lexer::tokens.begin();
-    if(parser::currToken == lexer::tokens.end())
+    currToken = lexer::tokens.begin();
+    if(currToken == lexer::tokens.end())
         return;
     
     while (true) { // go through all tokens
@@ -40,7 +42,7 @@ void parser::main(std::string rootName) {
             break;
         if (!knownBranch)
             appendBranch(parser::calculation(), *currentBranchScope);
-        parser::nextToken();
+        nextToken();
     }
 }
 
@@ -55,19 +57,19 @@ void appendBranch(std::string source, branch &target) { // function for appendin
 }
 
 std::list<token>::iterator parser::peekNextToken() {
-    auto result = parser::nextToken();
-    parser::prevToken();
+    auto result = nextToken();
+    prevToken();
     return result;
 }
 
 std::list<token>::iterator parser::nextToken() {
-    if (parser::currToken == lexer::tokens.end())
-        parser::breakLoop = true;
+    if (currToken == lexer::tokens.end())
+        breakLoop = true;
     parser::tokCount++;
     return ++parser::currToken;
 }
 
 std::list<token>::iterator parser::prevToken() {
-    parser::tokCount--;
-    return --parser::currToken;
+    tokCount--;
+    return --currToken;
 }

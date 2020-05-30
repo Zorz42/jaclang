@@ -13,7 +13,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack) {
 
     unsigned int i = 0;
 
-    for (const variable &iter : generator::stack) { // go through stack
+    for (const variable &iter : at::stack) { // go through stack
         if (iter.name == current.sub->at(1).name &&
             i >= scopeOnStack) { // if this variable already exists, then report error
             std::string errorString = iter.name;
@@ -23,19 +23,19 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack) {
         i++;
     }
 
-    generator::pushToStack(obj); // push to stack
+    at::pushToStack(obj); // push to stack
 
     if (current.sub->at(2).name == "calc") {
         checkForImplicitConversion(obj.type, generator::e::calc(current.sub->at(2)));  // do calculation
 
-        file::append_instruction("mov" + generator::sizeKeywords[obj.size()],
-                                 generator::availableRegister(obj.size()), onStack(generator::stackPointer)); // set variable on stack
+        at::append_instruction("mov" + generator::sizeKeywords[obj.size()],
+                                 at::availableRegister(obj.size()), at::onStack(at::stackPointer)); // set variable on stack
     } else {
         if (!isInt(current.sub->at(2).name))
             error::treeError("variable declaration must be type int");
 
-        file::append_instruction("mov" + generator::sizeKeywords[obj.size()],
-                                 "$" + current.sub->at(2).name, onStack(generator::stackPointer));
+        at::append_instruction("mov" + generator::sizeKeywords[obj.size()],
+                                 "$" + current.sub->at(2).name, at::onStack(at::stackPointer));
     }
 }
 
@@ -43,7 +43,7 @@ void generator::e::variableSetting() {
     bool variableExists = false;
     variable currentVariable;
 
-    for (const variable &iter : generator::stack) // go through stack
+    for (const variable &iter : at::stack) // go through stack
         if (iter.name == current.sub->at(0).name) {
             variableExists = true;
             currentVariable = iter;
@@ -59,23 +59,23 @@ void generator::e::variableSetting() {
         checkForImplicitConversion(currentVariable.type,
                                    generator::e::calc(current.sub->at(1))); // do calculation
 
-        file::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
-                                        generator::availableRegister(currentVariable.size()),
-                                        onStack(currentVariable.position)); // set variable on stack
+        at::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
+                                        at::availableRegister(currentVariable.size()),
+                                        at::onStack(currentVariable.position)); // set variable on stack
     } else {
         if (!isInt(current.sub->at(1).name))
             error::treeError("int setting must be type int");
 
-        file::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
+        at::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
                                         "$" + current.sub->at(1).name,
-                                        onStack(currentVariable.position));
+                                        at::onStack(currentVariable.position));
     }
 }
 
 variable generator::get_variable(const std::string &name) {
     variable obj;
     bool varExists = false; // go through stack and check if variable exists
-    for (const variable &iter : generator::stack)
+    for (const variable &iter : at::stack)
         if (iter.name == name) {
             varExists = true;
             obj = iter;

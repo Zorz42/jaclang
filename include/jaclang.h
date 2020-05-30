@@ -26,3 +26,4 @@ inline bool debug_show_ast;
 #include "lexer.h"        // breaks it into tokens
 #include "parser.h"       // parses it into syntax tree
 #include "generator.h"    // generates assembly code
+#include "asm-tools.h"    // module for assembly generation

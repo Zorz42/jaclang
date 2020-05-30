@@ -29,7 +29,7 @@ void file::write(const std::string &file_output) { // write to file
 }
 
 void file::append_data(const std::string &line) {
-    file::add(line, file::asm_data); // append text to data section
+    file::insert(line, file::asm_data); // append text to data section
     file::asm_data++;
     file::asm_bss++;
     file::asm_text++;
@@ -37,25 +37,25 @@ void file::append_data(const std::string &line) {
 }
 
 void file::append_bss(const std::string &line) {
-    file::add(line, file::asm_bss); // append text to bss section
+    file::insert(line, file::asm_bss); // append text to bss section
     file::asm_bss++;
     file::asm_text++;
     file::asm_func++;
 }
 
 void file::append_text(const std::string &line) {
-    file::add(line, file::asm_text); // append text to text section
+    file::insert(line, file::asm_text); // append text to text section
     file::asm_text++;
     file::asm_func++;
 }
 
 void file::append_func(const std::string &line) {
-    file::add(line, file::asm_func); // append text to text section
+    file::insert(line, file::asm_func); // append text to text section
     file::asm_func++;
 }
 
 
-void file::add(const std::string &line, unsigned long position) {
+void file::insert(const std::string &line, unsigned long position) {
     file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
 }
 
@@ -71,19 +71,6 @@ std::string file::getLine(int LINE) { // get line of code
         currentString += *iter;
 
     return currentString;
-}
-
-void file::append_instruction(const std::string &instruction, const std::string &arg1, const std::string &arg2) {
-    std::string expr; // returns asm instruction: instruction arg1, arg2
-    expr = "   ";
-    expr += instruction;
-    if(!arg1.empty())
-        expr += " ";
-    expr += arg1;
-    if (!arg2.empty())
-        expr += ", ";
-    expr += arg2;
-    file::append(expr);
 }
 
 void file::append(const std::string &line) {

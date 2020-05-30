@@ -18,10 +18,6 @@ bool isSystemIndent(std::string indent) { // check if string has __ at the begin
     return result;
 }
 
-std::string onStack(int offset) { // output asm value of offset on stack example: offset = 4 -> [rbp-4]
-    return "-" + std::to_string(offset) + "(%rbp)"; // returns position on stack: [rbp-offset]
-}
-
 unsigned long find(std::vector<std::string> &source, const std::string &target) { // find string in vector of strings
     for (unsigned long i = 0; i < source.size(); i++)
         if (source.at(i) == target)

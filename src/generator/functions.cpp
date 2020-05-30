@@ -46,33 +46,33 @@ void generator::e::functionDeclaration() {
     if (current.name != "scope")
         error::treeError("Expected scope after function declaration!");
 
-    std::vector<variable> prevStack = generator::stack;
-    int prevStackPointer = generator::stackPointer, prevBiggestStackPointer = generator::biggestStackPointer;
-    generator::stackPointer = 0;
-    generator::biggestStackPointer = 0;
-    generator::stack = {};
+    std::vector<variable> prevStack = at::stack;
+    int prevStackPointer = at::stackPointer, prevBiggestStackPointer = at::biggestStackPointer;
+    at::stackPointer = 0;
+    at::biggestStackPointer = 0;
+    at::stack = {};
     branch *prevScope = currentBranchScope;
     currentBranchScope = &(current);
-    int8_t prevCurrentRegister = currentRegister;
-    currentRegister = 0;
+    int8_t prevCurrentRegister = at::currentRegister;
+    at::currentRegister = 0;
 
     std::string line = obj.name;
     line += ".:";
     file::append(line);
-    file::append_instruction("pusha");
+    at::append_instruction("pusha");
 
     generator::main(true);
 
     file::append("");
-    file::append_instruction("popa");
-    file::append_instruction("ret");
+    at::append_instruction("popa");
+    at::append_instruction("ret");
     file::append("");
 
-    currentRegister = prevCurrentRegister;
+    at::currentRegister = prevCurrentRegister;
     currentBranchScope = prevScope;
-    generator::stack = prevStack;
-    generator::stackPointer = prevStackPointer;
-    generator::biggestStackPointer = prevBiggestStackPointer;
+    at::stack = prevStack;
+    at::stackPointer = prevStackPointer;
+    at::biggestStackPointer = prevBiggestStackPointer;
     currentFunction = nullptr;
 }
 
@@ -87,19 +87,19 @@ function *generator::e::functionCall(const std::string &functionName) {
         }
     if (!funcExists)
         error::treeError("Function does not exist!");
-    file::append_instruction("call", functionName + "."); // call function
-    if(generator::stackPointer + target->size() > generator::biggestStackPointer)
-        generator::biggestStackPointer = generator::stackPointer + target->size();
+    at::append_instruction("call", functionName + "."); // call function
+    if(at::stackPointer + target->size() > at::biggestStackPointer)
+        at::biggestStackPointer = at::stackPointer + target->size();
     return target;
 }
 
 void generator::e::returnStatement() {
     checkForImplicitConversion(currentFunction->type, generator::e::calc(current.sub->at(0)));  // do calculation
-    file::append_instruction("mov" + generator::sizeKeywords[currentFunction->size()], generator::availableRegister(currentFunction->size()), "+112(%rbp)");
+    at::append_instruction("mov" + generator::sizeKeywords[currentFunction->size()], at::availableRegister(currentFunction->size()), "+112(%rbp)");
 
-    file::append_instruction("add", "$" + std::to_string(generator::biggestStackPointer), "%rsp");
-    file::append_instruction("popa"); // call function
-    file::append_instruction("ret");
+    at::append_instruction("add", "$" + std::to_string(at::biggestStackPointer), "%rsp");
+    at::append_instruction("popa"); // call function
+    at::append_instruction("ret");
 }
 
 std::string generateAsmText() // generate text for inline assembly
