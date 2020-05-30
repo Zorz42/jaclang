@@ -6,6 +6,15 @@
 
 #define current currentBranchScope->sub->at(currentBranchScope->count) // current branch
 
+#define _CASE_1(_CASE) else if (current.name == #_CASE) e::_CASE();
+#define _CASE_2(_CASE, _COND) else if (current.name == #_CASE && (_COND)) e::_CASE();
+#define _CASE_3(_CASE, _COND, _ARGS) else if (current.name == #_CASE && (_COND)) e::_CASE(_ARGS);
+
+#define _GET_2ND_ARG(_ARG1, _ARG2, _ARG3, _ARG4, ...) _ARG4
+#define _CASE_MACRO_CHOOSER(...) _GET_2ND_ARG(__VA_ARGS__, _CASE_3, _CASE_2, _CASE_1)
+
+#define case_(...) _CASE_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
+
 void generator::main(bool inFunction) {
     if (inFunction) {
         file::append_instruction("mov %rsp, %rbp");
@@ -19,22 +28,17 @@ void generator::main(bool inFunction) {
         // iterate though branches
         if (!file::outputVector.at(file::asm_text - 1).empty())
             file::append_text("");
+        
         if (current.name == "systemFunctionCall")  // choose appropriate generator for branch
             e::systemFunctionCall();
-        else if (current.name == "variableDeclaration")
-            e::variableDeclaration(currentScopeOnStack);
-        else if (current.name == "calc")
-            e::calculation(current);
-        else if (current.name == "scope") // if branch is scope
-            e::scope();
-        else if (current.name == "functionDeclaration" && currentFunction == nullptr)
-            e::functionDeclaration();
-        else if (current.name == "variableSetting")
-            e::variableSetting();
-        else if (current.name == "returnStatement" && currentFunction != nullptr)
-            e::returnStatement();
-        else if (current.name == "ifStatement")
-            e::ifStatement();
+        case_(variableDeclaration, true, currentScopeOnStack)
+        case_(calc, true, current)
+        case_(scope)
+        case_(functionDeclaration, currentFunction == nullptr)
+        case_(variableSetting)
+        case_(returnStatement, currentFunction != nullptr)
+        case_(ifStatement)
+        case_(whileStatement)
         else
             error::treeError("Unknown branch: " + current.name);
     }
@@ -69,18 +73,6 @@ std::string generator::availableRegister(int8_t size, int8_t offset) {
     return "%" + generator::availableRegisters[index].at((unsigned long) generator::currentRegister + offset);
 }
 
-int8_t getTypeSize(const std::string &type) {
-    return int8_t(generator::primitiveDatatypeSizes[type]);
-}
-
-int8_t variable::size() {
-    return getTypeSize(type);
-}
-
-int8_t function::size() const {
-    return getTypeSize(type);
-}
-
 void generator::incStackPointer(int value) {
     stackPointer += value;
     if (stackPointer > biggestStackPointer)
@@ -91,18 +83,14 @@ void generator::decStackPointer(int value) {
     stackPointer -= value;
 }
 
-void generator::e::scope() {
-    branch *prevScope = currentBranchScope; // save current scope
-    currentBranchScope = &(current);        // move to new scope
-    unsigned long stackLength = generator::stack.size();  // save stack length
-    unsigned long prevScopeOnStack = currentScopeOnStack; // save scope on stack
-    currentScopeOnStack = stackLength;  // set scope on stack
-    generator::main();
-    currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
-    while (generator::stack.size() > stackLength) // remove elements from stack that were in scope
-    {
-        decStackPointer(generator::stack.at(generator::stack.size() - 1).size());
-        generator::stack.pop_back();
-    }
-    currentBranchScope = prevScope; // retrieve current branch scope
+int8_t getTypeSize(const std::string &type) {
+    return int8_t(generator::primitiveDatatypeSizes[type]);
+}
+
+int8_t function::size() const {
+    return getTypeSize(type);
+}
+
+int8_t variable::size() {
+    return getTypeSize(type);
 }

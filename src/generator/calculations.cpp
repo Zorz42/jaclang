@@ -16,7 +16,7 @@ int8_t currentValueAsmSize;
 
 std::string getTypeMatch(const std::string &type1, const std::string &matchOperator, const std::string &type2);
 
-std::string generator::e::calculation(branch &calculation) {
+std::string generator::e::calc(branch &calculation) {
     std::string currentValueType;
     std::string thisValueType;
 
@@ -34,7 +34,7 @@ std::string generator::e::calculation(branch &calculation) {
         currentValueType = curr.type;
     } else if (calculation.sub->at(0).name == "calculation") {
         generator::nextRegister(); // its just nested calculation
-        currentValueType = generator::e::calculation(calculation.sub->at(0));
+        currentValueType = generator::e::calc(calculation.sub->at(0));
         file::append_instruction("mov", generator::availableRegister(8), generator::availableRegister(8, -1));
         generator::prevRegister();
     } else { // else its just constant
@@ -57,7 +57,7 @@ std::string generator::e::calculation(branch &calculation) {
             thisValueType = curr.type;
         } else if (currentValue == "calc") { // if value is calculation
             generator::nextRegister();
-            thisValueType = generator::e::calculation(calculation.sub->at(i));
+            thisValueType = generator::e::calc(calculation.sub->at(i));
             generator::prevRegister();
 
             currentValueAsm = generator::availableRegister(8, 1);

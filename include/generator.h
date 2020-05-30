@@ -4,6 +4,7 @@ struct variable {
     std::string name; // name
     std::string type;   // datatype
     int position; // position on stack
+    
     int8_t size();
 };
 
@@ -41,7 +42,7 @@ namespace generator {
 
         void variableDeclaration(unsigned long scopeOnStack);
 
-        std::string calculation(branch &calculation);
+        std::string calc(branch &calculation);
 
         function *functionCall(const std::string &functionName);
 
@@ -52,13 +53,15 @@ namespace generator {
         void ifStatement();
         
         void scope();
+    
+        void whileStatement();
     }
 
     inline int stackPointer = 0;
     inline int biggestStackPointer = 0;
     inline unsigned long currentScopeOnStack = 0;
-    void incStackPointer(int value);
 
+    void incStackPointer(int value);
     void decStackPointer(int value);
 
     inline std::vector<variable> stack;
@@ -70,7 +73,6 @@ namespace generator {
     inline std::vector<std::string> availableRegisters[4];
 
     void nextRegister();
-
     void prevRegister();
 
     std::string availableRegister(int8_t size, int8_t offset = 0);
@@ -79,12 +81,12 @@ namespace generator {
 
     variable get_variable(const std::string &name);
 
+    inline std::vector<std::string> primitiveDatatypes;
     inline std::unordered_map<std::string, int> primitiveDatatypeSizes;
     inline std::vector<datatypeMatches> operatorMatches;
-    inline std::vector<std::string> primitiveDatatypes;
     inline std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
 
-    inline function *currentFunction = nullptr;
-
     void checkForImplicitConversion(const std::string &dest, const std::string &source);
+
+    inline function *currentFunction = nullptr;
 }

@@ -17,3 +17,17 @@ bool parser::e::ifStatement() {
     }
     return false;
 }
+
+bool parser::e::whileStatement() {
+    if(current->text == "while") {
+        branch currentBranch;
+        currentBranch.alloc();
+        currentBranch.name = "whileStatement";
+        parser::nextToken();
+        branch equationBranch = parser::calculation(true);
+        appendBranch(equationBranch, currentBranch);
+        appendBranch(currentBranch, *currentBranchScope);
+        return true;
+    }
+    return false;
+}

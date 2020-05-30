@@ -26,7 +26,7 @@ void generator::e::variableDeclaration(unsigned long scopeOnStack) {
     generator::pushToStack(obj); // push to stack
 
     if (current.sub->at(2).name == "calc") {
-        checkForImplicitConversion(obj.type, generator::e::calculation(current.sub->at(2)));  // do calculation
+        checkForImplicitConversion(obj.type, generator::e::calc(current.sub->at(2)));  // do calculation
 
         file::append_instruction("mov" + generator::sizeKeywords[obj.size()],
                                  generator::availableRegister(obj.size()), onStack(generator::stackPointer)); // set variable on stack
@@ -57,7 +57,7 @@ void generator::e::variableSetting() {
 
     if (current.sub->at(1).name == "calc") {
         checkForImplicitConversion(currentVariable.type,
-                                   generator::e::calculation(current.sub->at(1))); // do calculation
+                                   generator::e::calc(current.sub->at(1))); // do calculation
 
         file::append_instruction("mov" + generator::sizeKeywords[currentVariable.size()],
                                         generator::availableRegister(currentVariable.size()),

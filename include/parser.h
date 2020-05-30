@@ -68,6 +68,8 @@ namespace parser {
         bool returnStatement();
     
         bool ifStatement();
+    
+        bool whileStatement();
     }
 
     inline std::vector<branch *> scopes;
