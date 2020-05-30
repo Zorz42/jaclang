@@ -20,9 +20,9 @@ branch parser::calculation(bool nested) { // parse calculation
     }
     while (parser::currToken != lexer::tokens.end()) {
         if (parser::e::functionCall(currentBranch));
-        else if (current->type == TYPE_CONST) // if its constant
+        else if (current->type == tt_constant) // if its constant
             appendBranch(current->text, currentBranch);
-        else if (current->type == TYPE_INDENT)
+        else if (current->type == tt_indent)
             appendBranch(":" + current->text, currentBranch);
         else if (current->text == "(") { // then its nested within the operation
             parser::nextToken();

@@ -19,11 +19,10 @@ inline bool debug_show_ast;
 
 // headers/
 #include "os-detection.h" // detects os during compile-time
-#include "constants.h"    // constants
 #include "shortcuts.h"    // shortcut functions
 #include "error.h"        // error module
-#include "file.h"         // opens file
+#include "file.h"         // file module
 #include "preprocessor.h" // preprocessor will preprocess file
 #include "lexer.h"        // breaks it into tokens
 #include "parser.h"       // parses it into syntax tree
-#include "generator.h"    // generates asm code
+#include "generator.h"    // generates assembly code

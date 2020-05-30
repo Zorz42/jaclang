@@ -9,7 +9,7 @@
 bool parser::e::functionCall(branch &target) {
     if (parser::currToken == --lexer::tokens.end())
         return false;
-    if (current->type == TYPE_INDENT &&
+    if (current->type == tt_indent &&
         parser::peekNextToken()->text == "(") { // if its function -> name followed by '('
         branch currentBranch; // make branch for function
         currentBranch.alloc();
@@ -32,8 +32,8 @@ bool parser::e::systemFunctionCall() {
     if (parser::currToken == --lexer::tokens.end())
         return false;
     parser::peekNextToken();
-    if (current->type == TYPE_INDENT &&
-        parser::peekNextToken()->type == TYPE_STRING) { // if its systemFunction -> name followed by string
+    if (current->type == tt_indent &&
+        parser::peekNextToken()->type == tt_string) { // if its systemFunction -> name followed by string
         branch currentBranch; // make branch for function
         currentBranch.alloc();
         if (isSystemIndent(current->text))  // check if its system function call
@@ -42,7 +42,7 @@ bool parser::e::systemFunctionCall() {
             return false;
         appendBranch(current->text, currentBranch); // append name to branch
         parser::nextToken(); // go to argument
-        if (current->type != TYPE_STRING)
+        if (current->type != tt_string)
             error::syntaxError("Expected one string argument on system function");
         else
             appendBranch(current->text, currentBranch);
@@ -63,7 +63,7 @@ bool parser::e::functionDeclaration() {
         const std::string &parenthesis = parser::currToken->text;
         parser::prevToken();
         parser::prevToken();
-        if (parser::peekNextToken()->type == TYPE_INDENT && parenthesis == "(") {
+        if (parser::peekNextToken()->type == tt_indent && parenthesis == "(") {
             branch currentBranch;
             currentBranch.alloc();
             currentBranch.name = "functionDeclaration"; // set to functionDeclaration

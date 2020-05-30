@@ -15,7 +15,7 @@ bool parser::e::variableDeclaration() {
         currentBranch.name = "variableDeclaration"; // set to variableDeclaration
         appendBranch(current->text, currentBranch);
         parser::nextToken();
-        if (current->type != TYPE_INDENT) // check if everything is working out and append it to main branch
+        if (current->type != tt_indent) // check if everything is working out and append it to main branch
             error::syntaxError("Expected name after value type name in variable declaration");
         appendBranch(current->text, currentBranch);
         parser::nextToken();
@@ -33,7 +33,7 @@ bool parser::e::variableDeclaration() {
 bool parser::e::variableSetting() {
     if (current == --lexer::tokens.end())
         return false;
-    if (current->type == TYPE_INDENT && parser::peekNextToken()->text == "=") {
+    if (current->type == tt_indent && parser::peekNextToken()->text == "=") {
         branch currentBranch;
         currentBranch.alloc();
         currentBranch.name = "variableSetting";

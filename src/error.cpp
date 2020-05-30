@@ -15,19 +15,19 @@ void error::syntaxError(const std::string &error) { // Print out syntax error
         std::cerr << " ";
     std::cerr << "^" << "\033[0m" << std::endl; // reset to white
 
-    terminate("SYNTAX ERROR", ERROR_SYNTAX_ERROR);
+    terminate("SYNTAX ERROR", et_syntax_err);
 }
 
 void error::treeError(const std::string &error) { // print out syntax error
     std::cerr << "\033[1;31mTree error: " // tree error in red
               << error << std::endl // actual error
               << "\033[0m"; // reset to white
-    terminate("TREE ERROR", ERROR_SYNTAX_ERROR);
+    terminate("TREE ERROR", et_syntax_err);
 }
 
 
-void error::terminate(const std::string &reason, int exitCode) { // exit if error
-    std::cerr << "Jaclang terminated with exit code " << exitCode << "." << std::endl // Terminated
+void error::terminate(const std::string &reason, errorType errorType_) { // exit if error
+    std::cerr << "Jaclang terminated with exit code " << errorType_ << "." << std::endl // Terminated
               << "Reason: " << reason << "." << std::endl; // reason
-    exit(exitCode); // exit
+    exit(errorType_); // exit
 }

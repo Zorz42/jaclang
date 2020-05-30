@@ -4,7 +4,7 @@
 
 void generator::e::scope() {
     branch *prevScope = currentBranchScope; // save current scope
-    currentBranchScope = &(current);        // move to new scope
+    currentBranchScope = &currentBranchScope->sub->at(currentBranchScope->count); // move to new scope
     unsigned long stackLength = generator::stack.size();  // save stack length
     unsigned long prevScopeOnStack = currentScopeOnStack; // save scope on stack
     currentScopeOnStack = stackLength;  // set scope on stack

@@ -26,13 +26,13 @@
 
 int currentLine = 1;
 
-void newToken(int TYPE); // pushes current token to token vector and sets it to empty string
+void newToken(tokenType TYPE); // pushes current token to token vector and sets it to empty string
 std::string currentToken; // current token in processing
 
 unsigned long c = 0, prevC = 0;
 std::list<char>::iterator cIter;
 
-int isToken(char tok);
+tokenType isToken(char tok);
 
 void lexer::main() { // main lexer function
     bool inStringQ = false, inStringDQ = false;  // if in string with single quotes or double quotes
@@ -42,21 +42,21 @@ void lexer::main() { // main lexer function
     for (cIter = file::inputText.begin(); cIter != file::inputText.end(); cIter++) {
         if ((CHAR == ' ' || CHAR == '	' || CHAR == '\n') && !IN_STRING) {
             // tabs, spaces and newlines separate tokens if not in string
-            newToken(TYPE_UNDEF);
+            newToken(tt_undefined);
             if (CHAR == '	')
                 prevC++;
         } else if (CHAR == '\"' && !inStringQ) {
             inStringDQ = !inStringDQ;
-            newToken(inStringDQ ? TYPE_UNDEF : TYPE_STRING);
+            newToken(inStringDQ ? tt_undefined : tt_string);
             // if just got out of string, then this token is string
             // if coming to string end the token and start string token
         } else if (CHAR == '\'' && !inStringDQ) { // the same thing but for single quotes
             inStringQ = !inStringQ;
-            newToken(inStringQ ? TYPE_UNDEF : TYPE_STRING);
+            newToken(inStringQ ? tt_undefined : tt_string);
         } else if (!IN_STRING) {
-            int isTokenResult = isToken(CHAR); // check if is operator or symbol
-            if (isTokenResult != TYPE_UNDEF) {
-                newToken(TYPE_UNDEF);
+            tokenType isTokenResult = isToken(CHAR); // check if is operator or symbol
+            if (isTokenResult != tt_undefined) {
+                newToken(tt_undefined);
                 currentToken = CHAR;
                 newToken(isTokenResult);
             } else
@@ -73,21 +73,21 @@ void lexer::main() { // main lexer function
 
     token prevToken; // previous token
     for (token &iter : lexer::tokens) { // iterate through tokens
-        if (iter.type == TYPE_UNDEF) { // if type is undefined
+        if (iter.type == tt_undefined) { // if type is undefined
             if (iter.text == "*" || iter.text == "&") { // unresolved '*' and '&'
-                if (prevToken.type == TYPE_CONST || prevToken.type == TYPE_INDENT) // if in operation, then its operator
-                    iter.type = TYPE_OPERATOR;
+                if (prevToken.type == tt_constant || prevToken.type == tt_indent) // if in operation, then its operator
+                    iter.type = tt_operator;
                 else // else its symbol
-                    iter.type = TYPE_SYMBOL;
+                    iter.type = tt_symbol;
             } else if (isInt(iter.text))
-                iter.type = TYPE_CONST;
+                iter.type = tt_constant;
             else
-                iter.type = contains(lexer::keywords, iter.text) ? TYPE_KEYWORD : TYPE_INDENT; // name is only left
+                iter.type = contains(lexer::keywords, iter.text) ? tt_keyword : tt_indent; // name is only left
         }
 
 #define POS_OFFSET 15
 
-        if (debug_show_tokens) {
+        if (debug_show_tokens) { // print debug tokens
             coutd << int(iter.type) << ": " << iter.text;
             if (iter.text.size() < POS_OFFSET)
                 for (unsigned long i = 0; i < POS_OFFSET - iter.text.size(); i++)
@@ -99,7 +99,7 @@ void lexer::main() { // main lexer function
     }
 }
 
-void newToken(int TYPE) {
+void newToken(tokenType TYPE) {
     if (currentToken.empty()) // if token is empty just do nothing
         return;
     token obj;
@@ -107,7 +107,7 @@ void newToken(int TYPE) {
     obj.type = TYPE;
     obj.line = currentLine; // set token line to current line
     obj.pos = c - prevC - obj.text.size(); // position in line - length of obj
-    if (obj.type == TYPE_OPERATOR || obj.type == TYPE_SYMBOL)
+    if (obj.type == tt_operator || obj.type == tt_symbol)
         obj.pos++;
     lexer::tokens.push_back(obj); // append token
     currentToken.clear(); // reset token
@@ -118,20 +118,20 @@ bool isInt(const std::string &text) { // converts to integer
                                          text.end(), [](unsigned char c) { return !std::isdigit(c); }) == text.end();
 }
 
-int isToken(char tok) {
+tokenType isToken(char tok) {
     switch (tok) {
         case '=': // symbols with one character
         case '{':
         case '}':
         case '(':
         case ')':
-            return TYPE_SYMBOL;
+            return tt_symbol;
         case '+': // operators with one character
         case '-':
         case '*':
         case '/':
-            return TYPE_OPERATOR;
+            return tt_operator;
         default:
-            return 0;
+            return tt_undefined;
     }
 }

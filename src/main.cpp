@@ -96,7 +96,7 @@ void handle_arguments(int argc, char **argv) {
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl; // error
-                error::terminate("INVALID OPTION", ERROR_INVALID_OPTION);
+                error::terminate("INVALID OPTION", et_invalid_opt);
             }
         } else // if not option
             argsWithParams.emplace_back(i); // append it to args
@@ -107,7 +107,7 @@ void handle_arguments(int argc, char **argv) {
         if (argsWithParams.at(i) == "-") {
             std::cout << "\033[1;31m" << argsWithParams.at(i) << " is a forbidden argument!\033[0m"
                       << std::endl; // error
-            error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+            error::terminate("INVALID ARGUMENT", et_invalid_arg);
         } else if (argsWithParams.at(i)[0] == '-') {
             char currArgName = argsWithParams.at(i)[1];
             std::string currArg;
@@ -116,7 +116,7 @@ void handle_arguments(int argc, char **argv) {
                 if (i == argsWithParams.size()) {
                     std::cout << "\033[1;31m-" << currArgName << " has no argument!\033[0m"
                               << std::endl; // error
-                    error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+                    error::terminate("INVALID ARGUMENT", et_invalid_arg);
                 }
                 currArg = argsWithParams.at(i);
             } else {
@@ -131,7 +131,7 @@ void handle_arguments(int argc, char **argv) {
                 default:
                     std::cout << "\033[1;31m-" << currArgName << " is not a valid argument!\033[0m"
                               << std::endl; // error
-                    error::terminate("INVALID ARGUMENT", ERROR_INVALID_ARGUMENT);
+                    error::terminate("INVALID ARGUMENT", et_invalid_arg);
             }
         } else
             args.emplace_back(argsWithParams.at(i));
@@ -148,15 +148,15 @@ void handle_arguments(int argc, char **argv) {
         } else {
             std::cout << "\033[1;31mCannot open help-text file (/usr/local/share/jaclang-data/help-text.txt)!\033[0m"
                       << std::endl; // file missing
-            error::terminate("DATA MISSING OR CORRUPTED", ERROR_DATA_ERROR);
+            error::terminate("DATA MISSING OR CORRUPTED", et_data_err);
         }
         exit(0);
     } else if (args.size() > 1) { // if there is more args than 1
         std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
-        error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
+        error::terminate("INVALID ARGUMENT COUNT", et_arg_count);
     } else if (args.empty()) {
         std::cout << "\033[1;31mNo input file!\033[0m" << std::endl;
-        error::terminate("INVALID ARGUMENT COUNT", ERROR_ARGUMENT_COUNT);
+        error::terminate("INVALID ARGUMENT COUNT", et_arg_count);
     }
     argsWithParams.clear();
     inputFile = args.at(0);
