@@ -1,0 +1,21 @@
+Flow control lets you choose what code will get executed
+
+if expression {
+	code
+}
+
+"if statement" evaluates expression and if its 0 the it does not execute that code, otherwise it does.
+
+while expression {
+	code
+}
+
+"while statement" repeats executing that code until expression is false
+
+example:
+
+int a = 0
+
+while a < 10 {
+	a = a + 1
+}

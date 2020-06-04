@@ -33,6 +33,7 @@ unsigned long c = 0, prevC = 0;
 std::list<char>::iterator cIter;
 
 tokenType isToken(char tok);
+tokenType isToken(char tok1, char tok2);
 
 void lexer::main() { // main lexer function
     bool inStringQ = false, inStringDQ = false;  // if in string with single quotes or double quotes
@@ -54,15 +55,30 @@ void lexer::main() { // main lexer function
             inStringQ = !inStringQ;
             newToken(inStringQ ? tt_undefined : tt_string);
         } else if (!IN_STRING) {
-            tokenType isTokenResult = isToken(CHAR); // check if is operator or symbol
+            char tok1 = CHAR, tok2;
+            cIter++;
+            tok2 = CHAR;
+            tokenType isTokenResult = isToken(tok1, tok2); // check if is operator or symbol
+            if (isTokenResult != tt_undefined) {
+                newToken(tt_undefined);
+                currentToken = std::string(1, tok1) + tok2;
+                newToken(isTokenResult);
+                c++;
+                goto END;
+            } else
+                cIter--;
+            
+            isTokenResult = isToken(CHAR); // check if is operator or symbol
             if (isTokenResult != tt_undefined) {
                 newToken(tt_undefined);
                 currentToken = CHAR;
                 newToken(isTokenResult);
-            } else
-                currentToken += CHAR; // else just append character to token
+                goto END;
+            }
+            currentToken.push_back(CHAR);
         } else
-            currentToken += CHAR; // else just append character to token
+            currentToken.push_back(CHAR); // else just append character to token
+        END:
         if (CHAR == '\n') { // if character is newline
             currentLine++;
             prevC = c + 1; // and update offset
@@ -130,7 +146,21 @@ tokenType isToken(char tok) {
         case '-':
         case '*':
         case '/':
+        case '>':
+        case '<':
             return tt_operator;
+        default:
+            return tt_undefined;
+    }
+}
+
+tokenType isToken(char tok1, char tok2) {
+    switch (tok1) {
+        case '=': // operators with one character
+            switch (tok2) {
+                case '=':
+                    return tt_operator;
+            }
         default:
             return tt_undefined;
     }

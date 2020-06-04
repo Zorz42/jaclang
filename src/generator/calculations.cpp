@@ -5,12 +5,12 @@
 #endif
 
 void operator_add(const std::string &value);
-
 void operator_sub(const std::string &value);
-
 void operator_mul(const std::string &value);
-
 void operator_div(const std::string &value);
+void operator_eq(const std::string &value);
+void operator_gt(const std::string &value);
+void operator_ls(const std::string &value);
 
 int8_t currentValueAsmSize;
 
@@ -32,7 +32,7 @@ std::string generator::e::calc(branch &calculation) {
         variable curr = generator::get_variable(value);
         at::append_instruction("mov", at::onStack(curr.position), at::availableRegister(curr.size())); // mov first value to register
         currentValueType = curr.type;
-    } else if (calculation.sub->at(0).name == "calculation") {
+    } else if (calculation.sub->at(0).name == "calc") {
         at::nextRegister(); // its just nested calculation
         currentValueType = generator::e::calc(calculation.sub->at(0));
         at::append_instruction("mov", at::availableRegister(8), at::availableRegister(8, -1));
@@ -61,6 +61,7 @@ std::string generator::e::calc(branch &calculation) {
             at::prevRegister();
 
             currentValueAsm = at::availableRegister(8, 1);
+            currentValueAsmSize = 8;
         } else if (currentValue == "functionCall") {
             function *thisFunction = generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
             thisValueType = thisFunction->type;
@@ -78,6 +79,12 @@ std::string generator::e::calc(branch &calculation) {
             operator_mul(currentValueAsm);
         else if (currentOperator == "/")
             operator_div(currentValueAsm);
+        else if (currentOperator == "==")
+            operator_eq(currentValueAsm);
+        else if (currentOperator == ">")
+            operator_gt(currentValueAsm);
+        else if (currentOperator == "<")
+            operator_ls(currentValueAsm);
         else
             error::treeError("unrecognized operator");
         currentValueType = getTypeMatch(currentValueType, currentOperator, thisValueType);
@@ -86,27 +93,55 @@ std::string generator::e::calc(branch &calculation) {
 }
 
 void operator_add(const std::string &value) {
-    at::append_instruction("add", value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("add" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
 }
 
 void operator_sub(const std::string &value) {
-    at::append_instruction("sub", value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("sub" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
+}
+
+std::string getRegister(int8_t size) {
+    switch (size) {
+        case 1: return "%al";
+        case 2: return "%ax";
+        case 4: return "%eax";
+        case 8: return "%rax";
+    }
+    return "";
 }
 
 void operator_mul(const std::string &value) {
-    at::append_instruction("movq", value, "%eax");
-    file::append_text("	imul " + at::availableRegister(currentValueAsmSize));
-    at::append_instruction("mov", "%eax", at::availableRegister(currentValueAsmSize));
+    std::string reg = getRegister(currentValueAsmSize);
+    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], value, reg);
+    at::append_instruction("imul", at::availableRegister(currentValueAsmSize));
+    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], reg, at::availableRegister(currentValueAsmSize));
 }
 
 void operator_div(const std::string &value) {
-    at::append_instruction("mov", at::availableRegister(currentValueAsmSize), "%eax");
-    at::nextRegister();
-    if (at::availableRegister(currentValueAsmSize) != value)
-        at::append_instruction("mov", value, at::availableRegister(currentValueAsmSize));
-    file::append_text("	idiv " + at::availableRegister(currentValueAsmSize));
-    at::prevRegister();
-    at::append_instruction("mov", "%eax", at::availableRegister(currentValueAsmSize));
+    std::string reg = getRegister(currentValueAsmSize);
+    at::append_instruction("mov", at::availableRegister(currentValueAsmSize), reg);
+    at::append_instruction(std::string("c") + "d" + "q");
+    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("idiv", at::availableRegister(currentValueAsmSize));
+    at::append_instruction("mov", reg, at::availableRegister(currentValueAsmSize));
+}
+
+void operator_eq(const std::string &value) {
+    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("sete", at::availableRegister(1));
+    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
+}
+
+void operator_gt(const std::string &value) {
+    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("setg", at::availableRegister(1));
+    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
+}
+
+void operator_ls(const std::string &value) {
+    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
+    at::append_instruction("setl", at::availableRegister(1));
+    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
 }
 
 std::string getTypeMatch(const std::string &type1, const std::string &matchOperator, const std::string &type2) {

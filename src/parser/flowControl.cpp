@@ -10,7 +10,7 @@ bool parser::e::ifStatement() {
         currentBranch.alloc();
         currentBranch.name = "ifStatement";
         parser::nextToken();
-        branch equationBranch = parser::calculation(true);
+        branch equationBranch = parser::calculation(false);
         appendBranch(equationBranch, currentBranch);
         appendBranch(currentBranch, *currentBranchScope);
         return true;
@@ -24,7 +24,7 @@ bool parser::e::whileStatement() {
         currentBranch.alloc();
         currentBranch.name = "whileStatement";
         parser::nextToken();
-        branch equationBranch = parser::calculation(true);
+        branch equationBranch = parser::calculation(false);
         appendBranch(equationBranch, currentBranch);
         appendBranch(currentBranch, *currentBranchScope);
         return true;

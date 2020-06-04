@@ -10,8 +10,8 @@
 #define _CASE_2(_CASE, _COND) else if (current.name == #_CASE && (_COND)) e::_CASE();
 #define _CASE_3(_CASE, _COND, _ARGS) else if (current.name == #_CASE && (_COND)) e::_CASE(_ARGS);
 
-#define _GET_2ND_ARG(_ARG1, _ARG2, _ARG3, _ARG4, ...) _ARG4
-#define _CASE_MACRO_CHOOSER(...) _GET_2ND_ARG(__VA_ARGS__, _CASE_3, _CASE_2, _CASE_1)
+#define _GET_4TH_ARG(_ARG1, _ARG2, _ARG3, _ARG4, ...) _ARG4
+#define _CASE_MACRO_CHOOSER(...) _GET_4TH_ARG(__VA_ARGS__, _CASE_3, _CASE_2, _CASE_1)
 
 #define case_(...) _CASE_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 

@@ -9,7 +9,7 @@ struct branch {
 
     branch(const branch &input) {
         if (input.sub != nullptr) {
-            sub = new std::vector<branch>;
+            alloc();
             *sub = *input.sub;
         }
         name = input.name;
@@ -51,23 +51,14 @@ namespace parser {
 
     namespace e {
         bool functionCall(branch &target);
-
         bool systemFunctionCall();
-
         bool variableDeclaration();
-
         bool beginScope();
-
         bool endScope();
-
         bool functionDeclaration();
-
         bool variableSetting();
-
         bool returnStatement();
-    
         bool ifStatement();
-    
         bool whileStatement();
     }
 

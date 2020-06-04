@@ -11,6 +11,7 @@ srcdir = "src/"
 includedir = "include/"
 stdlib = "gnu++17"
 optimisation = "fast"
+warnings = "-Wall -Wshadow -Wextra -Wno-deprecated"
 
 compiled_count = 0
 
@@ -51,10 +52,10 @@ class BuildThread(Thread):
     def run(self):
         global compiled_count
         if osplatform == "linux":
-            compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
+            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
                               f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp"
         elif osplatform == "OSX":
-            compile_command = f"g++ -w -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
+            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
                               f"-c {srcdir}{self.name}.cpp -include-pch {objdir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
         current_thread = call(compile_command, shell=True)
         if current_thread != 0:
@@ -100,9 +101,9 @@ def build():
     if build_header:
         print("Building jaclang header...")
         if osplatform == "linux":
-            system(f"g++ -w -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
+            system(f"g++ {warnings} -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
         elif osplatform == "OSX":
-            system(f"g++ -w -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
+            system(f"g++ {warnings} -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
 
     if threads:
         print("Building jaclang...")
@@ -118,9 +119,9 @@ def build():
     objfiles = [objdir + file + ".o" for file in files]
     print("Linking object files... ")
     if osplatform == "linux":
-        linker_return_code = call(f"g++ -W -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
+        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
     elif osplatform == "OSX":
-        linker_return_code = call(f"g++ -W -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
+        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
 
     if linker_return_code != 0:
         print("Linking failed!")
