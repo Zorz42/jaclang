@@ -22,7 +22,5 @@ namespace file {
 
     void append_func(const std::string &line);
 
-    void append(const std::string &line);
-
     void insert(const std::string &line, unsigned long position);
 }

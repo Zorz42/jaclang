@@ -20,25 +20,25 @@ std::string generator::e::calc(branch &calculation) {
     std::string currentValueType;
     std::string thisValueType;
     
-    at::append_instruction("movq", "$0", at::availableRegister(8));
+    asm_::append_instruction("movq", "$0", asm_::availableRegister(8));
 
     if (calculation.sub->at(0).name == "functionCall") { // check if its function call at the beginning
         function* curr = generator::e::functionCall(calculation.sub->at(0).sub->at(0).name);
-        at::append_instruction("mov", "(%rsp)", at::availableRegister(curr->size())); // mov return value to register
+        asm_::append_instruction("mov", "(%rsp)", asm_::availableRegister(curr->size())); // mov return value to register
         currentValueType = "int";
     } else if (calculation.sub->at(0).name.at(0) == ':') { // variables will have : at the beginning
         std::string value = calculation.sub->at(0).name; // variable name
         value.erase(value.begin()); // remove :
         variable curr = generator::get_variable(value);
-        at::append_instruction("mov", at::onStack(curr.position), at::availableRegister(curr.size())); // mov first value to register
+        asm_::append_instruction("mov", asm_::onStack(curr.position), asm_::availableRegister(curr.size())); // mov first value to register
         currentValueType = curr.type;
     } else if (calculation.sub->at(0).name == "calc") {
-        at::nextRegister(); // its just nested calculation
+        asm_::nextRegister(); // its just nested calculation
         currentValueType = generator::e::calc(calculation.sub->at(0));
-        at::append_instruction("mov", at::availableRegister(8), at::availableRegister(8, -1));
-        at::prevRegister();
+        asm_::append_instruction("mov", asm_::availableRegister(8), asm_::availableRegister(8, -1));
+        asm_::prevRegister();
     } else { // else its just constant
-        at::append_instruction("mov", "$" + calculation.sub->at(0).name, at::availableRegister(8));
+        asm_::append_instruction("mov", "$" + calculation.sub->at(0).name, asm_::availableRegister(8));
         currentValueType = "int";
     }
 
@@ -52,15 +52,15 @@ std::string generator::e::calc(branch &calculation) {
             std::string value = currentValueAsm; // variable name
             value.erase(value.begin()); // remove :
             variable curr = generator::get_variable(value);
-            currentValueAsm = at::onStack(curr.position);
+            currentValueAsm = asm_::onStack(curr.position);
             currentValueAsmSize = curr.size();
             thisValueType = curr.type;
         } else if (currentValue == "calc") { // if value is calculation
-            at::nextRegister();
+            asm_::nextRegister();
             thisValueType = generator::e::calc(calculation.sub->at(i));
-            at::prevRegister();
+            asm_::prevRegister();
 
-            currentValueAsm = at::availableRegister(8, 1);
+            currentValueAsm = asm_::availableRegister(8, 1);
             currentValueAsmSize = 8;
         } else if (currentValue == "functionCall") {
             function *thisFunction = generator::e::functionCall(calculation.sub->at(i).sub->at(0).name);
@@ -93,11 +93,11 @@ std::string generator::e::calc(branch &calculation) {
 }
 
 void operator_add(const std::string &value) {
-    at::append_instruction("add" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("add", value, asm_::availableRegister(currentValueAsmSize), currentValueAsmSize);
 }
 
 void operator_sub(const std::string &value) {
-    at::append_instruction("sub" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("sub", value, asm_::availableRegister(currentValueAsmSize), currentValueAsmSize);
 }
 
 std::string getRegister(int8_t size) {
@@ -112,36 +112,36 @@ std::string getRegister(int8_t size) {
 
 void operator_mul(const std::string &value) {
     std::string reg = getRegister(currentValueAsmSize);
-    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], value, reg);
-    at::append_instruction("imul", at::availableRegister(currentValueAsmSize));
-    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], reg, at::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("mov", value, reg, currentValueAsmSize);
+    asm_::append_instruction("imul", asm_::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("mov", reg, asm_::availableRegister(currentValueAsmSize), currentValueAsmSize);
 }
 
 void operator_div(const std::string &value) {
     std::string reg = getRegister(currentValueAsmSize);
-    at::append_instruction("mov", at::availableRegister(currentValueAsmSize), reg);
-    at::append_instruction(std::string("c") + "d" + "q");
-    at::append_instruction("mov" + generator::sizeKeywords[currentValueAsmSize], value, at::availableRegister(currentValueAsmSize));
-    at::append_instruction("idiv", at::availableRegister(currentValueAsmSize));
-    at::append_instruction("mov", reg, at::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("mov", asm_::availableRegister(currentValueAsmSize), reg);
+    asm_::append_instruction(std::string("c") + "d" + "q");
+    asm_::append_instruction("mov", value, asm_::availableRegister(currentValueAsmSize), currentValueAsmSize);
+    asm_::append_instruction("idiv", asm_::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("mov", reg, asm_::availableRegister(currentValueAsmSize));
 }
 
 void operator_eq(const std::string &value) {
-    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
-    at::append_instruction("sete", at::availableRegister(1));
-    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
+    asm_::append_instruction("cmp", value, asm_::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("sete", asm_::availableRegister(1));
+    asm_::append_instruction("movzbq", asm_::availableRegister(1), asm_::availableRegister(8));
 }
 
 void operator_gt(const std::string &value) {
-    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
-    at::append_instruction("setg", at::availableRegister(1));
-    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
+    asm_::append_instruction("cmp", value, asm_::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("setg", asm_::availableRegister(1));
+    asm_::append_instruction("movzbq", asm_::availableRegister(1), asm_::availableRegister(8));
 }
 
 void operator_ls(const std::string &value) {
-    at::append_instruction("cmp", value, at::availableRegister(currentValueAsmSize));
-    at::append_instruction("setl", at::availableRegister(1));
-    at::append_instruction("movzbq", at::availableRegister(1), at::availableRegister(8));
+    asm_::append_instruction("cmp", value, asm_::availableRegister(currentValueAsmSize));
+    asm_::append_instruction("setl", asm_::availableRegister(1));
+    asm_::append_instruction("movzbq", asm_::availableRegister(1), asm_::availableRegister(8));
 }
 
 std::string getTypeMatch(const std::string &type1, const std::string &matchOperator, const std::string &type2) {

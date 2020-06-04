@@ -5,7 +5,7 @@
 #include <fstream>
 
 void init() { // initialize global variables
-    at::availableRegisters[0] = {
+    asm_::availableRegisters[0] = {
             "bl",
             "cl",
             "sil",
@@ -19,7 +19,7 @@ void init() { // initialize global variables
             "r14b",
             "r15b",
     };
-    at::availableRegisters[1] = {
+    asm_::availableRegisters[1] = {
             "bx",
             "cx",
             "si",
@@ -33,7 +33,7 @@ void init() { // initialize global variables
             "r14w",
             "r15w",
     };
-    at::availableRegisters[2] = {
+    asm_::availableRegisters[2] = {
             "ebx",
             "ecx",
             "esi",
@@ -47,7 +47,7 @@ void init() { // initialize global variables
             "r14d",
             "r15d",
     };
-    at::availableRegisters[3] = {
+    asm_::availableRegisters[3] = {
             "rbx",
             "rcx",
             "rsi",

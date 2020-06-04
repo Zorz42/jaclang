@@ -72,10 +72,3 @@ std::string file::getLine(int LINE) { // get line of code
 
     return currentString;
 }
-
-void file::append(const std::string &line) {
-    if (generator::currentFunction != nullptr) // if code should be in function append it to function section
-        file::append_func(line);
-    else
-        file::append_text(line);
-}

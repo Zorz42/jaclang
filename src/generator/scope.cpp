@@ -5,15 +5,15 @@
 void generator::e::scope() {
     branch *prevScope = currentBranchScope; // save current scope
     currentBranchScope = &currentBranchScope->sub->at(currentBranchScope->count); // move to new scope
-    unsigned long stackLength = at::stack.size();  // save stack length
-    unsigned long prevScopeOnStack = at::currentScopeOnStack; // save scope on stack
-    at::currentScopeOnStack = stackLength;  // set scope on stack
+    unsigned long stackLength = asm_::stack.size();  // save stack length
+    unsigned long prevScopeOnStack = asm_::currentScopeOnStack; // save scope on stack
+    asm_::currentScopeOnStack = stackLength;  // set scope on stack
     generator::main();
-    at::currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
-    while (at::stack.size() > stackLength) // remove elements from stack that were in scope
+    asm_::currentScopeOnStack = prevScopeOnStack; // retrieve scope on stack
+    while (asm_::stack.size() > stackLength) // remove elements from stack that were in scope
     {
-        at::decStackPointer(at::stack.at(at::stack.size() - 1).size());
-        at::stack.pop_back();
+        asm_::decStackPointer(asm_::stack.at(asm_::stack.size() - 1).size());
+        asm_::stack.pop_back();
     }
     currentBranchScope = prevScope; // retrieve current branch scope
 }

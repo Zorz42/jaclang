@@ -1,5 +1,15 @@
-namespace at {
-    void append_instruction(const std::string &instruction, const std::string &arg1 = "", const std::string &arg2 = "");
+enum section {auto_, section_data, section_bss, section_text, section_functions};
+
+struct instruction {
+    std::string inst, arg1, arg2;
+    int size;
+    section sect;
+};
+
+namespace asm_ {
+    void main();
+
+    void append_instruction(const std::string &inst, const std::string &arg1 = "", const std::string &arg2 = "", int size = 0, section sect=auto_);
     std::string onStack(int offset);
 
     inline unsigned long currentScopeOnStack = 0;
@@ -19,6 +29,8 @@ namespace at {
     void prevRegister();
 
     void pushToStack(variable source);
-    
+
     std::string availableRegister(int8_t size, int8_t offset = 0);
+
+    inline std::vector<instruction> instructions;
 }

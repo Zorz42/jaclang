@@ -17,21 +17,21 @@
 
 void generator::main(bool inFunction) {
     if (inFunction) {
-        at::append_instruction("mov %rsp, %rbp");
-        at::append_instruction("sub $");
+        asm_::append_instruction("mov", "%rsp", "%rbp");
+        asm_::append_instruction("sub", "$", "%rsp");
     }
     unsigned long subRsp = 0;
     if (inFunction)
-        subRsp = currentBranchScope == &mainBranch ? file::asm_text - 1 : file::asm_func - 1;
-    at::append_instruction("");
+        subRsp = asm_::instructions.size() - 1;
+    asm_::append_instruction("");
     for (; currentBranchScope->count < currentBranchScope->sub->size(); currentBranchScope->count++) {
         // iterate though branches
         if (!file::outputVector.at(file::asm_text - 1).empty())
-            file::append_text("");
+            asm_::append_instruction("");
         
         if (current.name == "systemFunctionCall")  // choose appropriate generator for branch
             e::systemFunctionCall();
-        case_(variableDeclaration, true, at::currentScopeOnStack)
+        case_(variableDeclaration, true, asm_::currentScopeOnStack)
         case_(calc, true, current)
         case_(scope)
         case_(functionDeclaration, currentFunction == nullptr)
@@ -42,8 +42,8 @@ void generator::main(bool inFunction) {
         else
             error::treeError("Unknown branch: " + current.name);
     }
-    if (inFunction) 
-        file::outputVector.at(subRsp).append(std::to_string(at::biggestStackPointer) + ", %rsp");
+    if (inFunction)
+        asm_::instructions.at(subRsp).arg1 += std::to_string(asm_::biggestStackPointer);
     
 }
 

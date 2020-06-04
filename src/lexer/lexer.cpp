@@ -104,11 +104,11 @@ void lexer::main() { // main lexer function
 #define POS_OFFSET 15
 
         if (debug_show_tokens) { // print debug tokens
-            coutd << int(iter.type) << ": " << iter.text;
+            std::cout << int(iter.type) << ": " << iter.text;
             if (iter.text.size() < POS_OFFSET)
                 for (unsigned long i = 0; i < POS_OFFSET - iter.text.size(); i++)
-                    coutd << " ";
-            coutd << " " << iter.line << ", " << iter.pos << std::endl;
+                    std::cout << " ";
+            std::cout << " " << iter.line << ", " << iter.pos << std::endl;
         }
 
         prevToken = iter; // set previous token

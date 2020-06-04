@@ -8,12 +8,12 @@ void generator::e::ifStatement() {
     static unsigned int ifCounter = 0;
     if(current.sub->at(0).name == "calc") {
         generator::e::calc(current.sub->at(0));
-        at::append_instruction("cmpq", "$0", "%rbx");
-        at::append_instruction("je", "IFE" + std::to_string(ifCounter));
+        asm_::append_instruction("cmpq", "$0", "%rbx");
+        asm_::append_instruction("je", "IFE" + std::to_string(ifCounter));
         currentBranchScope->count++;
         scope();
         
-        at::append_instruction("IFE" + std::to_string(ifCounter) + ":");
+        asm_::append_instruction("IFE" + std::to_string(ifCounter) + ":");
         ifCounter++;
     }
     else {
@@ -27,14 +27,14 @@ void generator::e::ifStatement() {
 void generator::e::whileStatement() {
     static unsigned int whileCounter = 0;
     if(current.sub->at(0).name == "calc") {
-        at::append_instruction("WHS" + std::to_string(whileCounter) + ":");
+        asm_::append_instruction("WHS" + std::to_string(whileCounter) + ":");
         generator::e::calc(current.sub->at(0));
-        at::append_instruction("cmpq", "$0", "%rbx");
-        at::append_instruction("je", "WHE" + std::to_string(whileCounter));
+        asm_::append_instruction("cmpq", "$0", "%rbx");
+        asm_::append_instruction("je", "WHE" + std::to_string(whileCounter));
         currentBranchScope->count++;
         scope();
-        at::append_instruction("jmp", "WHS" + std::to_string(whileCounter));
-        at::append_instruction("WHE" + std::to_string(whileCounter) + ":");
+        asm_::append_instruction("jmp", "WHS" + std::to_string(whileCounter));
+        asm_::append_instruction("WHE" + std::to_string(whileCounter) + ":");
         whileCounter++;
     }
     else {

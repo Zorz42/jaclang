@@ -51,7 +51,8 @@ void compile_jaclang() {
         printAST(mainBranch);
     currentBranchScope = &mainBranch;
     generator::main(true); // generate assembly code out of syntax tree
-
+    asm_::main();
+    
     file::write(outputFile); // Writes to file
 }
 
