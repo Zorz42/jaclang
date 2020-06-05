@@ -42,8 +42,10 @@ void generator::main(bool inFunction) {
         else
             error::treeError("Unknown branch: " + current.name);
     }
-    if (inFunction)
+    if (inFunction) {
         asm_::instructions.at(subRsp).arg1 += std::to_string(asm_::biggestStackPointer);
+        asm_::append_instruction("add", "$" + std::to_string(asm_::biggestStackPointer), "%rsp");
+    }
     
 }
 
