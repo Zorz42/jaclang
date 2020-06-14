@@ -8,7 +8,7 @@ struct Token {
     int line{};
     unsigned long pos{};
 
-    Token(TokenType type, std::string text) : type(type), text(std::move(text)) {}
+    Token(TokenType type_, std::string text_) : type(type_), text(std::move(text_)) {}
 
     Token() = default;
 };

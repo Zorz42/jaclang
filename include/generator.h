@@ -32,8 +32,8 @@ struct DatatypeMatches {
     std::string datatype;
     std::vector<Match> matches;
 
-    DatatypeMatches(std::string datatype, std::vector<Match> matches) : datatype(std::move(datatype)),
-                                                                        matches(std::move(matches)) {};
+    DatatypeMatches(std::string datatype_, std::vector<Match> matches_) : datatype(std::move(datatype_)),
+                                                                        matches(std::move(matches_)) {};
 
     DatatypeMatches() = default;
 };
