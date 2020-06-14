@@ -110,8 +110,7 @@ void newToken(TokenType TYPE) {
 }
 
 bool isInt(const std::string &text) { // converts to integer
-    return !text.empty() && std::find_if(text.begin(),
-                                         text.end(), [](unsigned char c) { return !std::isdigit(c); }) == text.end();
+    return !text.empty() && std::find_if(text.begin(), text.end(), [](unsigned char c2) { return !std::isdigit(c2); }) == text.end();
 }
 
 TokenType isToken(char tok) {
