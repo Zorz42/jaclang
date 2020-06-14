@@ -118,7 +118,7 @@ Function *generator::e::functionCall(const Branch &function_branch) {
         error::treeError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' does not exist!");
     
     for(unsigned long i = 0; i < argument_instruction_positions.size(); i++)
-        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = "+" + std::to_string(target->args.at(i).position) + "(%rsp)";
+        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target->args.at(i).position) + "(%rsp)";
     
     asm_::append_instruction("call", target->generateName()); // call function
     unsigned int target_size = target->size();
