@@ -1,35 +1,41 @@
 #pragma once
 
-struct variable {
+#define PUSHA_SIZE 112
+
+struct Variable {
     std::string name; // name
     std::string type;   // datatype
     int position; // position on stack
+    bool arg;
     
-    int8_t size();
+    int8_t size() const;
+    std::string generateAddress() const;
 };
 
-struct function {
+struct Function {
     std::string name;
     std::string type;
+    std::vector<Variable> args;
 
     int8_t size() const;
+    std::string generateName() const;
 };
 
-struct match {
+struct Match {
     std::string type;
     std::string result;
 
-    explicit match(std::vector<std::string> input) : type(input.at(0)), result(input.at(1)) {};
+    explicit Match(std::vector<std::string> input) : type(input.at(0)), result(input.at(1)) {};
 };
 
-struct datatypeMatches {
+struct DatatypeMatches {
     std::string datatype;
-    std::vector<match> matches;
+    std::vector<Match> matches;
 
-    datatypeMatches(std::string datatype, std::vector<match> matches) : datatype(std::move(datatype)),
+    DatatypeMatches(std::string datatype, std::vector<Match> matches) : datatype(std::move(datatype)),
                                                                         matches(std::move(matches)) {};
 
-    datatypeMatches() = default;
+    DatatypeMatches() = default;
 };
 
 namespace generator {
@@ -40,11 +46,11 @@ namespace generator {
 
         void functionDeclaration();
 
-        void variableDeclaration(unsigned long scopeOnStack);
+        void variableDeclaration(unsigned long scope_on_stack);
 
-        std::string calc(branch &calculation);
+        std::string expr(Branch &calculation);
 
-        function *functionCall(const std::string &functionName);
+        Function *functionCall(const Branch &function_branch);
 
         void variableSetting();
 
@@ -57,18 +63,19 @@ namespace generator {
         void whileStatement();
     }
 
-    inline std::vector<function> functionVector;
+    inline std::vector<Function> function_vector;
 
-    inline std::unordered_map<int8_t, std::string> sizeKeywords;
+    inline std::unordered_map<int8_t, std::string> size_keywords;
 
-    variable get_variable(const std::string &name);
+    Variable *getVariable(const std::string &name);
+    Function *getFunction(const std::string &name, const std::vector<std::string> &args);
 
-    inline std::vector<std::string> primitiveDatatypes;
-    inline std::unordered_map<std::string, int> primitiveDatatypeSizes;
-    inline std::vector<datatypeMatches> operatorMatches;
-    inline std::unordered_map<std::string, std::vector<std::string>> implicitConversations;
+    inline std::vector<std::string> primitive_datatypes;
+    inline std::unordered_map<std::string, int> primitive_datatype_sizes;
+    inline std::vector<DatatypeMatches> operator_matches;
+    inline std::unordered_map<std::string, std::vector<std::string>> implicit_conversations;
 
     void checkForImplicitConversion(const std::string &dest, const std::string &source);
 
-    inline function *currentFunction = nullptr;
+    inline Function *current_function = nullptr;
 }

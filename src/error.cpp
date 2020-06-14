@@ -4,30 +4,34 @@
 #include "jaclang.h"
 #endif
 
-void error::syntaxError(const std::string &error) { // Print out syntax error
-    std::cerr << "\033[1;31mSyntax error, line " << parser::currToken->line << ": " // syntax error in red
-              << error << std::endl << std::endl; // actual error
-    std::string errorLine = file::getLine(parser::currToken->line);
-    while (errorLine.at(0) == ' ' || errorLine.at(0) == '	')
-        errorLine.erase(errorLine.begin());
-    std::cerr << errorLine << std::endl; // find line of error
-    for (unsigned long i = 0; i < parser::currToken->pos; i++) // point to error token
-        std::cerr << " ";
-    std::cerr << "^" << "\033[0m" << std::endl; // reset to white
+#define WHITE "\033[0m"
+#define RED "\033[1;31m"
 
-    terminate("SYNTAX ERROR", et_syntax_err);
+void error::syntaxError(const std::string &error) { // Print out syntax error
+    if(debug_show_ast)
+        printAST(parser::main_branch);
+    
+    std::cerr << RED << "Syntax error, line " << parser::curr_token->line << ": " << error << "\n\n"; // actual error
+    std::string errorLine = file::getLine(parser::curr_token->line);
+    while(errorLine.at(0) == ' ' || errorLine.at(0) == '\t')
+        errorLine.erase(errorLine.begin());
+    std::cerr << errorLine << std::endl;
+    
+    for(unsigned long _ = 0; _ < parser::curr_token->pos; _++) // point to error token
+        std::cerr << " ";
+    std::cerr << "^" << WHITE << std::endl; // reset to white
+
+    terminate("SYNTAX ERROR", Err_Syntax_Error);
 }
 
 void error::treeError(const std::string &error) { // print out syntax error
-    std::cerr << "\033[1;31mTree error: " // tree error in red
-              << error << std::endl // actual error
-              << "\033[0m"; // reset to white
-    terminate("TREE ERROR", et_syntax_err);
+    std::cerr << RED << "Tree error: " << error << WHITE << std::endl;
+    terminate("TREE ERROR", Err_Syntax_Error);
 }
 
 
-void error::terminate(const std::string &reason, errorType errorType_) { // exit if error
-    std::cerr << "Jaclang terminated with exit code " << errorType_ << "." << std::endl // Terminated
+void error::terminate(const std::string &reason, ErrorType error_type) { // exit if error
+    std::cerr << "Jaclang terminated with exit code " << error_type << "." << std::endl // Terminated
               << "Reason: " << reason << "." << std::endl; // reason
-    exit(errorType_); // exit
+    exit(error_type); // exit
 }

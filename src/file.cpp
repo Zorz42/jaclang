@@ -5,30 +5,30 @@
 #include <fstream>  // open file
 
 void file::read(const std::string &text) { // read file
-    std::ifstream inputFileObj(text); // open file and store it in std::ifstream object
-    if (!inputFileObj.is_open()) { // if didn't open (file missing,...)
+    std::ifstream input_file_obj(text); // open file and store it in std::ifstream object
+    if(!input_file_obj.is_open()) { // if didn't open (file missing,...)
         std::cout << "\033[1;31mFile does not exist!\033[0m" << std::endl;
-        error::terminate("UNABLE TO OPEN FILE", et_unable_to_open_file);
+        error::terminate("UNABLE TO OPEN FILE", Err_Unable_To_Open_File);
     }
 
     std::string line;
-    std::list<std::string> rawInputFile;
-    while (std::getline(inputFileObj, line)) // iterate through lines of input file
-        rawInputFile.push_back(line);
-    inputFileObj.close(); // close the file - file has been read
-    preprocessor::main(rawInputFile); // call preprocessor
+    std::list<std::string> raw_input_file;
+    while(std::getline(input_file_obj, line)) // iterate through lines of input file
+        raw_input_file.push_back(line);
+    input_file_obj.close(); // close the file - file has been read
+    preprocessor::main(raw_input_file); // call preprocessor
 }
 
 void file::write(const std::string &file_output) { // write to file
-    std::ofstream outputFileObj(file_output); // open file (or create)
-    if (outputFileObj.is_open()) // if file was opened (or created)
-        for (auto &t : file::outputVector) // add line from vector
-            outputFileObj << t << "\n"; // add new line so that the code wont be in the same line
+    std::ofstream output_file_obj(file_output); // open file (or create)
+    if(output_file_obj.is_open()) // if file was opened (or created)
+        for(auto &t : file::output_vector) // add line from vector
+            output_file_obj << t << "\n"; // add new line so that the code wont be in the same line
 
-    outputFileObj.close(); // close file, c++ code has been written
+    output_file_obj.close(); // close file, c++ code has been written
 }
 
-void file::append_data(const std::string &line) {
+void file::appendData(const std::string &line) {
     file::insert(line, file::asm_data); // append text to data section
     file::asm_data++;
     file::asm_bss++;
@@ -36,39 +36,39 @@ void file::append_data(const std::string &line) {
     file::asm_func++;
 }
 
-void file::append_bss(const std::string &line) {
+void file::appendBss(const std::string &line) {
     file::insert(line, file::asm_bss); // append text to bss section
     file::asm_bss++;
     file::asm_text++;
     file::asm_func++;
 }
 
-void file::append_text(const std::string &line) {
+void file::appendText(const std::string &line) {
     file::insert(line, file::asm_text); // append text to text section
     file::asm_text++;
     file::asm_func++;
 }
 
-void file::append_func(const std::string &line) {
+void file::appendFunc(const std::string &line) {
     file::insert(line, file::asm_func); // append text to text section
     file::asm_func++;
 }
 
 
 void file::insert(const std::string &line, unsigned long position) {
-    file::outputVector.insert(file::outputVector.begin() + position, line); // insert line of code into asm file
+    file::output_vector.insert(file::output_vector.begin() + position, line); // insert line of code into asm file
 }
 
-std::string file::getLine(int LINE) { // get line of code
-    int currentLine = 1;
-    std::string currentString;
-    auto iter = file::inputText.begin();
-    for (; currentLine != LINE; iter++) // until we are in the line desired
-        if (*iter == '\n')
-            currentLine++; // if '\n' (newline) then it is next line
+std::string file::getLine(int line) { // get line of code
+    int current_line = 1;
+    std::string current_string;
+    auto iter = file::input_text.begin();
+    for(; current_line != line; iter++) // until we are in the line desired
+        if(*iter == '\n')
+            current_line++; // if '\n' (newline) then it is next line
     iter--;
-    for (; *++iter != '\n';) // when desired line, read line until '\n'
-        currentString += *iter;
+    for(; *++iter != '\n';) // when desired line, read line until '\n'
+        current_string += *iter;
 
-    return currentString;
+    return current_string;
 }

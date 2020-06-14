@@ -2,52 +2,51 @@
 #include "jaclang.h"
 #endif
 
-void asm_::append_instruction(const std::string &inst, const std::string &arg1, const std::string &arg2, int size, section sect) {
-    instruction obj;
-    obj.inst = inst;
+void asm_::append_instruction(const std::string &inst, const std::string &arg1, const std::string &arg2, int size, Section sect) { // append instruction token
+    Instruction obj;
+    obj.instruction = inst;
     obj.arg1 = arg1;
     obj.arg2 = arg2;
     obj.size = size;
-    obj.sect = sect == auto_ ? generator::currentFunction == nullptr ? section_text : section_functions : sect;
+    obj.section = sect == Section_Auto ? generator::current_function == nullptr ? Section_Text : Section_Functions : sect;
     instructions.push_back(obj);
 }
 
-std::string asm_::onStack(int offset) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)
-    return "-" + std::to_string(offset) + "(%rbp)"; // returns position on stack: -offset(%rbp)
+std::string asm_::onStack(int offset, bool positive) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)
+    return (positive ? "+" : "-") + std::to_string(offset) + "(%rbp)"; // returns position on stack: -offset(%rbp)
 }
 
-void asm_::pushToStack(variable source) // push to stack
-{
+void asm_::pushToStack(Variable source) { // push to stack
     incStackPointer(source.size());
-    source.position = stackPointer;
+    source.position = stack_pointer;
     stack.push_back(source);
 }
 
-void asm_::nextRegister() {
-    currentRegister++;
-    if ((uint8_t) currentRegister == availableRegisters[0].size())
+void asm_::nextRegister() { // increment register
+    current_register++;
+    if((uint8_t) current_register == available_registers[0].size())
         error::treeError("register overflow");
 }
 
-void asm_::prevRegister() {
-    currentRegister--;
-    if (currentRegister == -1)
+void asm_::prevRegister() { // decrement register
+    current_register--;
+    if(current_register == -1)
         error::treeError("register overflow");
 }
 
-std::string asm_::availableRegister(int8_t size, int8_t offset) {
+std::string asm_::availableRegister(int8_t size, int8_t offset) { // get available register of specific size
     int index = 0;
-    for (int i = size; i != 1; i /= 2)
+    for(int i = size; i != 1; i /= 2)
         index++;
-    return "%" + availableRegisters[index].at((unsigned long) currentRegister + offset);
+    return "%" + available_registers[index].at((unsigned long) current_register + offset);
 }
 
-void asm_::incStackPointer(int value) {
-    stackPointer += value;
-    if (stackPointer > biggestStackPointer)
-        biggestStackPointer = stackPointer;
+void asm_::incStackPointer(int value) { // increment stack pointer by some value
+    stack_pointer += value;
+    if(stack_pointer > biggest_stack_pointer)
+        biggest_stack_pointer = stack_pointer;
 }
 
-void asm_::decStackPointer(int value) {
-    stackPointer -= value;
+void asm_::decStackPointer(int value) { // decrament stack pointer by some value
+    stack_pointer -= value;
 }

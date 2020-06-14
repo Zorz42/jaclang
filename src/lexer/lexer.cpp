@@ -2,131 +2,111 @@
 #include "jaclang.h"
 #endif
 
-/* this is the LEXER which breaks code into lexer::tokens aka more readable code.
- * eg.
- * 
- * int i = 0;
- * token 1: type name, text: "int"
- * token 2: type: name, text: "i"
- * token 3: type: symbol, text: "="
- * token 4: type: constant, text: "0"
- * token 5: type: symbol, text: ";"
- *
- * types of tokens with examples:
- * 1. name:   a
- * 2. constant: 10
- * 3. string:   "Hello, World!"
- * 4. symbol:   {
- * 5. operator: +
- *
- * it breaks code so that parser can read it and turn it into syntax tree
- * */
+#define IN_STRING (in_string_q || in_string_dq)
 
-#define IN_STRING (inStringQ || inStringDQ) // macro for later purposes
+int current_line = 1;
 
-int currentLine = 1;
+void newToken(TokenType TYPE); // pushes current token to token vector and sets it to empty string
+std::string current_token; // current token in processing
 
-void newToken(tokenType TYPE); // pushes current token to token vector and sets it to empty string
-std::string currentToken; // current token in processing
+unsigned long c = 0, prev_c = 0;
+std::list<char>::iterator c_iter;
 
-unsigned long c = 0, prevC = 0;
-std::list<char>::iterator cIter;
-
-tokenType isToken(char tok);
-tokenType isToken(char tok1, char tok2);
+TokenType isToken(char tok);
+TokenType isToken(char tok1, char tok2);
 
 void lexer::main() { // main lexer function
-    bool inStringQ = false, inStringDQ = false;  // if in string with single quotes or double quotes
+    bool in_string_q = false, in_string_dq = false;  // if in string with single quotes or double quotes
 
-#define CHAR *cIter // shortcut to get current character of string that for loop is parsing
+#define CHAR *c_iter // shortcut to get current character of string that for loop is parsing
 
-    for (cIter = file::inputText.begin(); cIter != file::inputText.end(); cIter++) {
-        if ((CHAR == ' ' || CHAR == '	' || CHAR == '\n') && !IN_STRING) {
+    for(c_iter = file::input_text.begin(); c_iter != file::input_text.end(); c_iter++) {
+        if(!IN_STRING && (CHAR == ' ' || CHAR == '	' || CHAR == '\n')) {
             // tabs, spaces and newlines separate tokens if not in string
-            newToken(tt_undefined);
-            if (CHAR == '	')
-                prevC++;
-        } else if (CHAR == '\"' && !inStringQ) {
-            inStringDQ = !inStringDQ;
-            newToken(inStringDQ ? tt_undefined : tt_string);
+            newToken(Undefined);
+            if(CHAR == '	')
+                prev_c++;
+        } else if(CHAR == '\"' && !in_string_q) {
+            in_string_dq = !in_string_dq;
+            newToken(in_string_dq ? Undefined : String);
             // if just got out of string, then this token is string
             // if coming to string end the token and start string token
-        } else if (CHAR == '\'' && !inStringDQ) { // the same thing but for single quotes
-            inStringQ = !inStringQ;
-            newToken(inStringQ ? tt_undefined : tt_string);
-        } else if (!IN_STRING) {
+        } else if(CHAR == '\'' && !in_string_dq) {
+            in_string_q = !in_string_q;
+            newToken(in_string_q ? Undefined : String);
+        } else if(!IN_STRING) {
             char tok1 = CHAR, tok2;
-            cIter++;
+            c_iter++;
             tok2 = CHAR;
-            tokenType isTokenResult = isToken(tok1, tok2); // check if is operator or symbol
-            if (isTokenResult != tt_undefined) {
-                newToken(tt_undefined);
-                currentToken = std::string(1, tok1) + tok2;
+            TokenType isTokenResult = isToken(tok1, tok2); // check if is operator or symbol
+            if(isTokenResult != Undefined) {
+                newToken(Undefined);
+                current_token = std::string(1, tok1) + tok2;
                 newToken(isTokenResult);
                 c++;
-                goto END;
+                goto end;
             } else
-                cIter--;
+                c_iter--;
             
             isTokenResult = isToken(CHAR); // check if is operator or symbol
-            if (isTokenResult != tt_undefined) {
-                newToken(tt_undefined);
-                currentToken = CHAR;
+            if(isTokenResult != Undefined) {
+                newToken(Undefined);
+                current_token = CHAR;
                 newToken(isTokenResult);
-                goto END;
+                goto end;
             }
-            currentToken.push_back(CHAR);
+            current_token.push_back(CHAR);
         } else
-            currentToken.push_back(CHAR); // else just append character to token
-        END:
-        if (CHAR == '\n') { // if character is newline
-            currentLine++;
-            prevC = c + 1; // and update offset
+            current_token.push_back(CHAR); // else just append character to token
+        end:
+        if(CHAR == '\n') { // if character is newline
+            current_line++;
+            prev_c = c + 1; // and update offset
         }
         c++;
     }
 #undef CHAR
 
-    token prevToken; // previous token
-    for (token &iter : lexer::tokens) { // iterate through tokens
-        if (iter.type == tt_undefined) { // if type is undefined
-            if (iter.text == "*" || iter.text == "&") { // unresolved '*' and '&'
-                if (prevToken.type == tt_constant || prevToken.type == tt_indent) // if in operation, then its operator
-                    iter.type = tt_operator;
+    Token prev_token; // previous token
+    for(Token &iter : lexer::tokens) { // iterate through tokens
+        if(iter.type == Undefined) { // if type is undefined
+            if(iter.text == "*" || iter.text == "&") { // unresolved '*' and '&'
+                if(prev_token.type == Constant || prev_token.type == Indent) // if in operation, then its operator
+                    iter.type = Operator;
                 else // else its symbol
-                    iter.type = tt_symbol;
-            } else if (isInt(iter.text))
-                iter.type = tt_constant;
+                    iter.type = Symbol;
+            } else if(isInt(iter.text))
+                iter.type = Constant;
             else
-                iter.type = contains(lexer::keywords, iter.text) ? tt_keyword : tt_indent; // name is only left
+                iter.type = contains(lexer::keywords, iter.text) ? Keyword : Indent; // name is only left
         }
 
 #define POS_OFFSET 15
 
-        if (debug_show_tokens) { // print debug tokens
+        if(debug_show_tokens) { // print debug tokens
             std::cout << int(iter.type) << ": " << iter.text;
-            if (iter.text.size() < POS_OFFSET)
-                for (unsigned long i = 0; i < POS_OFFSET - iter.text.size(); i++)
+            if(iter.text.size() < POS_OFFSET)
+                for(unsigned long i = 0; i < POS_OFFSET - iter.text.size(); i++)
                     std::cout << " ";
             std::cout << " " << iter.line << ", " << iter.pos << std::endl;
         }
 
-        prevToken = iter; // set previous token
+        prev_token = iter; // set previous token
     }
 }
 
-void newToken(tokenType TYPE) {
-    if (currentToken.empty()) // if token is empty just do nothing
+void newToken(TokenType TYPE) {
+    if(current_token.empty()) // if token is empty just do nothing
         return;
-    token obj;
-    obj.text = currentToken;
+    Token obj;
+    obj.text = current_token;
     obj.type = TYPE;
-    obj.line = currentLine; // set token line to current line
-    obj.pos = c - prevC - obj.text.size(); // position in line - length of obj
-    if (obj.type == tt_operator || obj.type == tt_symbol)
+    obj.line = current_line; // set token line to current line
+    obj.pos = c - prev_c - obj.text.size(); // position in line - length of obj
+    if(obj.type == Operator || obj.type == Symbol)
         obj.pos++;
     lexer::tokens.push_back(obj); // append token
-    currentToken.clear(); // reset token
+    current_token.clear(); // reset token
 }
 
 bool isInt(const std::string &text) { // converts to integer
@@ -134,34 +114,35 @@ bool isInt(const std::string &text) { // converts to integer
                                          text.end(), [](unsigned char c) { return !std::isdigit(c); }) == text.end();
 }
 
-tokenType isToken(char tok) {
-    switch (tok) {
+TokenType isToken(char tok) {
+    switch(tok) {
         case '=': // symbols with one character
         case '{':
         case '}':
         case '(':
         case ')':
-            return tt_symbol;
+        case ',':
+            return Symbol;
         case '+': // operators with one character
         case '-':
         case '*':
         case '/':
         case '>':
         case '<':
-            return tt_operator;
+            return Operator;
         default:
-            return tt_undefined;
+            return Undefined;
     }
 }
 
-tokenType isToken(char tok1, char tok2) {
-    switch (tok1) {
+TokenType isToken(char tok1, char tok2) {
+    switch(tok1) {
         case '=': // operators with one character
-            switch (tok2) {
+            switch(tok2) {
                 case '=':
-                    return tt_operator;
+                    return Operator;
             }
         default:
-            return tt_undefined;
+            return Undefined;
     }
 }

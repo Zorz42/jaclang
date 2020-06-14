@@ -4,93 +4,112 @@
 #include "jaclang.h"
 #endif
 
-#define current parser::currToken
+#define CURRENT parser::curr_token
+#define ARGS current_branch.sub->at(1)
 
-bool parser::e::functionCall(branch &target) {
-    if (parser::currToken == --lexer::tokens.end())
+bool parser::e::functionCall(Branch &target) {
+    if(parser::curr_token == --lexer::tokens.end())
         return false;
-    if (current->type == tt_indent &&
-        parser::peekNextToken()->text == "(") { // if its function -> name followed by '('
-        branch currentBranch; // make branch for function
-        currentBranch.alloc();
-        if (isSystemIndent(current->text))  // check if its system function call or just function call
-            return false;
-        else
-            currentBranch.name = "functionCall";
-        appendBranch(current->text, currentBranch); // append name to branch
+    if(CURRENT->type == Indent && parser::peekNextToken()->text == "(" && !isSystemIndent(CURRENT->text)) { // if its function -> name followed by '(' and it's not system function call
+        Branch current_branch; // make branch for function
+        current_branch.alloc();
+        current_branch.name = "functionCall";
+        appendBranch(CURRENT->text, current_branch); // append name to branch
+        appendBranch("args", current_branch); // append arguments to branch
+        ARGS.alloc();
         parser::nextToken();
         parser::nextToken();
-        if (current->text != ")")
-            error::syntaxError("Function call cannot have arguments (for now)");
-        appendBranch(currentBranch, target); // append branch to root
+        while(CURRENT->text != ")") {
+            appendBranch(parser::expr(), ARGS); // append expressions on branch
+            if(CURRENT->text == ")")
+                break;
+            parser::nextToken();
+            parser::nextToken();
+        }
+        appendBranch(current_branch, target); // append branch to root
         return true;
     } else
         return false;
 }
 
 bool parser::e::systemFunctionCall() {
-    if (parser::currToken == --lexer::tokens.end())
+    if(parser::curr_token == --lexer::tokens.end())
         return false;
     parser::peekNextToken();
-    if (current->type == tt_indent &&
-        parser::peekNextToken()->type == tt_string) { // if its systemFunction -> name followed by string
-        branch currentBranch; // make branch for function
-        currentBranch.alloc();
-        if (isSystemIndent(current->text))  // check if its system function call
-            currentBranch.name = "systemFunctionCall";
+    if(CURRENT->type == Indent &&
+        parser::peekNextToken()->type == String) { // if its systemFunction -> name followed by string
+        Branch current_branch; // make branch for function
+        current_branch.alloc();
+        if(isSystemIndent(CURRENT->text))  // check if its system function call
+            current_branch.name = "systemFunctionCall";
         else
             return false;
-        appendBranch(current->text, currentBranch); // append name to branch
+        appendBranch(CURRENT->text, current_branch); // append name to branch
         parser::nextToken(); // go to argument
-        if (current->type != tt_string)
+        if(CURRENT->type != String)
             error::syntaxError("Expected one string argument on system function");
         else
-            appendBranch(current->text, currentBranch);
-        appendBranch(currentBranch, *currentBranchScope); // append branch to root
+            appendBranch(CURRENT->text, current_branch);
+        appendBranch(current_branch, *current_branch_scope); // append branch to root
         return true;
     } else
         return false;
 }
+    
+#define args current_branch.sub->at(2)
 
 bool parser::e::functionDeclaration() {
-    if (parser::currToken == --lexer::tokens.end())
+    if(parser::curr_token == --lexer::tokens.end())
         return false;
-    const std::string &datatype = current->text;
-    if (contains(generator::primitiveDatatypes, current->text)) {
+    if(contains(generator::primitive_datatypes, CURRENT->text)) {
+        Branch current_branch;
+        current_branch.alloc();
+        current_branch.name = "functionDeclaration"; // set to functionDeclaration
+        appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
-        const std::string &indent = parser::currToken->text;
+        appendBranch(parser::curr_token->text, current_branch);
         parser::nextToken();
-        const std::string &parenthesis = parser::currToken->text;
+        const std::string &parenthesis = parser::curr_token->text;
         parser::prevToken();
-        parser::prevToken();
-        if (parser::peekNextToken()->type == tt_indent && parenthesis == "(") {
-            branch currentBranch;
-            currentBranch.alloc();
-            currentBranch.name = "functionDeclaration"; // set to functionDeclaration
+        if(parser::curr_token->type == Indent && parenthesis == "(") {
+            if(current_branch_scope != &parser::main_branch)
+                error::syntaxError("Function declaration not allowed outside of main scope!");
             parser::nextToken();
             parser::nextToken();
-            parser::nextToken();
-            if (current->text != ")") // check if everything is working out and append it to main branch
-                error::syntaxError("No arguments allowed in function declaration (for now)");
-
-            appendBranch(datatype, currentBranch);
-            appendBranch(indent, currentBranch);
-
-            appendBranch(currentBranch, *currentBranchScope);
+            appendBranch("args", current_branch);
+            args.alloc();
+            while(CURRENT->text != ")") { // scan parameters until ')'
+                if(!contains(generator::primitive_datatypes, CURRENT->text))
+                    error::syntaxError("Parameter value type must be valid!");
+                appendBranch(CURRENT->text, args);
+                parser::nextToken();
+                if(CURRENT->type != Indent)
+                    error::syntaxError("Parameter name must be indent!");
+                appendBranch(CURRENT->text, args);
+                parser::nextToken();
+                
+                if(CURRENT->text == ")")
+                    break;
+                else if(CURRENT->text != ",")
+                    error::syntaxError("Expected ',' after argument definition!");
+                parser::nextToken();
+            }
+            appendBranch(current_branch, *current_branch_scope);
             return true;
         }
+        parser::prevToken();
     }
     return false;
 }
 
-bool parser::e::returnStatement() {
-    if (current->text == "return") {
-        branch currentBranch;
-        currentBranch.alloc();
-        currentBranch.name = "returnStatement";
+bool parser::e::returnStatement() { // a simple return statement
+    if(CURRENT->text == "return") {
+        Branch current_branch;
+        current_branch.alloc();
+        current_branch.name = "returnStatement";
         nextToken();
-        appendBranch(calculation(), currentBranch);
-        appendBranch(currentBranch, *currentBranchScope);
+        appendBranch(expr(), current_branch);
+        appendBranch(current_branch, *current_branch_scope);
         return true;
     } else
         return false;

@@ -1,23 +1,21 @@
 #pragma once
 
-enum tokenType {tt_undefined, tt_indent, tt_constant, tt_string, tt_symbol, tt_operator, tt_keyword};
+enum TokenType {Undefined, Indent, Constant, String, Symbol, Operator, Keyword};
 
-struct token {
-    tokenType type = tt_undefined;
+struct Token {
+    TokenType type = Undefined;
     std::string text;
     int line{};
     unsigned long pos{};
 
-    token(tokenType TYPE, std::string TEXT) : type(TYPE), text(std::move(TEXT)) {}
+    Token(TokenType type, std::string text) : type(type), text(std::move(text)) {}
 
-    /*explicit token(std::string TEXT) : type(tt_undefined), text(std::move(TEXT)) {}*/
-
-    token() = default;
+    Token() = default;
 };
 
 namespace lexer {
     void main();
 
     inline std::vector<std::string> keywords;
-    inline std::list<token> tokens;
+    inline std::list<Token> tokens;
 }

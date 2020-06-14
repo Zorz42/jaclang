@@ -3,34 +3,35 @@
 #endif
 
 void asm_::main() {
-    for(const instruction& i : instructions) {
+    for(const Instruction& i : instructions) {
         std::string expr; // generates instruction: inst arg1, arg2
-        expr = "   ";
-        expr += i.inst;
+        if(i.instruction.size() != 0 && i.instruction.at(i.instruction.size() - 1) != ':') // if its label do not shift to the right
+            expr = "   ";
+        expr += i.instruction;
         if(i.size)
-            expr += generator::sizeKeywords[i.size];
+            expr += generator::size_keywords[i.size];
         if(!i.arg1.empty()) {
             expr += " ";
             expr += i.arg1;
         }
-        if (!i.arg2.empty()) {
+        if(!i.arg2.empty()) {
             expr += ", ";
             expr += i.arg2;
         }
-        switch (i.sect) {
-            case section_data:
-                file::append_data(expr);
+        switch(i.section) { // for each section defined
+            case Section_Data:
+                file::appendData(expr);
                 break;
-            case section_bss:
-                file::append_bss(expr);
+            case Section_Bss:
+                file::appendBss(expr);
                 break;
-            case section_text:
-                file::append_text(expr);
+            case Section_Text:
+                file::appendText(expr);
                 break;
-            case section_functions:
-                file::append_func(expr);
+            case Section_Functions:
+                file::appendFunc(expr);
                 break;
-            case auto_: ;
+            case Section_Auto: ;
         }
     }
 }

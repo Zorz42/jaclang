@@ -2,30 +2,30 @@
 #include "jaclang.h"
 #endif
 
-// the main file, where the main function is happening
+// the main file, where the spine of the program is
 
 #include <chrono>   // time
 #include <fstream>  // read/write to file
 
-std::string inputFile;
-std::string outputFile;
+std::string input_file;
+std::string output_file;
 
 bool quiet = false;
 
 long start;
-
 void init();
-
 void start_timer();
-
 void end_timer();
-
 void handle_arguments(int argc, char **argv);
-
 void compile_jaclang();
 
 int main(int argc, char **argv) {
-    if (!quiet)
+    /*
+     The main file where everything happens. This is the center of all code.
+     It first handles command line arguments and then compiles jaclang.
+     */
+    
+    if(!quiet)
         start_timer();
 
     handle_arguments(argc, argv);
@@ -33,132 +33,148 @@ int main(int argc, char **argv) {
 
     compile_jaclang();
 
-    if (!quiet)
+    if(!quiet)
         end_timer();
 
     return 0; // exit success
 }
 
 void compile_jaclang() {
-    file::read(inputFile); // Read file
+    /*
+     This is the backbone of the actual compiler.
+     There are all the steps executed to compile.
+     */
+    file::read(input_file); // Read file
 
     lexer::main(); // convert code into tokens
-    mainBranch.alloc();
-    parser::main(inputFile); // convert tokens into syntax tree
+    parser::main_branch.alloc();
+    parser::main(input_file); // convert tokens into syntax tree
     lexer::tokens.clear();
-    file::inputText.clear();
-    if (debug_show_ast)
-        printAST(mainBranch);
-    currentBranchScope = &mainBranch;
-    generator::main(true); // generate assembly code out of syntax tree
-    asm_::main();
+    file::input_text.clear();
+    if(debug_show_ast)
+        printAST(parser::main_branch);
+    parser::current_branch_scope = &parser::main_branch;
+    generator::main(true); // generate assembly tokens out of syntax tree
+    asm_::main(); // generate assembly code from assembly tokens and optimize it
     
-    file::write(outputFile); // Writes to file
+    file::write(output_file); // writes to file
 }
 
 void start_timer() {
+    // Just a timer to time compilation in milliseconds using std::chrono
     using namespace std::chrono;
     start = duration_cast<milliseconds>(
-            system_clock::now().time_since_epoch()).count(); // get current time in milliseconds for timing compilation
+            system_clock::now().time_since_epoch()).count();
 }
 
 void end_timer() {
+    // Ends timer and prints compilation time
     using namespace std::chrono;
     long end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count(); // end timer
     std::string ms = std::to_string((end - start) % 1000); // get milliseconds time difference
     unsigned long len = ms.length(); // add zeros to have 4 char string for milliseconds
-    for (unsigned int i = 4; i > len; i--)
+    for(unsigned int i = 4; i > len; i--)
         ms.insert(ms.begin(), '0'); // insert zeros
 
     std::cout << "Compilation time: " << (end - start) / 1000 << "." << ms << " s"
-              << std::endl; // tell compilation time
+              << std::endl;
+}
+
+void printVersion() {
+    std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
 }
 
 void handle_arguments(int argc, char **argv) {
-    bool help = false, displayVersion = false;
-    std::vector<std::string> args, completeArgs, argsWithParams; // vector of command line arguments
-    for (int i = 1; i < argc; i++)
-        completeArgs.emplace_back(argv[i]);
-    for (const std::string &i : completeArgs) { // go through arguments
-        if (i[0] == '-' && i[1] == '-') { // if option
-            if (i == "--help")
+    /*
+     This iterates through arguments to parse them and separate --options and -o specific_parameters and normal_parameters
+     */
+    bool help = false, display_version = false;
+    std::vector<std::string> args, complete_args, args_with_params;
+    for(int i = 1; i < argc; i++)
+        complete_args.emplace_back(argv[i]);
+    for(const std::string &i : complete_args) {
+        if(i[0] == '-' && i[1] == '-') {
+            if(i == "--help") // various cases for different options
                 help = true;
-            else if (i == "--debug") {
+            else if(i == "--debug") {
                 debug_show_tokens = true;
                 debug_show_ast = true;
-            } else if (i == "--debug-tokens")
+            } else if(i == "--debug-tokens")
                 debug_show_tokens = true;
-            else if (i == "--debug-ast")
+            else if(i == "--debug-ast")
                 debug_show_ast = true;
-            else if (i == "--quiet")
+            else if(i == "--quiet")
                 quiet = true;
-            else if (i == "--version")
-                displayVersion = true;
+            else if(i == "--version")
+                display_version = true;
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
-                          << std::endl; // error
-                error::terminate("INVALID OPTION", et_invalid_opt);
+                          << std::endl;
+                error::terminate("INVALID OPTION", Err_Invalid_Opt);
             }
-        } else // if not option
-            argsWithParams.emplace_back(i); // append it to args
+        } else // it does not belong to options, so its something else
+            args_with_params.emplace_back(i);
     }
-    completeArgs.clear();
-    outputFile = "out.s";
-    for (unsigned long i = 0; i < argsWithParams.size(); i++) {
-        if (argsWithParams.at(i) == "-") {
-            std::cout << "\033[1;31m" << argsWithParams.at(i) << " is a forbidden argument!\033[0m"
+    complete_args.clear();
+    
+    output_file = "out.s"; // output file is default 'out.o', but it's different if specified
+    for(unsigned long i = 0; i < args_with_params.size(); i++) {
+        if(args_with_params.at(i) == "-") {
+            std::cout << "\033[1;31m" << args_with_params.at(i) << " is a forbidden argument!\033[0m"
                       << std::endl; // error
-            error::terminate("INVALID ARGUMENT", et_invalid_arg);
-        } else if (argsWithParams.at(i)[0] == '-') {
-            char currArgName = argsWithParams.at(i)[1];
-            std::string currArg;
-            if (argsWithParams.at(i).size() == 2) {
+            error::terminate("INVALID ARGUMENT", Err_Invalid_Arg);
+        } else if(args_with_params.at(i)[0] == '-') { // parse the option
+            char curr_arg_name = args_with_params.at(i)[1];
+            std::string curr_arg;
+            if(args_with_params.at(i).size() == 2) {
                 i++;
-                if (i == argsWithParams.size()) {
-                    std::cout << "\033[1;31m-" << currArgName << " has no argument!\033[0m"
+                if(i == args_with_params.size()) {
+                    std::cout << "\033[1;31m-" << curr_arg_name << " has no argument!\033[0m"
                               << std::endl; // error
-                    error::terminate("INVALID ARGUMENT", et_invalid_arg);
+                    error::terminate("INVALID ARGUMENT", Err_Invalid_Arg);
                 }
-                currArg = argsWithParams.at(i);
+                curr_arg = args_with_params.at(i);
             } else {
-                currArg = argsWithParams.at(i);
-                currArg.erase(currArg.begin());
-                currArg.erase(currArg.begin());
+                curr_arg = args_with_params.at(i);
+                curr_arg.erase(curr_arg.begin());
+                curr_arg.erase(curr_arg.begin());
             }
-            switch (currArgName) {
+            switch(curr_arg_name) {
                 case 'o':
-                    outputFile = currArg;
+                    output_file = curr_arg;
                     break;
                 default:
-                    std::cout << "\033[1;31m-" << currArgName << " is not a valid argument!\033[0m"
+                    std::cout << "\033[1;31m-" << curr_arg_name << " is not a valid argument!\033[0m"
                               << std::endl; // error
-                    error::terminate("INVALID ARGUMENT", et_invalid_arg);
+                    error::terminate("INVALID ARGUMENT", Err_Invalid_Arg);
             }
         } else
-            args.emplace_back(argsWithParams.at(i));
+            args.emplace_back(args_with_params.at(i));
     }
 
-    if (displayVersion) {
-        std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
+    // do specific thing is before specified
+    
+    if(display_version) {
+        printVersion();
         exit(0);
-    } else if ((args.empty() && argsWithParams.empty()) || help) { // if there are no arguments or help
-        std::ifstream helpFile("/usr/local/share/jaclang-data/help-text.txt");
-        if (helpFile.is_open()) {
-            std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
-            std::cout << helpFile.rdbuf(); // print help text
+    } else if((args.empty() && args_with_params.empty()) || help) { // if there are no arguments or help
+        std::ifstream help_file("/usr/local/share/jaclang-data/help-text.txt");
+        if(help_file.is_open()) {
+            printVersion();
+            std::cout << help_file.rdbuf(); // print help text
         } else {
             std::cout << "\033[1;31mCannot open help-text file (/usr/local/share/jaclang-data/help-text.txt)!\033[0m"
                       << std::endl; // file missing
-            error::terminate("DATA MISSING OR CORRUPTED", et_data_err);
+            error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
         }
         exit(0);
-    } else if (args.size() > 1) { // if there is more args than 1
+    } else if(args.size() > 1) { // if there is more args than 1
         std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
-        error::terminate("INVALID ARGUMENT COUNT", et_arg_count);
-    } else if (args.empty()) {
+        error::terminate("INVALID ARGUMENT COUNT", Err_Arg_Count);
+    } else if(args.empty()) {
         std::cout << "\033[1;31mNo input file!\033[0m" << std::endl;
-        error::terminate("INVALID ARGUMENT COUNT", et_arg_count);
+        error::terminate("INVALID ARGUMENT COUNT", Err_Arg_Count);
     }
-    argsWithParams.clear();
-    inputFile = args.at(0);
+    args_with_params.clear();
+    input_file = args.at(0);
 }

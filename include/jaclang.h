@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <algorithm>
 
-struct branch;
+struct Branch;
 
 inline bool debug_show_tokens;
 inline bool debug_show_ast;

@@ -5,7 +5,7 @@
 #include <fstream>
 
 void init() { // initialize global variables
-    asm_::availableRegisters[0] = {
+    asm_::available_registers[0] = {
             "bl",
             "cl",
             "sil",
@@ -19,7 +19,7 @@ void init() { // initialize global variables
             "r14b",
             "r15b",
     };
-    asm_::availableRegisters[1] = {
+    asm_::available_registers[1] = {
             "bx",
             "cx",
             "si",
@@ -33,7 +33,7 @@ void init() { // initialize global variables
             "r14w",
             "r15w",
     };
-    asm_::availableRegisters[2] = {
+    asm_::available_registers[2] = {
             "ebx",
             "ecx",
             "esi",
@@ -47,7 +47,7 @@ void init() { // initialize global variables
             "r14d",
             "r15d",
     };
-    asm_::availableRegisters[3] = {
+    asm_::available_registers[3] = {
             "rbx",
             "rcx",
             "rsi",
@@ -61,58 +61,62 @@ void init() { // initialize global variables
             "r14",
             "r15",
     };
+    
+    // Read empty frame file
 #if OS_TYPE == 0 // Linux
-    std::string fileToRead = "/usr/local/share/jaclang-data/empty-gnu.s";
+    std::string file_to_read = "/usr/local/share/jaclang-data/empty-gnu.s";
 #elif OS_TYPE == 1 // MACOS
-    std::string fileToRead = "/usr/local/share/jaclang-data/empty-macho.s";
+    std::string file_to_read = "/usr/local/share/jaclang-data/empty-macho.s";
 #endif
-    std::ifstream readFile(fileToRead);
+    std::ifstream read_file(file_to_read);
 
     std::string line;
-    if (!readFile.is_open()) {
-        std::cout << "\033[1;31mCannot open empty assembly framework file!\033[0m" << std::endl; // file missing
-        error::terminate("DATA MISSING OR CORRUPTED", et_data_err);
+    if(!read_file.is_open()) {
+        std::cout << "\033[1;31mCannot open empty assembly frame file!\033[0m" << std::endl; // file missing
+        error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
     }
-    while (std::getline(readFile, line))
-        file::outputVector.push_back(line);
+    while(std::getline(read_file, line))
+        file::output_vector.push_back(line);
 
-    parser::scopes = {&mainBranch};
+    parser::scopes = {&parser::main_branch};
 
-#define find(x) find(file::outputVector, x)
+#define FIND(x) find(file::output_vector, x)
 
-    file::asm_data = find(OS_SECTION_DATA) + 1; // locate each section
-    file::asm_bss = find(OS_SECTION_BSS) + 1;
-    file::asm_text = find(OS_SECTION_TEXT) + 4;
-    file::asm_func = file::outputVector.size();
+    file::asm_data = FIND(OS_SECTION_DATA) + 1; // locate each section
+    file::asm_bss = FIND(OS_SECTION_BSS) + 1;
+    file::asm_text = FIND(OS_SECTION_TEXT) + 4;
+    file::asm_func = file::output_vector.size();
 
-#undef find
-    generator::primitiveDatatypeSizes.reserve(4);
-    generator::primitiveDatatypeSizes["char"] = 1;
-    generator::primitiveDatatypeSizes["short"] = 2;
-    generator::primitiveDatatypeSizes["int"] = 4;
-    generator::primitiveDatatypeSizes["long"] = 8;
-    generator::primitiveDatatypes = {
+#undef FIND
+    // define all primitive datatypes and their sizes and also their matches
+    
+    generator::primitive_datatype_sizes.reserve(4);
+    generator::primitive_datatype_sizes["char"] = 1;
+    generator::primitive_datatype_sizes["short"] = 2;
+    generator::primitive_datatype_sizes["int"] = 4;
+    generator::primitive_datatype_sizes["long"] = 8;
+    generator::primitive_datatypes = {
             "char",
             "short",
             "int",
             "long",
     };
-    generator::operatorMatches.reserve(2);
-    generator::implicitConversations.reserve(generator::primitiveDatatypes.size());
-    for (const std::string &primitiveDatatype : generator::primitiveDatatypes) {
-        for (const std::string &currOperator : {"+", "-", "*", "/", "==", "<", ">"})
-            generator::operatorMatches.push_back(datatypeMatches(primitiveDatatype + currOperator, {match({primitiveDatatype, primitiveDatatype})}));
-        generator::implicitConversations[primitiveDatatype].reserve(generator::primitiveDatatypes.size() - 1);
-        for (const std::string &primitiveDatatype2 : generator::primitiveDatatypes)
-            if (primitiveDatatype != primitiveDatatype2)
-                generator::implicitConversations[primitiveDatatype].push_back(primitiveDatatype2);
+    generator::operator_matches.reserve(2);
+    generator::implicit_conversations.reserve(generator::primitive_datatypes.size());
+    for(const std::string &primitive_datatype : generator::primitive_datatypes) {
+        for(const std::string &curr_operator : {"+", "-", "*", "/", "==", "<", ">"})
+            generator::operator_matches.push_back(DatatypeMatches(primitive_datatype + curr_operator, {Match({primitive_datatype, primitive_datatype})}));
+        generator::implicit_conversations[primitive_datatype].reserve(generator::primitive_datatypes.size() - 1);
+        for(const std::string &primitiveDatatype2 : generator::primitive_datatypes)
+            if(primitive_datatype != primitiveDatatype2)
+                generator::implicit_conversations[primitive_datatype].push_back(primitiveDatatype2);
     }
 
-    generator::sizeKeywords.reserve(4);
-    generator::sizeKeywords[1] = "b";
-    generator::sizeKeywords[2] = "w";
-    generator::sizeKeywords[4] = "l";
-    generator::sizeKeywords[8] = "q";
+    generator::size_keywords.reserve(4);
+    generator::size_keywords[1] = "b";
+    generator::size_keywords[2] = "w";
+    generator::size_keywords[4] = "l";
+    generator::size_keywords[8] = "q";
 
     lexer::keywords = {
         "return",

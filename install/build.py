@@ -11,7 +11,7 @@ srcdir = "src/"
 includedir = "include/"
 stdlib = "gnu++17"
 optimisation = "fast"
-warnings = "-Wall -Wshadow -Wextra -Wno-deprecated"
+warnings = "-Wall -Wshadow -Wextra -Wno-deprecated -Wno-macro-redefined"
 
 compiled_count = 0
 

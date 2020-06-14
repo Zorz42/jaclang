@@ -1,56 +1,38 @@
 #pragma once
 
-struct branch {
+struct Branch {
     std::string name;
-    std::vector<branch> *sub = nullptr;
+    std::vector<Branch> *sub = nullptr;
     unsigned int count = 0;
 
-    branch() = default;
-
-    branch(const branch &input) {
-        if (input.sub != nullptr) {
-            alloc();
-            *sub = *input.sub;
-        }
-        name = input.name;
-        count = input.count;
-    }
-
-    void alloc() {
-        sub = new std::vector<branch>;
-    }
-
-    ~branch() {
-        delete sub;
-        sub = nullptr;
-    }
+    Branch() = default;
+    Branch(const Branch &input);
+    void alloc();
+    ~Branch();
 };
 
-inline branch mainBranch;
-inline branch *currentBranchScope;
-
-void appendBranch(const branch &source, branch &target);
-
-void appendBranch(std::string source, branch &target);
-
 namespace parser {
-    void main(std::string rootName);
+    void main(std::string root_name);
 
-    branch calculation(bool nested = false);
+    Branch expr(bool nested=false);
 
-    inline std::list<token>::iterator currToken;
+    inline unsigned long tok_count;
 
-    std::list<token>::iterator peekNextToken();
+    std::list<Token>::iterator nextToken();
+    std::list<Token>::iterator prevToken();
+    std::list<Token>::iterator peekNextToken();
+    inline std::list<Token>::iterator curr_token;
 
-    inline unsigned long tokCount;
+    inline Branch main_branch;
+    inline Branch *current_branch_scope;
 
-    std::list<token>::iterator nextToken();
+    void appendBranch(const Branch &source, Branch &target);
 
-    std::list<token>::iterator prevToken();
+    void appendBranch(std::string source, Branch &target);
 
 
     namespace e {
-        bool functionCall(branch &target);
+        bool functionCall(Branch &target);
         bool systemFunctionCall();
         bool variableDeclaration();
         bool beginScope();
@@ -62,5 +44,5 @@ namespace parser {
         bool whileStatement();
     }
 
-    inline std::vector<branch *> scopes;
+    inline std::vector<Branch*> scopes;
 }

@@ -2,31 +2,29 @@
 #include "jaclang.h"
 #endif
 
-#define current parser::currToken
+#define CURRENT parser::curr_token
 
-bool parser::e::ifStatement() {
-    if(current->text == "if") {
-        branch currentBranch;
-        currentBranch.alloc();
-        currentBranch.name = "ifStatement";
+bool parser::e::ifStatement() { // simple if statement
+    if(CURRENT->text == "if") {
+        Branch current_branch;
+        current_branch.alloc();
+        current_branch.name = "ifStatement";
         parser::nextToken();
-        branch equationBranch = parser::calculation(false);
-        appendBranch(equationBranch, currentBranch);
-        appendBranch(currentBranch, *currentBranchScope);
+        appendBranch(parser::expr(), current_branch);
+        appendBranch(current_branch, *current_branch_scope);
         return true;
     }
     return false;
 }
 
-bool parser::e::whileStatement() {
-    if(current->text == "while") {
-        branch currentBranch;
-        currentBranch.alloc();
-        currentBranch.name = "whileStatement";
+bool parser::e::whileStatement() { // very similar while statement
+    if(CURRENT->text == "while") {
+        Branch current_branch;
+        current_branch.alloc();
+        current_branch.name = "whileStatement";
         parser::nextToken();
-        branch equationBranch = parser::calculation(false);
-        appendBranch(equationBranch, currentBranch);
-        appendBranch(currentBranch, *currentBranchScope);
+        appendBranch(parser::expr(), current_branch);
+        appendBranch(current_branch, *current_branch_scope);
         return true;
     }
     return false;
