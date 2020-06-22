@@ -87,7 +87,7 @@ std::string generator::e::expr(Branch &calculation) {
         else if(CURRENT_OPERATOR == "<")
             operator_ls(current_value_asm);
         else
-            error::treeError("unrecognized operator");
+            error::semanticError("unrecognized operator");
         current_calue_type = getTypeMatch(current_calue_type, CURRENT_OPERATOR, this_value_type);
     }
     return current_calue_type;
@@ -161,6 +161,6 @@ std::string getTypeMatch(const std::string &type1, const std::string &match_oper
         for(const std::string &implicitConversionResult : generator::implicit_conversations[type2])
             if(implicitConversionResult == curr_match.type)
                 return curr_match.result;
-    error::treeError("No match for operator '" + match_operator + "' between '" + type1 + "' and '" + type2 + "'");
+    error::semanticError("No match for operator '" + match_operator + "' between '" + type1 + "' and '" + type2 + "'");
     return ""; // to avoid warnings
 }

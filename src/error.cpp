@@ -24,9 +24,9 @@ void error::syntaxError(const std::string &error) { // Print out syntax error
     terminate("SYNTAX ERROR", Err_Syntax_Error);
 }
 
-void error::treeError(const std::string &error) { // print out syntax error
-    std::cerr << RED << "Tree error: " << error << WHITE << std::endl;
-    terminate("TREE ERROR", Err_Syntax_Error);
+void error::semanticError(const std::string &error) { // print out syntax error
+    std::cerr << RED << "Semantic error: " << error << WHITE << std::endl;
+    terminate("SEMANTIC ERROR", Err_Semantic_Error);
 }
 
 

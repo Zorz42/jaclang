@@ -90,12 +90,14 @@ void init() { // initialize global variables
 #undef FIND
     // define all primitive datatypes and their sizes and also their matches
     
-    generator::primitive_datatype_sizes.reserve(4);
+    generator::primitive_datatype_sizes.reserve(5);
+    generator::primitive_datatype_sizes["void"] = 0;
     generator::primitive_datatype_sizes["char"] = 1;
     generator::primitive_datatype_sizes["short"] = 2;
     generator::primitive_datatype_sizes["int"] = 4;
     generator::primitive_datatype_sizes["long"] = 8;
     generator::primitive_datatypes = {
+            "void",
             "char",
             "short",
             "int",

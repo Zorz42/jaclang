@@ -30,7 +30,7 @@ void generator::e::systemFunctionCall() // system function: __test__
     else if(CURRENT_NAME == "__printchar__")
         f_printchar();
     else
-        error::treeError("Unknown system function call: " + CURRENT_NAME);
+        error::semanticError("Unknown system function call: " + CURRENT_NAME);
 }
 
 #define ARGS CURRENT.sub->at(2).sub
@@ -51,6 +51,8 @@ void generator::e::functionDeclaration() { // declaring a function
         arguments_types.push_back(ARGS->at(i).name);
         var_obj.position = arg_stack_pos;
         var_obj.arg = true;
+        if(!var_obj.size())
+            error::semanticError("Cannot declare a variable argument with size 0!");
         arg_stack_pos += primitive_datatype_sizes[var_obj.type];
         obj.args.push_back(var_obj);
     }
@@ -58,13 +60,13 @@ void generator::e::functionDeclaration() { // declaring a function
     Function *target = getFunction(obj.name, arguments_types);
     
     if(target)
-        error::treeError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already declared!");
+        error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already declared!");
 
     generator::function_vector.push_back(obj);
     parser::current_branch_scope->count++;
     
     if(CURRENT.name != "scope")
-        error::treeError("Expected scope after function declaration!");
+        error::semanticError("Expected scope after function declaration!");
 
     // save all variables and then retrieve them
     
@@ -115,7 +117,7 @@ Function *generator::e::functionCall(const Branch &function_branch) {
     Function *target = getFunction(FUNCTION_NAME, argument_types); // go through existing functions and check if it exists
     
     if(!target)
-        error::treeError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' does not exist!");
+        error::semanticError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' does not exist!");
     
     for(unsigned long i = 0; i < argument_instruction_positions.size(); i++)
         asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target->args.at(i).position) + "(%rsp)";
@@ -133,10 +135,15 @@ Function *generator::e::functionCall(const Branch &function_branch) {
 #undef FUNCTION_ARGS
 
 void generator::e::returnStatement() { // a simple return statement
-    checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub->at(0)));  // do calculation
-    asm_::append_instruction("mov", asm_::availableRegister(current_function->size()), "+112(%rbp)", current_function->size());
+    if(primitive_datatype_sizes[current_function->type]) {
+        checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub->at(0)));  // do calculation
+        asm_::append_instruction("mov", asm_::availableRegister(current_function->size()), "+112(%rbp)", current_function->size());
 
-    asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
+        asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
+    }
+    else
+        // move expression into anoher branch, because it will be ignored
+        parser::current_branch_scope->sub->insert(parser::current_branch_scope->sub->begin() + parser::current_branch_scope->count + 1, CURRENT.sub->at(0));
     asm_::append_instruction("popa"); // call function
     asm_::append_instruction("ret");
 }

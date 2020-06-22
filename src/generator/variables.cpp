@@ -14,12 +14,14 @@ void generator::e::variableDeclaration(unsigned long scope_on_stack) {
     
     unsigned int i = 0;
 
+    if(!obj.size())
+        error::semanticError("Cannot declare a variable with size 0!");
     for(const Variable &iter : asm_::stack) { // go through stack
         if(iter.name == CURRENT.sub->at(1).name && i >= scope_on_stack) // if this variable already exists, then report error
-            error::treeError(iter.name + " already exists as a variable");
+            error::semanticError(iter.name + " already exists as a variable!");
         i++;
     }
-
+    
     asm_::pushToStack(obj); // push to stack
     checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub->at(2)));  // do calculation
     asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(asm_::stack_pointer), obj.size()); // set variable on stack
@@ -45,7 +47,7 @@ Variable *generator::getVariable(const std::string &name) {
                 break;
             }
     if(!obj)
-        error::treeError(name + " does not exist");
+        error::semanticError(name + " does not exist!");
     return obj;
 }
 
@@ -56,5 +58,5 @@ void generator::checkForImplicitConversion(const std::string &dest, const std::s
             if(dest == conversation)
                 success = true;
     if(!success)
-        error::treeError("Could not convert '" + source + "' to '" + dest + "'");
+        error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
 }

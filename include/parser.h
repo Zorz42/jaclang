@@ -1,6 +1,7 @@
 #pragma once
 
 struct Branch {
+public:
     std::string name;
     std::vector<Branch> *sub = nullptr;
     unsigned int count = 0;
@@ -8,7 +9,11 @@ struct Branch {
     Branch() = default;
     Branch(const Branch &input);
     void alloc();
+    void set(const Branch &input);
     ~Branch();
+private:
+    void set_(const Branch &input);
+    void destroy();
 };
 
 namespace parser {

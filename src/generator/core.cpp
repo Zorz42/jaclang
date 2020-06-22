@@ -40,7 +40,7 @@ void generator::main(bool in_function) {
         CASE(ifStatement)
         CASE(whileStatement)
         else
-            error::treeError("Unknown branch: " + CURRENT.name);
+            error::semanticError("Unknown branch: " + CURRENT.name);
     }
     if(in_function) {
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);

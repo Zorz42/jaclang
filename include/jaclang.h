@@ -15,6 +15,10 @@ struct Branch;
 inline bool debug_show_tokens;
 inline bool debug_show_ast;
 
+namespace parameters {
+    inline bool optimize = true;
+}
+
 // headers/
 #include "os-detection.h" // detects os during compile-time
 #include "shortcuts.h"    // shortcut functions

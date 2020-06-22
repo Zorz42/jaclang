@@ -25,13 +25,13 @@ void asm_::pushToStack(Variable source) { // push to stack
 void asm_::nextRegister() { // increment register
     current_register++;
     if((uint8_t) current_register == available_registers[0].size())
-        error::treeError("register overflow");
+        error::semanticError("register overflow");
 }
 
 void asm_::prevRegister() { // decrement register
     current_register--;
     if(current_register == -1)
-        error::treeError("register overflow");
+        error::semanticError("register overflow");
 }
 
 std::string asm_::availableRegister(int8_t size, int8_t offset) { // get available register of specific size

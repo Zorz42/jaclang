@@ -54,7 +54,7 @@ void compile_jaclang() {
     if(debug_show_ast)
         printAST(parser::main_branch);
     parser::current_branch_scope = &parser::main_branch;
-    generator::main(true); // generate assembly tokens out of syntax tree
+    generator::main(true); // generate assembly tokens out of syntax tree 
     asm_::main(); // generate assembly code from assembly tokens and optimize it
     
     file::write(output_file); // writes to file
@@ -107,6 +107,8 @@ void handle_arguments(int argc, char **argv) {
                 quiet = true;
             else if(i == "--version")
                 display_version = true;
+            else if(i == "--no-optimizations")
+                parameters::optimize = false;
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl;

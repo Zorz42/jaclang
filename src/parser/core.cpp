@@ -78,12 +78,7 @@ std::list<Token>::iterator parser::prevToken() { // move to previous token
 }
 
 Branch::Branch(const Branch &input) {
-    if(input.sub != nullptr) {
-        alloc();
-        *sub = *input.sub;
-    }
-    name = input.name;
-    count = input.count;
+    set_(input);
 }
 
 void Branch::alloc() { // allocate vector of sub branches
@@ -91,6 +86,24 @@ void Branch::alloc() { // allocate vector of sub branches
 }
 
 Branch::~Branch() {
+    destroy();
+}
+
+void Branch::set(const Branch &input) {
+    destroy();
+    set_(input);
+}
+
+void Branch::set_(const Branch &input) {
+    if(input.sub) {
+        alloc();
+        *sub = *input.sub;
+    }
+    name = input.name;
+    count = input.count;
+}
+
+void Branch::destroy() {
     delete sub;
     sub = nullptr;
 }

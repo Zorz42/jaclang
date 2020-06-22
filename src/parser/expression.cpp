@@ -8,7 +8,7 @@
 #define CURRENT_OBJ(x) current_branch.sub->at(x)
 #define ERASE_ELEMENT(x) current_branch.sub->erase(current_branch.sub->begin() + x)
 
-void optimize(Branch &current_branch, const bool nested, const bool &ignore_is_int=false);
+void optimize(Branch &current_branch, const bool nested);
 
 void putInBraces(Branch& current_branch, std::vector<std::string> operators);
 
@@ -57,7 +57,8 @@ Branch parser::expr(bool nested) {
     putInBraces(current_branch, {"+", "-"});
     
     // slightly optimize this equation
-    optimize(current_branch, nested);
+    if(parameters::optimize)
+        optimize(current_branch, nested);
     return current_branch;
 }
 
@@ -77,22 +78,20 @@ void putInBraces(Branch& current_branch, std::vector<std::string> operators) {
                 ERASE_ELEMENT(i);
                 ERASE_ELEMENT(i);
             }
-            optimize(obj, false, true);
+            
+            if(parameters::optimize)
+                optimize(obj, false);
             
             // now append that branch
-            
+            if(obj.sub->size() == 1)
+                obj = obj.sub->at(0);
             current_branch.sub->insert(current_branch.sub->begin() + i, Branch());
-            CURRENT_OBJ(i).name = obj.name;
-            CURRENT_OBJ(i).count = obj.count;
-            if(obj.sub != nullptr) {
-                CURRENT_OBJ(i).alloc();
-                *CURRENT_OBJ(i).sub = *obj.sub;
-            }
+            CURRENT_OBJ(i).set(obj);
             i++;
         }
 }
 
-void optimize(Branch &current_branch, const bool nested, const bool &ignore_is_int) {
+void optimize(Branch &current_branch, const bool nested) {
     // precalculate constants together
     for(unsigned int i = 0; i < current_branch.sub->size() - 1; i += 2) {
         if(isInt(current_branch.sub->at(i).name) && isInt(current_branch.sub->at(i + 2).name)) {
@@ -106,13 +105,17 @@ void optimize(Branch &current_branch, const bool nested, const bool &ignore_is_i
                 current_branch.sub->at(i).name = std::to_string(std::stoi(current_branch.sub->at(i).name) / std::stoi(current_branch.sub->at(i + 2).name));
             else if(current_branch.sub->at(i + 1).name == "==")
                 current_branch.sub->at(i).name = std::to_string(std::stoi(current_branch.sub->at(i).name) == std::stoi(current_branch.sub->at(i + 2).name));
+            else if(current_branch.sub->at(i + 1).name == ">")
+                current_branch.sub->at(i).name = std::to_string(std::stoi(current_branch.sub->at(i).name) > std::stoi(current_branch.sub->at(i + 2).name));
+            else if(current_branch.sub->at(i + 1).name == "<")
+                current_branch.sub->at(i).name = std::to_string(std::stoi(current_branch.sub->at(i).name) < std::stoi(current_branch.sub->at(i + 2).name));
             current_branch.sub->erase(current_branch.sub->begin() + i + 1);
             current_branch.sub->erase(current_branch.sub->begin() + i + 1);
             i -= 2;
          }
     }
     // replace the equation with its value if it has one value
-    if(nested && current_branch.sub->size() == 1 && (isInt(current_branch.sub->at(0).name) || ignore_is_int))
+    if(nested && current_branch.sub->size() == 1 && isInt(current_branch.sub->at(0).name))
         current_branch = current_branch.sub->at(0);
 }
 

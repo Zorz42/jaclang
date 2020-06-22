@@ -5,7 +5,7 @@
 void asm_::main() {
     for(const Instruction& i : instructions) {
         std::string expr; // generates instruction: inst arg1, arg2
-        if(i.instruction.size() != 0 && i.instruction.at(i.instruction.size() - 1) != ':') // if its label do not shift to the right
+        if(i.instruction.size() && i.instruction.at(i.instruction.size() - 1) != ':') // if its label do not shift to the right
             expr = "   ";
         expr += i.instruction;
         if(i.size)
