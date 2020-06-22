@@ -12,7 +12,7 @@ void optimize(Branch &current_branch, const bool nested);
 
 void putInBraces(Branch& current_branch, std::vector<std::string> operators);
 
-Branch parser::expr(bool nested) {
+Branch parser::expr(bool nested, bool optional_existence) {
     /*
      this goes through tokens and turns them into a tree
      */
@@ -25,6 +25,7 @@ Branch parser::expr(bool nested) {
         appendBranch("-", current_branch);
         parser::nextToken();
     }
+    bool first_time = true;
     while(true) { // main expression loop
         if(parser::e::functionCall(current_branch));
         else if(CURRENT->type == Constant) // constant is very straight forward
@@ -36,7 +37,16 @@ Branch parser::expr(bool nested) {
             Branch obj = parser::expr(true);
             appendBranch(obj, current_branch);
         } else
-            error::syntaxError("Value expected");
+            if(optional_existence && first_time) {
+                prevToken();
+                Branch empty_expression;
+                empty_expression.name = "expr";
+                empty_expression.alloc();
+                appendBranch("0", empty_expression);
+                return empty_expression;
+            }
+            else
+                error::syntaxError("Value expected");
         
         parser::nextToken();
         if(parser::curr_token == lexer::tokens.end()) // expressions always end with operator
@@ -48,6 +58,7 @@ Branch parser::expr(bool nested) {
         } else
             break;
         parser::nextToken();
+        first_time = false;
     }
     if(parser::curr_token != lexer::tokens.end() && parser::peekNextToken() != lexer::tokens.end() && CURRENT->text != ")")
         parser::prevToken();

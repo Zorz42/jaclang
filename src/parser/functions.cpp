@@ -108,7 +108,7 @@ bool parser::e::returnStatement() { // a simple return statement
         current_branch.alloc();
         current_branch.name = "returnStatement";
         nextToken();
-        appendBranch(expr(), current_branch);
+        appendBranch(expr(false, true/* optional_existence -> if expression is not valid, return empty expression. */), current_branch);
         appendBranch(current_branch, *current_branch_scope);
         return true;
     } else

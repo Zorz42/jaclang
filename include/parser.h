@@ -19,7 +19,7 @@ private:
 namespace parser {
     void main(std::string root_name);
 
-    Branch expr(bool nested=false);
+    Branch expr(bool nested=false, bool optional_existence=false);
 
     inline unsigned long tok_count;
 
