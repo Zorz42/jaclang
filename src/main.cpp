@@ -9,7 +9,7 @@
 std::string input_file;
 std::string output_file;
 
-bool quiet = false;
+bool quiet = false, optimize = false;
 
 long start;
 void init();
@@ -49,7 +49,8 @@ void compile_jaclang() {
     parser::main(input_file); // convert tokens into syntax tree
     lexer::tokens.clear();
     file::input_text.clear();
-    optimiser::optimize(&parser::main_branch);
+    if(optimize)
+        optimizer::optimize(&parser::main_branch);
     if(parser::debug_show_ast)
         printAST(parser::main_branch);
     parser::current_branch_scope = &parser::main_branch;
@@ -107,7 +108,7 @@ void handle_arguments(int argc, char **argv) {
             else if(i == "--version")
                 display_version = true;
             else if(i == "--no-optimizations")
-                parameters::optimize = false;
+                optimize = false;
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl;

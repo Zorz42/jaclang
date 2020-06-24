@@ -11,10 +11,6 @@
 
 struct Branch;
 
-namespace parameters {
-    inline bool optimize = true;
-}
-
 // headers/
 #include "os-detection.h" // detects os during compile-time
 #include "shortcuts.h"    // shortcut functions
@@ -23,6 +19,6 @@ namespace parameters {
 #include "preprocessor.h" // preprocessor will preprocess file
 #include "lexer.h"        // breaks it into tokens
 #include "parser.h"       // parses it into tree
-#include "optimiser.h"    // optimises main tree
+#include "optimizer.h"    // optimizes main tree
 #include "generator.h"    // generates assembly code
 #include "assembly.h"     // module for assembly generation and optimization

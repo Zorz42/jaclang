@@ -2,7 +2,7 @@
 #include "jaclang.h"
 #endif
 
-void optimiser::optimize(Branch* target) {
+void optimizer::optimize(Branch* target) {
     if(target->name == "expr")
         expr(target, false);
     else
@@ -12,7 +12,7 @@ void optimiser::optimize(Branch* target) {
 
 #define CURRENT(x) current_branch->sub.at(i + x)
 
-void optimiser::expr(Branch* current_branch, const bool nested) {
+void optimizer::expr(Branch* current_branch, const bool nested) {
     // first optimize sub expressions
     for(Branch& iter : current_branch->sub)
         if(iter.name == "expr")
