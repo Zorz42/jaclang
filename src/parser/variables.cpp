@@ -11,7 +11,6 @@ bool parser::e::variableDeclaration() {
         return false;
     if(contains(generator::primitive_datatypes, CURRENT->text)) { // if first text is a primitive datatype
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "variableDeclaration"; // set to variableDeclaration
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
@@ -34,7 +33,6 @@ bool parser::e::variableSetting() {
         return false;
     if(CURRENT->type == Indent && parser::peekNextToken()->text == "=") {
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "variableSetting";
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();

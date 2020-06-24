@@ -9,7 +9,7 @@ int current_line = 1;
 void newToken(TokenType TYPE); // pushes current token to token vector and sets it to empty string
 std::string current_token; // current token in processing
 
-unsigned long c = 0, prev_c = 0;
+unsigned int c = 0, prev_c = 0;
 std::list<char>::iterator c_iter;
 
 TokenType isToken(char tok);
@@ -102,7 +102,7 @@ void newToken(TokenType TYPE) {
     obj.text = current_token;
     obj.type = TYPE;
     obj.line = current_line; // set token line to current line
-    obj.pos = c - prev_c - obj.text.size(); // position in line - length of obj
+    obj.pos = c - prev_c - (unsigned int)obj.text.size(); // position in line - length of obj
     if(obj.type == Operator || obj.type == Symbol)
         obj.pos++;
     lexer::tokens.push_back(obj); // append token

@@ -9,11 +9,9 @@
 bool parser::e::beginScope() { // a simple scope begin
     if(CURRENT->text == "{") {
         Branch scope;
-        scope.alloc();
         scope.name = "scope";
         appendBranch(scope, *current_branch_scope);
-        current_branch_scope = &(current_branch_scope->sub->back());
-        current_branch_scope->alloc();
+        current_branch_scope = &(current_branch_scope->sub.back());
         scopes.push_back(current_branch_scope);
         return true;
     } else

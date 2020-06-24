@@ -4,7 +4,7 @@
 #include "jaclang.h"
 #endif
 
-#define CURRENT parser::current_branch_scope->sub->at(parser::current_branch_scope->count) // current branch
+#define CURRENT parser::current_branch_scope->sub.at(parser::current_branch_scope_count) // current branch
 
 #define _CASE_1(_CASE) else if(CURRENT.name == #_CASE) e::_CASE();
 #define _CASE_2(_CASE, _COND) else if(CURRENT.name == #_CASE && (_COND)) e::_CASE();
@@ -24,7 +24,7 @@ void generator::main(bool in_function) {
     if(in_function)
         sub_rsp = asm_::instructions.size() - 1;
     asm_::append_instruction("");
-    for(; parser::current_branch_scope->count < parser::current_branch_scope->sub->size(); parser::current_branch_scope->count++) {
+    for(; parser::current_branch_scope_count < parser::current_branch_scope->sub.size(); parser::current_branch_scope_count++) {
         // iterate though branches
         if(!file::output_vector.at(file::asm_text - 1).empty())
             asm_::append_instruction("");

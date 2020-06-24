@@ -5,7 +5,7 @@
 struct Variable {
     std::string name; // name
     std::string type;   // datatype
-    int position; // position on stack
+    long position; // position on stack
     bool arg;
     
     int8_t size() const;
@@ -34,7 +34,6 @@ struct DatatypeMatches {
 
     DatatypeMatches(std::string datatype_, std::vector<Match> matches_) : datatype(std::move(datatype_)),
                                                                         matches(std::move(matches_)) {};
-
     DatatypeMatches() = default;
 };
 
@@ -43,29 +42,18 @@ namespace generator {
 
     namespace e {
         void systemFunctionCall();
-
         void functionDeclaration();
-
         void variableDeclaration(unsigned long scope_on_stack);
-
         std::string expr(Branch &calculation);
-
         Function *functionCall(const Branch &function_branch);
-
         void variableSetting();
-
         void returnStatement();
-    
         void ifStatement();
-        
         void scope();
-    
         void whileStatement();
     }
 
     inline std::vector<Function> function_vector;
-
-    inline std::unordered_map<int8_t, std::string> size_keywords;
 
     Variable *getVariable(const std::string &name);
     Function *getFunction(const std::string &name, const std::vector<std::string> &args);

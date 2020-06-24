@@ -5,18 +5,16 @@
 #endif
 
 #define CURRENT parser::curr_token
-#define ARGS current_branch.sub->at(1)
+#define ARGS current_branch.sub.at(1)
 
 bool parser::e::functionCall(Branch &target) {
     if(parser::curr_token == --lexer::tokens.end())
         return false;
     if(CURRENT->type == Indent && parser::peekNextToken()->text == "(" && !isSystemIndent(CURRENT->text)) { // if its function -> name followed by '(' and it's not system function call
         Branch current_branch; // make branch for function
-        current_branch.alloc();
         current_branch.name = "functionCall";
         appendBranch(CURRENT->text, current_branch); // append name to branch
         appendBranch("args", current_branch); // append arguments to branch
-        ARGS.alloc();
         parser::nextToken();
         parser::nextToken();
         while(CURRENT->text != ")") {
@@ -39,7 +37,6 @@ bool parser::e::systemFunctionCall() {
     if(CURRENT->type == Indent &&
         parser::peekNextToken()->type == String) { // if its systemFunction -> name followed by string
         Branch current_branch; // make branch for function
-        current_branch.alloc();
         if(isSystemIndent(CURRENT->text))  // check if its system function call
             current_branch.name = "systemFunctionCall";
         else
@@ -56,14 +53,13 @@ bool parser::e::systemFunctionCall() {
         return false;
 }
     
-#define args current_branch.sub->at(2)
+#define args current_branch.sub.at(2)
 
 bool parser::e::functionDeclaration() {
     if(parser::curr_token == --lexer::tokens.end())
         return false;
     if(contains(generator::primitive_datatypes, CURRENT->text)) {
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "functionDeclaration"; // set to functionDeclaration
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
@@ -77,7 +73,6 @@ bool parser::e::functionDeclaration() {
             parser::nextToken();
             parser::nextToken();
             appendBranch("args", current_branch);
-            args.alloc();
             while(CURRENT->text != ")") { // scan parameters until ')'
                 if(!contains(generator::primitive_datatypes, CURRENT->text))
                     error::syntaxError("Parameter value type must be valid!");
@@ -105,10 +100,9 @@ bool parser::e::functionDeclaration() {
 bool parser::e::returnStatement() { // a simple return statement
     if(CURRENT->text == "return") {
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "returnStatement";
         nextToken();
-        appendBranch(expr(false, true/* optional_existence -> if expression is not valid, return empty expression. */), current_branch);
+        appendBranch(expr(true/* optional_existence -> if expression is not valid, return empty expression. */), current_branch);
         appendBranch(current_branch, *current_branch_scope);
         return true;
     } else

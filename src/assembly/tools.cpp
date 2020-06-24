@@ -12,7 +12,7 @@ void asm_::append_instruction(const std::string &inst, const std::string &arg1, 
     instructions.push_back(obj);
 }
 
-std::string asm_::onStack(int offset, bool positive) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)
+std::string asm_::onStack(long offset, bool positive) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)
     return (positive ? "" : "-") + std::to_string(offset) + "(%rbp)"; // returns position on stack: -offset(%rbp)
 }
 

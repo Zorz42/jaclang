@@ -49,14 +49,24 @@ void parser::main(std::string root_name) {
     }
 }
 
+bool parser::isSystemIndent(std::string indent) { // check if string has __ at the beginning and at the end.
+    bool result =
+            indent.at(0) == '_' &&
+            indent.at(1) == '_' &&
+            indent.at(indent.size() - 1) == '_' &&
+            indent.at(indent.size() - 2) == '_';
+
+    return result;
+}
+
 void parser::appendBranch(const Branch &source, Branch &target) { // function for appending branch to another branch
-    target.sub->push_back(source);
+    target.sub.push_back(source);
 }
 
 void parser::appendBranch(std::string source, Branch &target) { // function for appending empty branch with name to branch
     Branch obj;
     obj.name = std::move(source);
-    target.sub->push_back(obj);
+    target.sub.push_back(obj);
 }
 
 std::list<Token>::iterator parser::peekNextToken() { // see the next token without moving to it
@@ -68,42 +78,9 @@ std::list<Token>::iterator parser::peekNextToken() { // see the next token witho
 std::list<Token>::iterator parser::nextToken() { // move to the next token
     if(curr_token == lexer::tokens.end())
         break_loop = true;
-    parser::tok_count++;
     return ++parser::curr_token;
 }
 
 std::list<Token>::iterator parser::prevToken() { // move to previous token
-    tok_count--;
     return --curr_token;
-}
-
-Branch::Branch(const Branch &input) {
-    set_(input);
-}
-
-void Branch::alloc() { // allocate vector of sub branches
-    sub = new std::vector<Branch>;
-}
-
-Branch::~Branch() {
-    destroy();
-}
-
-void Branch::set(const Branch &input) {
-    destroy();
-    set_(input);
-}
-
-void Branch::set_(const Branch &input) {
-    if(input.sub) {
-        alloc();
-        *sub = *input.sub;
-    }
-    name = input.name;
-    count = input.count;
-}
-
-void Branch::destroy() {
-    delete sub;
-    sub = nullptr;
 }

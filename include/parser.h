@@ -3,25 +3,17 @@
 struct Branch {
 public:
     std::string name;
-    std::vector<Branch> *sub = nullptr;
-    unsigned int count = 0;
-
-    Branch() = default;
-    Branch(const Branch &input);
-    void alloc();
-    void set(const Branch &input);
-    ~Branch();
-private:
-    void set_(const Branch &input);
-    void destroy();
+    std::vector<Branch> sub;
 };
 
 namespace parser {
     void main(std::string root_name);
 
-    Branch expr(bool nested=false, bool optional_existence=false);
+    bool isSystemIndent(std::string indent);
 
-    inline unsigned long tok_count;
+    Branch expr(bool optional_existence=false);
+
+    inline bool debug_show_ast;
 
     std::list<Token>::iterator nextToken();
     std::list<Token>::iterator prevToken();
@@ -30,9 +22,9 @@ namespace parser {
 
     inline Branch main_branch;
     inline Branch *current_branch_scope;
+    inline unsigned long current_branch_scope_count;
 
     void appendBranch(const Branch &source, Branch &target);
-
     void appendBranch(std::string source, Branch &target);
 
 

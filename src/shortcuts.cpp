@@ -8,16 +8,6 @@ bool contains(std::vector<std::string> &list, const std::string &text) { // chec
     return std::find(list.begin(), list.end(), text) != list.end();
 }
 
-bool isSystemIndent(std::string indent) { // check if string has __ at the beginning and at the end.
-    bool result =
-            indent.at(0) == '_' &&
-            indent.at(1) == '_' &&
-            indent.at(indent.size() - 1) == '_' &&
-            indent.at(indent.size() - 2) == '_';
-
-    return result;
-}
-
 unsigned long find(std::vector<std::string> &source, const std::string &target) { // find string in vector of strings
     return std::find(source.begin(), source.end(), target) - source.begin();
 }

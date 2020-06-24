@@ -8,7 +8,7 @@
 #define RED "\033[1;31m"
 
 void error::syntaxError(const std::string &error) { // Print out syntax error
-    if(debug_show_ast)
+    if(parser::debug_show_ast)
         printAST(parser::main_branch);
     
     std::cerr << RED << "Syntax error, line " << parser::curr_token->line << ": " << error << "\n\n"; // actual error

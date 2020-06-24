@@ -10,14 +10,12 @@ namespace asm_ {
     void main();
 
     void append_instruction(const std::string &inst, const std::string &arg1 = "", const std::string &arg2 = "", int size = 0, Section sect=Section_Auto);
-    std::string onStack(int offset, bool positive=false);
+    std::string onStack(long offset, bool positive=false);
 
     inline unsigned long current_scope_on_stack = 0;
-
     inline std::vector<Variable> stack;
-
-    inline unsigned int stack_pointer = 0;
-    inline unsigned int biggest_stack_pointer = 0;
+    inline unsigned long stack_pointer = 0;
+    inline unsigned long biggest_stack_pointer = 0;
 
     void incStackPointer(int value);
     void decStackPointer(int value);

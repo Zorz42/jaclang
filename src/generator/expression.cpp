@@ -15,7 +15,7 @@ void operator_ls(const std::string &value);
 int8_t current_value_size;
 std::string getTypeMatch(const std::string &type1, const std::string &match_operator, const std::string &type2);
 
-#define FIRST calculation.sub->at(0)
+#define FIRST calculation.sub.at(0)
 
 std::string generator::e::expr(Branch &calculation) {
     std::string current_calue_type;
@@ -43,10 +43,10 @@ std::string generator::e::expr(Branch &calculation) {
         current_calue_type = "int";
     }
 
-#define CURRENT_VALUE calculation.sub->at(i).name
-#define CURRENT_OPERATOR calculation.sub->at(i - 1).name
+#define CURRENT_VALUE calculation.sub.at(i).name
+#define CURRENT_OPERATOR calculation.sub.at(i - 1).name
 
-    for(unsigned long i = 2; i <= calculation.sub->size(); i += 2) {
+    for(unsigned long i = 2; i <= calculation.sub.size(); i += 2) {
         std::string current_value_asm = CURRENT_VALUE;
         current_value_size = 4; // default - int (4 bytes)
         if(current_value_asm.at(0) == ':') { // if its variable
@@ -58,16 +58,16 @@ std::string generator::e::expr(Branch &calculation) {
             this_value_type = curr->type;
         } else if(CURRENT_VALUE == "expr") { // if value is calculation
             asm_::nextRegister();
-            this_value_type = generator::e::expr(calculation.sub->at(i));
+            this_value_type = generator::e::expr(calculation.sub.at(i));
             asm_::prevRegister();
 
             current_value_asm = asm_::availableRegister(8, 1);
             current_value_size = 8;
         } else if(CURRENT_VALUE == "functionCall") {
-            Function *this_function = generator::e::functionCall(calculation.sub->at(i));
+            Function *this_function = generator::e::functionCall(calculation.sub.at(i));
             this_value_type = this_function->type;
-            current_value_asm = "(%rsp)";
             current_value_size = this_function->size();
+            current_value_asm = !current_value_size ? "$0" : "(%rsp)"; // 0 size return type functions should just return 0 (like void functions)
         } else {
             this_value_type = "int";
             current_value_asm = "$" + current_value_asm;

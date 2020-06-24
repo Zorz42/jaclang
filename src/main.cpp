@@ -4,7 +4,6 @@
 
 // the main file, where the spine of the program is
 
-#include <chrono>   // time
 #include <fstream>  // read/write to file
 
 std::string input_file;
@@ -47,11 +46,11 @@ void compile_jaclang() {
     file::read(input_file); // Read file
 
     lexer::main(); // convert code into tokens
-    parser::main_branch.alloc();
     parser::main(input_file); // convert tokens into syntax tree
     lexer::tokens.clear();
     file::input_text.clear();
-    if(debug_show_ast)
+    optimiser::optimize(&parser::main_branch);
+    if(parser::debug_show_ast)
         printAST(parser::main_branch);
     parser::current_branch_scope = &parser::main_branch;
     generator::main(true); // generate assembly tokens out of syntax tree 
@@ -97,12 +96,12 @@ void handle_arguments(int argc, char **argv) {
             if(i == "--help") // various cases for different options
                 help = true;
             else if(i == "--debug") {
-                debug_show_tokens = true;
-                debug_show_ast = true;
+                lexer::debug_show_tokens = true;
+                parser::debug_show_ast = true;
             } else if(i == "--debug-tokens")
-                debug_show_tokens = true;
+                lexer::debug_show_tokens = true;
             else if(i == "--debug-ast")
-                debug_show_ast = true;
+                parser::debug_show_ast = true;
             else if(i == "--quiet")
                 quiet = true;
             else if(i == "--version")

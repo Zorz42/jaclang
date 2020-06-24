@@ -15,12 +15,8 @@ namespace file {
     std::string getLine(int LINE); // Get text of line
 
     void appendData(const std::string &line);
-
     void appendBss(const std::string &line);
-
     void appendText(const std::string &line);
-
     void appendFunc(const std::string &line);
-
     void insert(const std::string &line, unsigned long position);
 }

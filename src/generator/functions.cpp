@@ -4,9 +4,9 @@
 #include "jaclang.h"
 #endif
 
-#define CURRENT parser::current_branch_scope->sub->at(parser::current_branch_scope->count) // function branch
-#define CURRENT_NAME  CURRENT.sub->at(0).name // name of function
-#define CURRENT_NAME_2 CURRENT.sub->at(1).name
+#define CURRENT parser::current_branch_scope->sub.at(parser::current_branch_scope_count) // function branch
+#define CURRENT_NAME  CURRENT.sub.at(0).name // name of function
+#define CURRENT_NAME_2 CURRENT.sub.at(1).name
 
 void f_asmtext();
 void f_asmfunc();
@@ -33,7 +33,7 @@ void generator::e::systemFunctionCall() // system function: __test__
         error::semanticError("Unknown system function call: " + CURRENT_NAME);
 }
 
-#define ARGS CURRENT.sub->at(2).sub
+#define ARGS CURRENT.sub.at(2).sub
 
 void generator::e::functionDeclaration() { // declaring a function
     // parse all branches and turn them into an object
@@ -44,11 +44,11 @@ void generator::e::functionDeclaration() { // declaring a function
     int arg_stack_pos = primitive_datatype_sizes[obj.type];
     std::vector<std::string> arguments_types;
     
-    for(unsigned int i = 0; i < ARGS->size(); i += 2) {
+    for(unsigned int i = 0; i < ARGS.size(); i += 2) {
         Variable var_obj;
-        var_obj.name = ARGS->at(i + 1).name;
-        var_obj.type = ARGS->at(i).name;
-        arguments_types.push_back(ARGS->at(i).name);
+        var_obj.name = ARGS.at(i + 1).name;
+        var_obj.type = ARGS.at(i).name;
+        arguments_types.push_back(ARGS.at(i).name);
         var_obj.position = arg_stack_pos;
         var_obj.arg = true;
         if(!var_obj.size())
@@ -63,7 +63,7 @@ void generator::e::functionDeclaration() { // declaring a function
         error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already declared!");
 
     generator::function_vector.push_back(obj);
-    parser::current_branch_scope->count++;
+    parser::current_branch_scope_count++;
     
     if(CURRENT.name != "scope")
         error::semanticError("Expected scope after function declaration!");
@@ -71,7 +71,7 @@ void generator::e::functionDeclaration() { // declaring a function
     // save all variables and then retrieve them
     
     std::vector<Variable> prev_stack = asm_::stack;
-    unsigned int prev_stack_pointer = asm_::stack_pointer, prev_biggest_stack_pointer = asm_::biggest_stack_pointer;
+    unsigned long prev_stack_pointer = asm_::stack_pointer, prev_biggest_stack_pointer = asm_::biggest_stack_pointer;
     asm_::stack_pointer = 0;
     asm_::biggest_stack_pointer = 0;
     asm_::stack.clear();
@@ -97,8 +97,8 @@ void generator::e::functionDeclaration() { // declaring a function
 
 #undef ARGS
 
-#define FUNCTION_NAME function_branch.sub->at(0).name
-#define FUNCTION_ARGS function_branch.sub->at(1).sub
+#define FUNCTION_NAME function_branch.sub.at(0).name
+#define FUNCTION_ARGS function_branch.sub.at(1).sub
 
 Function *generator::e::functionCall(const Branch &function_branch) {
     // function call needs to have evaluated arguments first, to determine return value
@@ -106,7 +106,7 @@ Function *generator::e::functionCall(const Branch &function_branch) {
     std::vector<unsigned long> argument_instruction_positions;
     
     asm_::nextRegister();
-    for(Branch& iter : *FUNCTION_ARGS) {
+    for(Branch iter : FUNCTION_ARGS) {
         argument_types.push_back(expr(iter));
         int argumentSize = generator::primitive_datatype_sizes[argument_types.at(argument_types.size() - 1)];
         argument_instruction_positions.push_back(asm_::instructions.size());
@@ -136,14 +136,14 @@ Function *generator::e::functionCall(const Branch &function_branch) {
 
 void generator::e::returnStatement() { // a simple return statement
     if(primitive_datatype_sizes[current_function->type]) {
-        checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub->at(0)));  // do calculation
+        checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub.at(0)));  // do calculation
         asm_::append_instruction("mov", asm_::availableRegister(current_function->size()), "+112(%rbp)", current_function->size());
 
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
     }
     else
         // move expression into anoher branch, because it will be ignored
-        parser::current_branch_scope->sub->insert(parser::current_branch_scope->sub->begin() + parser::current_branch_scope->count + 1, CURRENT.sub->at(0));
+        parser::current_branch_scope->sub.insert(parser::current_branch_scope->sub.begin() + parser::current_branch_scope_count + 1, CURRENT.sub.at(0));
     asm_::append_instruction("popa"); // call function
     asm_::append_instruction("ret");
 }

@@ -4,8 +4,6 @@
 #include "jaclang.h"
 #endif
 
-#include <fstream>  // open file
-
 void preprocessor::main(const std::list<std::string> &raw_input_file) {
     /*
      Preprocessor removes comments and follows directives

@@ -8,12 +8,8 @@
 #include <vector>
 #include <list>
 #include <unordered_map>
-#include <algorithm>
 
 struct Branch;
-
-inline bool debug_show_tokens;
-inline bool debug_show_ast;
 
 namespace parameters {
     inline bool optimize = true;
@@ -26,6 +22,7 @@ namespace parameters {
 #include "file.h"         // file module
 #include "preprocessor.h" // preprocessor will preprocess file
 #include "lexer.h"        // breaks it into tokens
-#include "parser.h"       // parses it into syntax tree
+#include "parser.h"       // parses it into tree
+#include "optimiser.h"    // optimises main tree
 #include "generator.h"    // generates assembly code
 #include "assembly.h"     // module for assembly generation and optimization

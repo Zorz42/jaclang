@@ -114,12 +114,6 @@ void init() { // initialize global variables
                 generator::implicit_conversations[primitive_datatype].push_back(primitiveDatatype2);
     }
 
-    generator::size_keywords.reserve(4);
-    generator::size_keywords[1] = "b";
-    generator::size_keywords[2] = "w";
-    generator::size_keywords[4] = "l";
-    generator::size_keywords[8] = "q";
-
     lexer::keywords = {
         "return",
         "if",

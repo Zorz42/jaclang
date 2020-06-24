@@ -7,7 +7,6 @@
 bool parser::e::ifStatement() { // simple if statement
     if(CURRENT->text == "if") {
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "ifStatement";
         parser::nextToken();
         appendBranch(parser::expr(), current_branch);
@@ -20,7 +19,6 @@ bool parser::e::ifStatement() { // simple if statement
 bool parser::e::whileStatement() { // very similar while statement
     if(CURRENT->text == "while") {
         Branch current_branch;
-        current_branch.alloc();
         current_branch.name = "whileStatement";
         parser::nextToken();
         appendBranch(parser::expr(), current_branch);
