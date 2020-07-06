@@ -16,12 +16,12 @@ fullinstall:
 	@$(PYTHON) install/dependencies.py
 	@python3 install/build.py
 	@python3 install/install.py
-	sudo @python3 install/installjpm.py
+	@sudo python3 install/installjpm.py
 
 init:
 	@$(PYTHON) install/dependencies.py
 jpm:
-	sudo @python3 install/installjpm.py
+	@sudo python3 install/installjpm.py
 build:
 	@python3 install/build.py
 install:
