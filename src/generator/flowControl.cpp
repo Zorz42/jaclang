@@ -2,7 +2,7 @@
 #include "jaclang.h"
 #endif
 
-#define CURRENT parser::current_branch_scope->sub.at(parser::current_branch_scope_count)
+#define CURRENT current_branch_scope->sub.at(current_branch_scope_count)
 
 void generator::e::ifStatement() { // simple if statement generator
     static unsigned int if_counter = 0;
@@ -10,7 +10,7 @@ void generator::e::ifStatement() { // simple if statement generator
         generator::e::expr(CURRENT.sub.at(0));
         asm_::append_instruction("cmpq", "$0", "%rbx");
         asm_::append_instruction("je", "IFE" + std::to_string(if_counter));
-        parser::current_branch_scope_count++;
+        current_branch_scope_count++;
         scope();
         
         asm_::append_instruction("IFE" + std::to_string(if_counter) + ":");
@@ -20,7 +20,7 @@ void generator::e::ifStatement() { // simple if statement generator
         if(CURRENT.sub.at(0).name != "0") {
             scope();
         }
-        parser::current_branch_scope_count++;
+        current_branch_scope_count++;
     }
 }
 
@@ -31,7 +31,7 @@ void generator::e::whileStatement() {
         generator::e::expr(CURRENT.sub.at(0));
         asm_::append_instruction("cmpq", "$0", "%rbx");
         asm_::append_instruction("je", "WHE" + std::to_string(while_counter));
-        parser::current_branch_scope_count++;
+        current_branch_scope_count++;
         scope();
         asm_::append_instruction("jmp", "WHS" + std::to_string(while_counter));
         asm_::append_instruction("WHE" + std::to_string(while_counter) + ":");
@@ -41,6 +41,6 @@ void generator::e::whileStatement() {
         if(CURRENT.sub.at(0).name != "0") {
             scope();
         }
-        parser::current_branch_scope_count++;
+        current_branch_scope_count++;
     }
 }

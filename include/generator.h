@@ -66,4 +66,6 @@ namespace generator {
     void checkForImplicitConversion(const std::string &dest, const std::string &source);
 
     inline Function *current_function = nullptr;
+    inline Branch *current_branch_scope;
+    inline unsigned long current_branch_scope_count;
 }

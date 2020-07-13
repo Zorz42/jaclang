@@ -4,7 +4,7 @@
 #include "jaclang.h"
 #endif
 
-#define CURRENT parser::current_branch_scope->sub.at(parser::current_branch_scope_count)
+#define CURRENT current_branch_scope->sub.at(current_branch_scope_count)
 
 void generator::e::variableDeclaration(unsigned long scope_on_stack) {
     Variable obj; // obj variable
@@ -34,21 +34,15 @@ void generator::e::variableSetting() {
 }
 
 Variable *generator::getVariable(const std::string &name) {
-    Variable *obj = nullptr; // go through stack and check if variable exists
-    for(Variable &iter : asm_::stack)
-        if(iter.name == name) {
-            obj = &iter;
-            break;
-        }
-    if(current_function && !obj)
+    for(Variable &iter : asm_::stack) // go through stack and check if variable exists
+        if(iter.name == name)
+            return &iter;
+    if(current_function) // go through function args
         for(Variable& iter : current_function->args)
-            if(iter.name == name) {
-                obj = &iter;
-                break;
-            }
-    if(!obj)
-        error::semanticError(name + " does not exist!");
-    return obj;
+            if(iter.name == name)
+                return &iter;
+    error::semanticError(name + " does not exist!");
+    return nullptr;
 }
 
 void generator::checkForImplicitConversion(const std::string &dest, const std::string &source) {

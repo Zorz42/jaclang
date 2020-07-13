@@ -53,7 +53,7 @@ void compile_jaclang() {
         optimizer::optimize(&parser::main_branch);
     if(parser::debug_show_ast)
         printAST(parser::main_branch);
-    parser::current_branch_scope = &parser::main_branch;
+    generator::current_branch_scope = &parser::main_branch;
     generator::main(true); // generate assembly tokens out of syntax tree 
     asm_::main(); // generate assembly code from assembly tokens and optimize it
     

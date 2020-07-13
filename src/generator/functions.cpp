@@ -4,7 +4,7 @@
 #include "jaclang.h"
 #endif
 
-#define CURRENT parser::current_branch_scope->sub.at(parser::current_branch_scope_count) // function branch
+#define CURRENT generator::current_branch_scope->sub.at(generator::current_branch_scope_count) // function branch
 #define CURRENT_NAME  CURRENT.sub.at(0).name // name of function
 #define CURRENT_NAME_2 CURRENT.sub.at(1).name
 
@@ -63,7 +63,7 @@ void generator::e::functionDeclaration() { // declaring a function
         error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already declared!");
 
     generator::function_vector.push_back(obj);
-    parser::current_branch_scope_count++;
+    current_branch_scope_count++;
     
     if(CURRENT.name != "scope")
         error::semanticError("Expected scope after function declaration!");
@@ -75,7 +75,7 @@ void generator::e::functionDeclaration() { // declaring a function
     asm_::stack_pointer = 0;
     asm_::biggest_stack_pointer = 0;
     asm_::stack.clear();
-    parser::current_branch_scope = &(CURRENT);
+    current_branch_scope = &(CURRENT);
     int8_t prev_current_register = asm_::current_register;
     asm_::current_register = 0;
 
@@ -88,7 +88,7 @@ void generator::e::functionDeclaration() { // declaring a function
     asm_::append_instruction("ret");
 
     asm_::current_register = prev_current_register;
-    parser::current_branch_scope = &parser::main_branch;
+    current_branch_scope = &parser::main_branch;
     asm_::stack = prev_stack;
     asm_::stack_pointer = prev_stack_pointer;
     asm_::biggest_stack_pointer = prev_biggest_stack_pointer;
@@ -143,7 +143,7 @@ void generator::e::returnStatement() { // a simple return statement
     }
     else
         // move expression into anoher branch, because it will be ignored
-        parser::current_branch_scope->sub.insert(parser::current_branch_scope->sub.begin() + parser::current_branch_scope_count + 1, CURRENT.sub.at(0));
+        current_branch_scope->sub.insert(current_branch_scope->sub.begin() + current_branch_scope_count + 1, CURRENT.sub.at(0));
     asm_::append_instruction("popa"); // call function
     asm_::append_instruction("ret");
 }
@@ -175,23 +175,19 @@ Function *generator::getFunction(const std::string &name, const std::vector<std:
     return nullptr;
 }
 
-void f_asmtext() // append to text section
-{
+void f_asmtext() { // append to text section
     asm_::append_instruction(CURRENT_NAME_2, "", "", 0, Section_Text);
 }
 
-void f_asmfunc() // append to text section
-{
+void f_asmfunc() { // append to text section
     asm_::append_instruction(CURRENT_NAME_2, "", "", 0, Section_Functions);
 }
 
-void f_asmdata() // append to data section
-{
+void f_asmdata() { // append to data section
     asm_::append_instruction(CURRENT_NAME_2, "", "", 0, Section_Data);
 }
 
-void f_asmbss() // append to bss section
-{
+void f_asmbss() { // append to bss section
     asm_::append_instruction(CURRENT_NAME_2, "", "", 0, Section_Bss);
 }
 
