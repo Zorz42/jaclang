@@ -54,7 +54,7 @@ void compile_jaclang() {
     if(parser::debug_show_ast)
         printAST(parser::main_branch);
     generator::current_branch_scope = &parser::main_branch;
-    generator::main(true); // generate assembly tokens out of syntax tree 
+    generator::main(true); // generate assembly tokens out of syntax tree
     asm_::main(); // generate assembly code from assembly tokens and optimize it
     
     file::write(output_file); // writes to file

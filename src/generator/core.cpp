@@ -46,7 +46,6 @@ void generator::main(bool in_function) {
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
     }
-    
 }
 
 int8_t getTypeSize(const std::string &type) {

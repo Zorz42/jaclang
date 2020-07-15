@@ -13,7 +13,7 @@ int a = 1 +
 You can fix that, because the expression will not be valid with open brace, therefore it cannot end.
 This will not take performance, because if compiler seen plain braces in calculation, that do't have an advantage over anything, then it will remove those, but expression will stay.
 
-calculations will have +, -, *, /  and braces.
+calculations will have +, -, *, /, <, >, == and braces.
 
 in this situation:
 
@@ -21,7 +21,7 @@ int a = 10
 
 -10 + 20
 
-you meant two expressions: var declaration and naked calculation, but compiler recognizes it as one expression, because of the minus in calculation, so a will be 20, not 10.
+you meant two expressions: var declaration and bare calculation, but compiler recognizes it as one expression, because of the minus in calculation, so a will be 20, not 10.
 
 you can corrent this by:
 

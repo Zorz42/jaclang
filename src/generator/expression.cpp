@@ -25,7 +25,7 @@ std::string generator::e::expr(Branch &calculation) {
 
     if(FIRST.name == "functionCall") { // check if its function call at the beginning
         Function* curr = generator::e::functionCall(FIRST);
-        asm_::append_instruction("mov", "(%rsp)", asm_::availableRegister(curr->size())); // mov return value to register
+        asm_::append_instruction("mov", !current_value_size ? "$0" : "(%rsp)", asm_::availableRegister(current_value_size ? curr->size() : 8)); // mov return value to register
         current_calue_type = "int";
     } else if(FIRST.name.at(0) == ':') { // variables will have : at the beginning
         std::string value = FIRST.name; // variable name
