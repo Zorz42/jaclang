@@ -24,7 +24,9 @@ void generator::main(bool in_function) {
     if(in_function)
         sub_rsp = asm_::instructions.size() - 1;
     asm_::append_instruction("");
-    for(; current_branch_scope_count < current_branch_scope->sub.size(); current_branch_scope_count++) {
+    
+    unsigned long prev_branch_scope_count = current_branch_scope_count;
+    for(current_branch_scope_count = 0; current_branch_scope_count < current_branch_scope->sub.size(); current_branch_scope_count++) {
         // iterate though branches
         if(!file::output_vector.at(file::asm_text - 1).empty())
             asm_::append_instruction("");
@@ -42,6 +44,7 @@ void generator::main(bool in_function) {
         else
             error::semanticError("Unknown branch: " + CURRENT.name);
     }
+    current_branch_scope_count = prev_branch_scope_count;
     if(in_function) {
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");

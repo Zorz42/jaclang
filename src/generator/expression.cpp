@@ -25,7 +25,7 @@ std::string generator::e::expr(Branch &calculation) {
 
     if(FIRST.name == "functionCall") { // check if its function call at the beginning
         Function* curr = generator::e::functionCall(FIRST);
-        asm_::append_instruction("mov", !current_value_size ? "$0" : "(%rsp)", asm_::availableRegister(current_value_size ? curr->size() : 8)); // mov return value to register
+        asm_::append_instruction("mov", curr->size() ? "(%rsp)" : "$0", asm_::availableRegister(curr->size() ? curr->size() : 8)); // mov return value to register
         current_calue_type = "int";
     } else if(FIRST.name.at(0) == ':') { // variables will have : at the beginning
         std::string value = FIRST.name; // variable name
@@ -66,8 +66,8 @@ std::string generator::e::expr(Branch &calculation) {
         } else if(CURRENT_VALUE == "functionCall") {
             Function *this_function = generator::e::functionCall(calculation.sub.at(i));
             this_value_type = this_function->type;
-            current_value_size = this_function->size();
-            current_value_asm = !current_value_size ? "$0" : "(%rsp)"; // 0 size return type functions should just return 0 (like void functions)
+            current_value_size = this_function->size() ? this_function->size() : 8;
+            current_value_asm = this_function->size() ? "(%rsp)" : "$0"; // 0 size return type functions should just return 0 (like void functions)
         } else {
             this_value_type = "int";
             current_value_asm = "$" + current_value_asm;
