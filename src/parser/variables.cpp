@@ -7,7 +7,7 @@
 #define CURRENT parser::curr_token
 
 bool parser::e::variableDeclaration() {
-    if(parser::curr_token == --lexer::tokens.end())
+    if(CURRENT == --lexer::tokens.end())
         return false;
     if(contains(generator::primitive_datatypes, CURRENT->text)) { // if first text is a primitive datatype
         Branch current_branch;
@@ -15,11 +15,11 @@ bool parser::e::variableDeclaration() {
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
         if(CURRENT->type != Indent) // check if everything is working out and append it to main branch
-            error::syntaxError("Expected name after value type name in variable declaration");
+            error::syntaxError("Expected name after value type name in variable declaration!");
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
         if(CURRENT->text != "=")
-            error::syntaxError("Expected '=' after value type name in variable declaration");
+            error::syntaxError("Expected '=' after value type name in variable declaration!");
         parser::nextToken();
         appendBranch(parser::expr(), current_branch);
         appendBranch(current_branch, *current_branch_scope);
@@ -41,5 +41,17 @@ bool parser::e::variableSetting() {
         appendBranch(current_branch, *current_branch_scope);
         return true;
     } else
+        return false;
+}
+
+bool parser::e::globalVariableDeclaration() {
+    if(CURRENT->text == "global") {
+        parser::nextToken();
+        if(!variableDeclaration())
+            error::syntaxError("Invalid variable declaration after keyword global!");
+        current_branch_scope->sub.at(current_branch_scope->sub.size() - 1).name = "globalVariableDeclaration";
+        return true;
+    }
+    else
         return false;
 }

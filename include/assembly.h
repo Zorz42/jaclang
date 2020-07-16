@@ -13,7 +13,7 @@ namespace asm_ {
     std::string onStack(long offset, bool positive=false);
 
     inline unsigned long current_scope_on_stack = 0;
-    inline std::vector<Variable> stack;
+    inline std::vector<Variable> stack, global_variables;
     inline unsigned long stack_pointer = 0;
     inline unsigned long biggest_stack_pointer = 0;
 
@@ -31,4 +31,5 @@ namespace asm_ {
     std::string availableRegister(int8_t size, int8_t offset = 0);
 
     inline std::vector<Instruction> instructions;
+    inline std::unordered_map<int8_t, std::string> size_keywords;
 }

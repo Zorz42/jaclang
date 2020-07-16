@@ -6,18 +6,19 @@
 
 #define CURRENT current_branch_scope->sub.at(current_branch_scope_count)
 
-void generator::e::variableDeclaration(unsigned long scope_on_stack) {
+void generator::e::variableDeclaration() {
     Variable obj; // obj variable
     obj.type = CURRENT.sub.at(0).name; // datatype
     obj.name = CURRENT.sub.at(1).name; // name
-    obj.arg = false;
+    obj.is_arg = false;
+    obj.global = false;
     
     unsigned int i = 0;
 
     if(!obj.size())
         error::semanticError("Cannot declare a variable with size 0!");
     for(const Variable &iter : asm_::stack) { // go through stack
-        if(iter.name == CURRENT.sub.at(1).name && i >= scope_on_stack) // if this variable already exists, then report error
+        if(iter.name == CURRENT.sub.at(1).name && i >= asm_::current_scope_on_stack) // if this variable already exists, then report error
             error::semanticError(iter.name + " already exists as a variable!");
         i++;
     }
@@ -41,6 +42,9 @@ Variable *generator::getVariable(const std::string &name) {
         for(Variable& iter : current_function->args)
             if(iter.name == name)
                 return &iter;
+    for(Variable &iter : asm_::global_variables) // go through global variables
+        if(iter.name == name)
+            return &iter;
     error::semanticError(name + " does not exist!");
     return nullptr;
 }
@@ -53,4 +57,28 @@ void generator::checkForImplicitConversion(const std::string &dest, const std::s
                 success = true;
     if(!success)
         error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
+}
+
+void generator::e::globalVariableDeclaration() {
+    Variable obj; // obj variable
+    obj.type = CURRENT.sub.at(0).name; // datatype
+    obj.name = CURRENT.sub.at(1).name; // name
+    obj.is_arg = false;
+    obj.global = true;
+    
+    unsigned int i = 0;
+
+    if(!obj.size())
+        error::semanticError("Cannot declare a variable with size 0!");
+    for(const Variable &iter : asm_::global_variables) { // go through stack
+        if(iter.name == CURRENT.sub.at(1).name && i >= asm_::current_scope_on_stack) // if this variable already exists, then report error
+            error::semanticError(iter.name + " already exists as a variable!");
+        i++;
+    }
+    
+    asm_::global_variables.emplace_back(obj);
+    checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+    asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
+    asm_::append_instruction("v" + obj.name + ":", "", "", 0, Section_Data);
+    asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
 }

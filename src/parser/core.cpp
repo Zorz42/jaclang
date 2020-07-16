@@ -16,6 +16,7 @@ void parser::main(std::string root_name) {
         &e::ifStatement,
         &e::whileStatement,
         &e::functionDeclaration,
+        &e::globalVariableDeclaration,
         &e::variableDeclaration,
         &e::beginScope,
         &e::endScope,

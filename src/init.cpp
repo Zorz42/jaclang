@@ -118,6 +118,10 @@ void init() { // initialize global variables
         "return",
         "if",
     };
+    asm_::size_keywords[1] = "byte";
+    asm_::size_keywords[2] = "value";
+    asm_::size_keywords[4] = "long";
+    asm_::size_keywords[8] = "quad";
 }
 
 

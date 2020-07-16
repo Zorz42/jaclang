@@ -28,12 +28,12 @@ void generator::main(bool in_function) {
     unsigned long prev_branch_scope_count = current_branch_scope_count;
     for(current_branch_scope_count = 0; current_branch_scope_count < current_branch_scope->sub.size(); current_branch_scope_count++) {
         // iterate though branches
-        if(!file::output_vector.at(file::asm_text - 1).empty())
-            asm_::append_instruction("");
+        asm_::append_instruction("");
         
         if(CURRENT.name == "systemFunctionCall")  // choose appropriate generator for branch
             e::systemFunctionCall();
-        CASE(variableDeclaration, true, asm_::current_scope_on_stack)
+        CASE(globalVariableDeclaration)
+        CASE(variableDeclaration)
         CASE(expr, true, CURRENT)
         CASE(scope)
         CASE(functionDeclaration, current_function == nullptr)
@@ -60,7 +60,7 @@ int8_t Variable::size() const {
 }
 
 std::string Variable::generateAddress() const {
-    return asm_::onStack(position + (arg ? PUSHA_SIZE : 0), arg);
+    return global ? "v" + name + "(%rip)" : asm_::onStack(position + (is_arg ? PUSHA_SIZE : 0), is_arg);
 }
 
 int8_t Function::size() const {

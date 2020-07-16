@@ -50,7 +50,8 @@ void generator::e::functionDeclaration() { // declaring a function
         var_obj.type = ARGS.at(i).name;
         arguments_types.push_back(ARGS.at(i).name);
         var_obj.position = arg_stack_pos;
-        var_obj.arg = true;
+        var_obj.is_arg = true;
+        var_obj.global = false;
         if(!var_obj.size())
             error::semanticError("Cannot declare a variable argument with size 0!");
         arg_stack_pos += primitive_datatype_sizes[var_obj.type];

@@ -8,8 +8,8 @@ void asm_::append_instruction(const std::string &inst, const std::string &arg1, 
     obj.arg1 = arg1;
     obj.arg2 = arg2;
     obj.size = size;
-    obj.section = sect == Section_Auto ? generator::current_function == nullptr ? Section_Text : Section_Functions : sect;
-    instructions.push_back(obj);
+    obj.section = sect == Section_Auto ? !generator::current_function ? Section_Text : Section_Functions : sect;
+    instructions.emplace_back(obj);
 }
 
 std::string asm_::onStack(long offset, bool positive) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)

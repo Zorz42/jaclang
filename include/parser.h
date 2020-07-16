@@ -39,6 +39,7 @@ namespace parser {
         bool returnStatement();
         bool ifStatement();
         bool whileStatement();
+        bool globalVariableDeclaration();
     }
 
     inline std::vector<Branch*> scopes;

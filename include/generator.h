@@ -6,7 +6,7 @@ struct Variable {
     std::string name; // name
     std::string type;   // datatype
     long position; // position on stack
-    bool arg;
+    bool is_arg, global;
     
     int8_t size() const;
     std::string generateAddress() const;
@@ -43,7 +43,7 @@ namespace generator {
     namespace e {
         void systemFunctionCall();
         void functionDeclaration();
-        void variableDeclaration(unsigned long scope_on_stack);
+        void variableDeclaration();
         std::string expr(Branch &calculation);
         Function *functionCall(const Branch &function_branch);
         void variableSetting();
@@ -51,6 +51,7 @@ namespace generator {
         void ifStatement();
         void scope();
         void whileStatement();
+        void globalVariableDeclaration();
     }
 
     inline std::vector<Function> function_vector;
