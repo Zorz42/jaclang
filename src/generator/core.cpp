@@ -60,7 +60,7 @@ int8_t Variable::size() const {
 }
 
 std::string Variable::generateAddress() const {
-    return global ? "v" + name + "(%rip)" : asm_::onStack(position + (is_arg ? PUSHA_SIZE : 0), is_arg);
+    return position ? asm_::onStack(position) : "v" + name + "(%rip)";
 }
 
 int8_t Function::size() const {

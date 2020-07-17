@@ -10,8 +10,6 @@ void generator::e::variableDeclaration() {
     Variable obj; // obj variable
     obj.type = CURRENT.sub.at(0).name; // datatype
     obj.name = CURRENT.sub.at(1).name; // name
-    obj.is_arg = false;
-    obj.global = false;
     
     unsigned int i = 0;
 
@@ -25,7 +23,7 @@ void generator::e::variableDeclaration() {
     
     asm_::pushToStack(obj); // push to stack
     checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
-    asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(asm_::stack_pointer), obj.size()); // set variable on stack
+    asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(-asm_::stack_pointer), obj.size()); // set variable on stack
 }
 
 void generator::e::variableSetting() {
@@ -63,8 +61,7 @@ void generator::e::globalVariableDeclaration() {
     Variable obj; // obj variable
     obj.type = CURRENT.sub.at(0).name; // datatype
     obj.name = CURRENT.sub.at(1).name; // name
-    obj.is_arg = false;
-    obj.global = true;
+    obj.position = 0;
     
     unsigned int i = 0;
 

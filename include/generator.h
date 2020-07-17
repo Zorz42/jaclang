@@ -6,7 +6,6 @@ struct Variable {
     std::string name; // name
     std::string type;   // datatype
     long position; // position on stack
-    bool is_arg, global;
     
     int8_t size() const;
     std::string generateAddress() const;

@@ -12,13 +12,13 @@ void asm_::append_instruction(const std::string &inst, const std::string &arg1, 
     instructions.emplace_back(obj);
 }
 
-std::string asm_::onStack(long offset, bool positive) { // output asm value of offset on stack example: offset = 4 -> -4(%rbp)
-    return (positive ? "" : "-") + std::to_string(offset) + "(%rbp)"; // returns position on stack: -offset(%rbp)
+std::string asm_::onStack(long offset) { // output asm value of offset on stack example: offset = -4 -> -4(%rbp)
+    return std::to_string(offset) + "(%rbp)"; // returns position on stack: -offset(%rbp)
 }
 
 void asm_::pushToStack(Variable source) { // push to stack
     incStackPointer(source.size());
-    source.position = stack_pointer;
+    source.position = -stack_pointer;
     stack.push_back(source);
 }
 

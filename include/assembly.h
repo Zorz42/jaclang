@@ -10,7 +10,7 @@ namespace asm_ {
     void main();
 
     void append_instruction(const std::string &inst, const std::string &arg1 = "", const std::string &arg2 = "", int size = 0, Section sect=Section_Auto);
-    std::string onStack(long offset, bool positive=false);
+    std::string onStack(long offset);
 
     inline unsigned long current_scope_on_stack = 0;
     inline std::vector<Variable> stack, global_variables;

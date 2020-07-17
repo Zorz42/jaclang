@@ -49,9 +49,7 @@ void generator::e::functionDeclaration() { // declaring a function
         var_obj.name = ARGS.at(i + 1).name;
         var_obj.type = ARGS.at(i).name;
         arguments_types.push_back(ARGS.at(i).name);
-        var_obj.position = arg_stack_pos;
-        var_obj.is_arg = true;
-        var_obj.global = false;
+        var_obj.position = PUSHA_SIZE + arg_stack_pos;
         if(!var_obj.size())
             error::semanticError("Cannot declare a variable argument with size 0!");
         arg_stack_pos += primitive_datatype_sizes[var_obj.type];
@@ -121,7 +119,7 @@ Function *generator::e::functionCall(const Branch &function_branch) {
         error::semanticError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' does not exist!");
     
     for(unsigned long i = 0; i < argument_instruction_positions.size(); i++)
-        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target->args.at(i).position) + "(%rsp)";
+        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target->args.at(i).position - PUSHA_SIZE) + "(%rsp)";
     
     asm_::append_instruction("call", target->generateName()); // call function
     unsigned int target_size = target->size();
