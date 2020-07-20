@@ -22,8 +22,10 @@ void generator::e::variableDeclaration() {
     }
     
     asm_::pushToStack(obj); // push to stack
-    checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
-    asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(-asm_::stack_pointer), obj.size()); // set variable on stack
+    if(CURRENT.sub.at(2).name != "none") { // if it's definition
+        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(-asm_::stack_pointer), obj.size()); // set variable on stack
+    }
 }
 
 void generator::e::variableSetting() {
@@ -74,8 +76,12 @@ void generator::e::globalVariableDeclaration() {
     }
     
     asm_::global_variables.emplace_back(obj);
-    checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
-    asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
-    asm_::append_instruction("v" + obj.name + ":", "", "", 0, Section_Data);
-    asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
+    asm_::append_instruction(".globl", "g" + obj.name); // set variable
+    
+    if(CURRENT.sub.at(2).name != "none") { // if it's definition
+        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
+        asm_::append_instruction("g" + obj.name + ":", "", "", 0, Section_Data);
+        asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
+    }
 }

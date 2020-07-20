@@ -12,7 +12,7 @@ all: fullinstall
 clean:
 	@rm -rf obj
 
-fullinstall: init jpm build install
+fullinstall: init jpm jacmake build install
 
 init:
 	@$(PYTHON) install/dependencies.py
@@ -22,6 +22,9 @@ install:
 	@python3 install/install.py
 jpm:
 	@sudo python3 install/installjpm.py
+jacmake:
+	@sudo python3 install/installjacmake.py
+
 
 uninstall:
 	@sudo rm /usr/local/bin/jaclang

@@ -84,7 +84,7 @@ void init() { // initialize global variables
 
     file::asm_data = FIND(OS_SECTION_DATA) + 1; // locate each section
     file::asm_bss = FIND(OS_SECTION_BSS) + 1;
-    file::asm_text = FIND(OS_SECTION_TEXT) + 4;
+    file::asm_text = FIND(OS_SECTION_TEXT) + 1;
     file::asm_func = file::output_vector.size();
 
 #undef FIND

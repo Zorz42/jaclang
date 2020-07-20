@@ -46,15 +46,29 @@ void compile_jaclang() {
     file::read(input_file); // Read file
 
     lexer::main(); // convert code into tokens
+    
     parser::main(input_file); // convert tokens into syntax tree
     lexer::tokens.clear();
     file::input_text.clear();
+    
     if(optimize)
         optimizer::optimize(&parser::main_branch);
     if(parser::debug_show_ast)
         printAST(parser::main_branch);
+    
     generator::current_branch_scope = &parser::main_branch;
+    std::string main_func_name = "s" + input_file;
+    for(unsigned int i = 0; i < main_func_name.size(); i++) // replace all "/" with ".."
+        if(main_func_name.at(i) == '/') {
+            main_func_name.at(i) = '.';
+            main_func_name.insert(main_func_name.begin() + i, '.');
+            i++;
+        }
+    asm_::append_instruction(".globl", main_func_name);
+    asm_::append_instruction(main_func_name + ":");
     generator::main(true); // generate assembly tokens out of syntax tree
+    asm_::append_instruction("ret");
+    
     asm_::main(); // generate assembly code from assembly tokens and optimize it
     
     file::write(output_file); // writes to file

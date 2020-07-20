@@ -38,7 +38,6 @@ void generator::e::systemFunctionCall() // system function: __test__
 void generator::e::functionDeclaration() { // declaring a function
     // parse all branches and turn them into an object
     Function obj;
-    current_function = &obj;
     obj.type = CURRENT_NAME;
     obj.name = CURRENT_NAME_2;
     int arg_stack_pos = primitive_datatype_sizes[obj.type];
@@ -58,40 +57,43 @@ void generator::e::functionDeclaration() { // declaring a function
     
     Function *target = getFunction(obj.name, arguments_types);
     
-    if(target)
-        error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already declared!");
+    current_branch_scope_count++;
 
     generator::function_vector.push_back(obj);
-    current_branch_scope_count++;
     
-    if(CURRENT.name != "scope")
-        error::semanticError("Expected scope after function declaration!");
+    asm_::append_instruction(".globl", obj.generateName());
+    if(generator::current_branch_scope_count != generator::current_branch_scope->sub.size() && CURRENT.name == "scope") { // if there isn't scope, then it's just declaration instead of definition
+        if(target)
+            error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already defined!");
+        // save all variables and then retrieve them
+        
+        current_function = &obj;
+        std::vector<Variable> prev_stack = asm_::stack;
+        unsigned long prev_stack_pointer = asm_::stack_pointer, prev_biggest_stack_pointer = asm_::biggest_stack_pointer;
+        asm_::stack_pointer = 0;
+        asm_::biggest_stack_pointer = 0;
+        asm_::stack.clear();
+        current_branch_scope = &(CURRENT);
+        int8_t prev_current_register = asm_::current_register;
+        asm_::current_register = 0;
 
-    // save all variables and then retrieve them
-    
-    std::vector<Variable> prev_stack = asm_::stack;
-    unsigned long prev_stack_pointer = asm_::stack_pointer, prev_biggest_stack_pointer = asm_::biggest_stack_pointer;
-    asm_::stack_pointer = 0;
-    asm_::biggest_stack_pointer = 0;
-    asm_::stack.clear();
-    current_branch_scope = &(CURRENT);
-    int8_t prev_current_register = asm_::current_register;
-    asm_::current_register = 0;
+        asm_::append_instruction(obj.generateName() + ":");
+        asm_::append_instruction("pusha");
 
-    asm_::append_instruction(obj.generateName() + ":");
-    asm_::append_instruction("pusha");
+        generator::main(true);
 
-    generator::main(true);
+        asm_::append_instruction("popa");
+        asm_::append_instruction("ret");
 
-    asm_::append_instruction("popa");
-    asm_::append_instruction("ret");
-
-    asm_::current_register = prev_current_register;
-    current_branch_scope = &parser::main_branch;
-    asm_::stack = prev_stack;
-    asm_::stack_pointer = prev_stack_pointer;
-    asm_::biggest_stack_pointer = prev_biggest_stack_pointer;
-    current_function = nullptr;
+        asm_::current_register = prev_current_register;
+        current_branch_scope = &parser::main_branch;
+        asm_::stack = prev_stack;
+        asm_::stack_pointer = prev_stack_pointer;
+        asm_::biggest_stack_pointer = prev_biggest_stack_pointer;
+        current_function = nullptr;
+    }
+    else
+        current_branch_scope_count--;
 }
 
 #undef ARGS

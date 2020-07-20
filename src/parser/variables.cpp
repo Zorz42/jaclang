@@ -18,10 +18,14 @@ bool parser::e::variableDeclaration() {
             error::syntaxError("Expected name after value type name in variable declaration!");
         appendBranch(CURRENT->text, current_branch);
         parser::nextToken();
-        if(CURRENT->text != "=")
-            error::syntaxError("Expected '=' after value type name in variable declaration!");
-        parser::nextToken();
-        appendBranch(parser::expr(), current_branch);
+        if(CURRENT->text == "=") {
+            parser::nextToken();
+            appendBranch(parser::expr(), current_branch);
+        }
+        else {
+            parser::prevToken();
+            appendBranch("none", current_branch);
+        }
         appendBranch(current_branch, *current_branch_scope);
         return true;
     } else
