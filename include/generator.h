@@ -15,7 +15,9 @@ struct Function {
     std::string name;
     std::string type;
     std::vector<Variable> args;
-
+    
+    bool defined;
+    
     int8_t size() const;
     std::string generateName() const;
 };

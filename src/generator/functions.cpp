@@ -58,12 +58,14 @@ void generator::e::functionDeclaration() { // declaring a function
     Function *target = getFunction(obj.name, arguments_types);
     
     current_branch_scope_count++;
-
-    generator::function_vector.push_back(obj);
     
+    obj.defined = generator::current_branch_scope_count != generator::current_branch_scope->sub.size() && CURRENT.name == "scope";
+    if(!target)
+        generator::function_vector.push_back(obj);
     asm_::append_instruction(".globl", obj.generateName());
-    if(generator::current_branch_scope_count != generator::current_branch_scope->sub.size() && CURRENT.name == "scope") { // if there isn't scope, then it's just declaration instead of definition
-        if(target)
+    
+    if(obj.defined) { // if there isn't scope, then it's just declaration instead of definition
+        if(target && target->defined)
             error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already defined!");
         // save all variables and then retrieve them
         
