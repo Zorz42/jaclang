@@ -16,7 +16,7 @@ void generator::e::variableDeclaration() {
     if(!obj.size())
         error::semanticError("Cannot declare a variable with size 0!");
     for(const Variable &iter : asm_::stack) { // go through stack
-        if(iter.name == CURRENT.sub.at(1).name && i >= asm_::current_scope_on_stack) // if this variable already exists, then report error
+        if(iter.name == obj.name && i >= asm_::current_scope_on_stack) // if this variable already exists, then report error
             error::semanticError(iter.name + " already exists as a variable!");
         i++;
     }
@@ -42,6 +42,9 @@ Variable *generator::getVariable(const std::string &name) {
         for(Variable& iter : current_function->args)
             if(iter.name == name)
                 return &iter;
+    for(Variable &iter : asm_::local_variables) // go through local variables
+        if(iter.name == name)
+            return &iter;
     for(Variable &iter : asm_::global_variables) // go through global variables
         if(iter.name == name)
             return &iter;
@@ -63,25 +66,59 @@ void generator::e::globalVariableDeclaration() {
     Variable obj; // obj variable
     obj.type = CURRENT.sub.at(0).name; // datatype
     obj.name = CURRENT.sub.at(1).name; // name
-    obj.position = 0;
+    obj.position = CURRENT.sub.at(2).name == "none";
     
-    unsigned int i = 0;
-
+    bool exists = false;
+    
     if(!obj.size())
         error::semanticError("Cannot declare a variable with size 0!");
-    for(const Variable &iter : asm_::global_variables) { // go through stack
-        if(iter.name == CURRENT.sub.at(1).name && i >= asm_::current_scope_on_stack) // if this variable already exists, then report error
-            error::semanticError(iter.name + " already exists as a variable!");
-        i++;
+    for(Variable &iter : asm_::global_variables) // go through stack
+        if(iter.name == obj.name) { // if this variable already exists, then report error
+            if(iter.type == obj.type) {
+                exists = true;
+                if(iter.position != obj.position) // position 1 means declared and 0 means defined
+                    iter.position = 0;
+                else if(!iter.position && !obj.position) // if they are both 0
+                    error::semanticError("Redefinition of " + obj.name);
+                break;
+            }
+            else
+                error::semanticError("Redefinition of " + obj.name + " with type " + obj.type + " instead of " + iter.type);
+        }
+    
+    if(!exists) {
+        asm_::global_variables.emplace_back(obj);
+        asm_::append_instruction(".globl", "g" + obj.name); // set variable
     }
     
-    asm_::global_variables.emplace_back(obj);
-    asm_::append_instruction(".globl", "g" + obj.name); // set variable
-    
-    if(CURRENT.sub.at(2).name != "none") { // if it's definition
+    if(CURRENT.sub.at(2).name == "expr") { // if it's definition
         checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
         asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
         asm_::append_instruction("g" + obj.name + ":", "", "", 0, Section_Data);
         asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
+    }
+}
+
+void generator::e::localVariableDeclaration() {
+    Variable obj; // obj variable
+    obj.type = CURRENT.sub.at(0).name; // datatype
+    obj.name = CURRENT.sub.at(1).name; // name
+    obj.position = 2;
+    
+    if(!obj.size())
+        error::semanticError("Cannot declare a variable with size 0!");
+    for(const Variable &iter : asm_::local_variables) // go through stack
+        if(iter.name == obj.name) // if this variable already exists, then report error
+            error::semanticError(iter.name + " already exists as a variable!");
+    
+    
+    asm_::local_variables.emplace_back(obj); // set variable
+    
+    asm_::append_instruction("l" + obj.name + ":", "", "", 0, Section_Data);
+    asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
+    
+    if(CURRENT.sub.at(2).name == "expr") { // if it's definition
+        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
     }
 }

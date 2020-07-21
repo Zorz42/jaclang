@@ -59,3 +59,15 @@ bool parser::e::globalVariableDeclaration() {
     else
         return false;
 }
+
+bool parser::e::localVariableDeclaration() {
+    if(CURRENT->text == "local") {
+        parser::nextToken();
+        if(!variableDeclaration())
+            error::syntaxError("Invalid variable declaration after keyword local!");
+        current_branch_scope->sub.at(current_branch_scope->sub.size() - 1).name = "localVariableDeclaration";
+        return true;
+    }
+    else
+        return false;
+}

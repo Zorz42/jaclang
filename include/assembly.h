@@ -13,7 +13,7 @@ namespace asm_ {
     std::string onStack(long offset);
 
     inline unsigned long current_scope_on_stack = 0;
-    inline std::vector<Variable> stack, global_variables;
+    inline std::vector<Variable> stack, global_variables, local_variables;
     inline unsigned long stack_pointer = 0;
     inline unsigned long biggest_stack_pointer = 0;
 

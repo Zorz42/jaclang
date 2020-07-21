@@ -33,6 +33,7 @@ void generator::main(bool in_function) {
         if(CURRENT.name == "systemFunctionCall")  // choose appropriate generator for branch
             e::systemFunctionCall();
         CASE(globalVariableDeclaration)
+        CASE(localVariableDeclaration)
         CASE(variableDeclaration)
         CASE(expr, true, CURRENT)
         CASE(scope)
@@ -60,7 +61,7 @@ int8_t Variable::size() const {
 }
 
 std::string Variable::generateAddress() const {
-    return position ? asm_::onStack(position) : "g" + name + "(%rip)";
+    return position >= 0 && position <= 2 ? (position == 2 ? "l" : "g") + name + "(%rip)" : asm_::onStack(position);
 }
 
 int8_t Function::size() const {

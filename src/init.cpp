@@ -117,12 +117,12 @@ void init() { // initialize global variables
     lexer::keywords = {
         "return",
         "if",
+        "while",
+        "global",
+        "local",
     };
     asm_::size_keywords[1] = "byte";
     asm_::size_keywords[2] = "value";
     asm_::size_keywords[4] = "long";
     asm_::size_keywords[8] = "quad";
 }
-
-
-

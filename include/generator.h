@@ -51,6 +51,7 @@ namespace generator {
         void scope();
         void whileStatement();
         void globalVariableDeclaration();
+        void localVariableDeclaration();
     }
 
     inline std::vector<Function> function_vector;
