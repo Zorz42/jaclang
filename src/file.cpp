@@ -16,7 +16,7 @@ void file::read(const std::string &text) { // read file
     while(std::getline(input_file_obj, line)) // iterate through lines of input file
         raw_input_file.push_back(line);
     input_file_obj.close(); // close the file - file has been read
-    preprocessor::main(raw_input_file); // call preprocessor
+    preprocessor::main(&raw_input_file); // call preprocessor
 }
 
 void file::write(const std::string &file_output) { // write to file
