@@ -9,6 +9,7 @@ stdoutchar:
 main:
    ret
 
+.globl printchar
 printchar:
    mov stdoutchar@GOTPCREL(%rip), %rsi
    mov %al, (%rsi)

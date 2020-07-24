@@ -6,7 +6,7 @@ from wget import download
 
 install_folder = "/usr/local/share/"
 
-jacmake_version="1.0.1"
+jacmake_version="1.0.2"
 
 def installjacmake_main():
     try:
