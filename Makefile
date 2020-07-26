@@ -25,8 +25,4 @@ jpm:
 jacmake:
 	@sudo python3 install/installjacmake.py
 
-
-uninstall:
-	@sudo rm /usr/local/bin/jaclang
-
 onlyjaclang: init build install
