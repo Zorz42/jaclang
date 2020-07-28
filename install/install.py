@@ -1,14 +1,17 @@
-from os import system
+from os import path
 from platform import system as sys
+from shutil import move, copytree, copyfile, rmtree
 
 
 def install():
-    system("sudo mv jaclang /usr/local/bin/jaclang")
-    system("sudo cp -r data/jaclang-data /usr/local/share/")
+    move("jaclang", "/usr/local/bin/jaclang")
+    if path.isdir("/usr/local/share/jaclang-data"):
+        rmtree("/usr/local/share/jaclang-data")
+    copytree("data/jaclang-data", "/usr/local/share/jaclang-data")
 
     if sys() == 'Linux':
-        system("sudo cp data/jpm.bash /etc/bash_completion.d/")
-    print("Jaclang installed sucsessfully! Type jaclang in terminal for help.")
+        copyfile("data/jpm.bash", "/etc/bash_completion.d/")
+    print("Jaclang installed successfully! Type jaclang in terminal for help.")
 
 
 if __name__ == "__main__":

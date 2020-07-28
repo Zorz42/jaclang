@@ -9,6 +9,7 @@ install_folder = "/usr/local/share/"
 
 jpm_version = "1.5.4"
 
+
 def installjpm_main():
     try:
         ssl._create_default_https_context = ssl._create_unverified_context
@@ -25,14 +26,12 @@ def installjpm_main():
 
     system(f"sudo cp -r jpm-{jpm_version}/jpm-sources {install_folder}")
     system(f"sudo cp jpm-{jpm_version}/jpm /usr/local/bin")
-    
+
     dirs = [f"{install_folder}jpm-sources/to-install", "/usr/local/share/jaclang-libraries"]
-    
+
     for Dir in dirs:
         if not path.isdir(Dir):
             mkdir(Dir)
-    system(f"sudo chown {getuser()} {install_folder}jpm-sources")
-    system("sudo chmod +x /usr/local/bin/jpm")
     system(f"rm newerjpm.zip; rm -r jpm-{jpm_version}")
 
     print("DONE")

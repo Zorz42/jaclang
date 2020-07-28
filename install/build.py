@@ -1,39 +1,38 @@
-from __future__ import print_function
-
 from os import system, path, listdir, popen
 from platform import system as sys
 from subprocess import call
 from sys import stdout
 from threading import Thread
 
-objdir = "obj/"
-srcdir = "src/"
-includedir = "include/"
+obj_dir = "obj/"
+src_dir = "src/"
+include_dir = "include/"
 stdlib = "gnu++17"
 optimisation = "fast"
 warnings = "-Wall -Wshadow -Wextra -Wno-deprecated -Wno-macro-redefined"
 
 compiled_count = 0
-
 return_fail = False
-
-osplatform = None
+os_platform: str
 
 if sys() == "Linux":
-    osplatform = "linux"
+    os_platform = "linux"
 elif sys() == "Darwin":
-    osplatform = "OSX"
+    os_platform = "OSX"
 else:
     print("Unsupported platform!")
     exit(1)
 
+
 def getColumns():
     return int(popen('stty size', 'r').read().split()[1])
+
 
 def clearBar():
     for i in range(getColumns()):
         print(" ", end='')
     print("\r", end='')
+
 
 def print_progress_bar(compiled, total, length):
     print('[', end='')
@@ -44,19 +43,23 @@ def print_progress_bar(compiled, total, length):
     print("]\r", end='')
     stdout.flush()
 
+
 class BuildThread(Thread):
     def __init__(self, filename):
         Thread.__init__(self)
+        self.threadID = 0
         self.name = filename
 
     def run(self):
         global compiled_count
-        if osplatform == "linux":
-            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -I{objdir} " + \
-                              f"-o {objdir}{self.name}.o -c {srcdir}{self.name}.cpp"
-        elif osplatform == "OSX":
-            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{includedir} -o {objdir}{self.name}.o " + \
-                              f"-c {srcdir}{self.name}.cpp -include-pch {objdir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
+        compile_command = ""
+        if os_platform == "linux":
+            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{include_dir} -I{obj_dir} " \
+                              f"-o {obj_dir}{self.name}.o -c {src_dir}{self.name}.cpp -D IGNORE_MAIN_INCLUDE"
+        elif os_platform == "OSX":
+            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{include_dir}" \
+                              f" -o {obj_dir}{self.name}.o -c {src_dir}{self.name}.cpp "\
+                              f"-include-pch {obj_dir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
         current_thread = call(compile_command, shell=True)
         if current_thread != 0:
             success = "FAILED"
@@ -69,41 +72,42 @@ class BuildThread(Thread):
         for i in range(columns):
             print(" ", end='')
         print("\r", end='')
-        print(f"[{success}] [GCC] [-FLAGS] {srcdir}{self.name}.cpp -> {objdir}{self.name}.o")
+        print(f"[{success}] {src_dir}{self.name}.cpp -> {obj_dir}{self.name}.o")
         print_progress_bar(compiled_count, self.threadID, columns - 2)
+
 
 def build():
     print()
 
-    if not path.isdir(objdir):
-        system(f"mkdir {objdir}")
-    files = [file.split('.')[0] for file in listdir(srcdir) if not path.isdir(f"{srcdir}{file}")]
-    srcfilesdirs = [Dir for Dir in listdir(srcdir) if len(Dir.split('.')) == 1]
+    if not path.isdir(obj_dir):
+        system(f"mkdir {obj_dir}")
+    files = [file.split('.')[0] for file in listdir(src_dir) if not path.isdir(f"{src_dir}{file}")]
+    src_files_dirs = [Dir for Dir in listdir(src_dir) if len(Dir.split('.')) == 1]
 
-    for Dir in srcfilesdirs:
-        if not path.isdir(objdir + Dir):
-            system(f"mkdir {objdir}{Dir}")
-        files += [Dir + "/" + str(file.split('.')[0]) for file in listdir(srcdir + Dir) if len(file.split('.')) == 2]
+    for Dir in src_files_dirs:
+        if not path.isdir(obj_dir + Dir):
+            system(f"mkdir {obj_dir}{Dir}")
+        files += [Dir + "/" + str(file.split('.')[0]) for file in listdir(src_dir + Dir) if len(file.split('.')) == 2]
 
     threads = []
     build_header = False
 
-    for file in listdir(includedir):
-        if not path.isfile(f"{objdir}jaclang.h.gch") or path.getctime(f"{objdir}jaclang.h.gch") < \
-                path.getctime(includedir + file):
+    for file in listdir(include_dir):
+        if not path.isfile(f"{obj_dir}jaclang.h.gch") or path.getctime(f"{obj_dir}jaclang.h.gch") < \
+                path.getctime(include_dir + file):
             build_header = True
 
     for file in files:
-        if build_header or not path.isfile(f"{objdir}{file}.o") or \
-        path.getctime(f"{objdir}{file}.o") < path.getctime(f"{srcdir}{file}.cpp"):
+        if build_header or not path.isfile(f"{obj_dir}{file}.o") or \
+                path.getctime(f"{obj_dir}{file}.o") < path.getctime(f"{src_dir}{file}.cpp"):
             threads.append(BuildThread(file))
 
     if build_header:
         print("Building jaclang header...")
-        if osplatform == "linux":
-            system(f"g++ {warnings} -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
-        elif osplatform == "OSX":
-            system(f"g++ {warnings} -c -O{optimisation} {includedir}jaclang.h -o {objdir}jaclang.h.gch -std={stdlib}")
+        if os_platform == "linux":
+            system(f"g++ {warnings} -c -O{optimisation} {include_dir}jaclang.h -o {obj_dir}jaclang.h.gch -std={stdlib}")
+        elif os_platform == "OSX":
+            system(f"g++ {warnings} -c -O{optimisation} {include_dir}jaclang.h -o {obj_dir}jaclang.h.gch -std={stdlib}")
 
     if threads:
         print("Building jaclang...")
@@ -116,11 +120,12 @@ def build():
                 exit(1)
         clearBar()
 
-    objfiles = [objdir + file + ".o" for file in files]
+    objfiles = [obj_dir + file + ".o" for file in files]
     print("Linking object files... ")
-    if osplatform == "linux":
+    linker_return_code = 0
+    if os_platform == "linux":
         linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
-    elif osplatform == "OSX":
+    elif os_platform == "OSX":
         linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
 
     if linker_return_code != 0:

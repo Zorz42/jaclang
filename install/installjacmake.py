@@ -1,39 +1,37 @@
-import ssl
-from getpass import getuser
-from os import getcwd, path, mkdir, system
-from platform import system as sys
-from wget import download
+from os import system, path, remove
+from urllib.request import urlopen
+from tarfile import open as tar_open
+from shutil import copytree, rmtree, copyfile
 
 install_folder = "/usr/local/share/"
-
-jacmake_version="1.0.6"
-
-def installjacmake_main():
-    try:
-        ssl._create_default_https_context = ssl._create_unverified_context
-    except AttributeError:
-        pass
-    print()
-    print("Downloading jacmake ... ", end='', flush=True)
-    download(f"https://github.com/Zorz42/jacmake/archive/v{jacmake_version}.zip", "newerjacmake.zip", bar=None)
-    print("DONE")
-
-    print("Installing jacmake ... ", end='', flush=True)
-    from zipfile import ZipFile
-    with ZipFile(getcwd() + "/newerjacmake.zip", 'r') as zip_ref:
-        zip_ref.extractall(getcwd())
+jacmake_version = "1.0.6"
 
 
-    system(f"sudo cp -r jacmake-{jacmake_version}/jacmake-sources {install_folder}")
+def install_jacmake_main():
+    print("Installing jacmake.")
+    with urlopen(f"https://github.com/Zorz42/jacmake/archive/v{jacmake_version}.tar.gz") as f:
+        html = f.read()
+    with open("newerjacmake.tar.gz", "wb") as file:
+        file.seek(0)
+        file.write(html)
+        file.truncate()
 
-    system(f"sudo cp jacmake-{jacmake_version}/jacmake /usr/local/bin")
-    system("sudo chown " + getuser() + " " + install_folder + "jacmake-sources")
+    with tar_open(f"newerjacmake.tar.gz", "r:gz") as tar_file:
+        tar_file.extractall()
+
+    if path.isdir(f"{install_folder}jacmake-sources"):
+        rmtree(f"{install_folder}jacmake-sources")
+    copytree(f"jacmake-{jacmake_version}/jacmake-sources", f"{install_folder}jacmake-sources")
+
+    if path.isfile("/usr/local/bin/jacmake"):
+        remove("/usr/local/bin/jacmake")
+    copyfile(f"jacmake-{jacmake_version}/jacmake", "/usr/local/bin/jacmake")
     system("sudo chmod +x /usr/local/bin/jacmake")
 
-    print("DONE")
-    system(f"rm newerjacmake.zip; rm -r jacmake-{jacmake_version}")
+    remove("newerjacmake.tar.gz")
+    rmtree(f"jacmake-{jacmake_version}")
 
 
 if __name__ == "__main__":
-    installjacmake_main()
+    install_jacmake_main()
 

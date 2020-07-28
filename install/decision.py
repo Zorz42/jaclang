@@ -8,11 +8,11 @@ def decision(question):
     no_options = ["N", "NO"]
     while True:
         if python3:
-            yndecision = input(question + " [y,n]:")
+            yes_no_decision = input(question + " [y,n]:")
         else:
-            yndecision = raw_input(question + " [y,n]:")
+            yes_no_decision = raw_input(question + " [y,n]:")
 
-        if yndecision.upper() in yes_options:
+        if yes_no_decision.upper() in yes_options:
             return True
-        elif yndecision.upper() in no_options:
+        elif yes_no_decision.upper() in no_options:
             return False
