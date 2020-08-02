@@ -4,9 +4,9 @@ from subprocess import call
 from sys import stdout
 from threading import Thread
 
-obj_dir = "obj/"
-src_dir = "src/"
-include_dir = "include/"
+obj_dir = "Objects/"
+src_dir = "Sources/"
+include_dir = "Headers/"
 stdlib = "gnu++17"
 optimisation = "fast"
 warnings = "-Wall -Wshadow -Wextra -Wno-deprecated -Wno-macro-redefined"
@@ -120,13 +120,13 @@ def build():
                 exit(1)
         clearBar()
 
-    objfiles = [obj_dir + file + ".o" for file in files]
+    obj_files = [obj_dir + file + ".o" for file in files]
     print("Linking object files... ")
     linker_return_code = 0
     if os_platform == "linux":
-        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
+        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(obj_files), shell=True)
     elif os_platform == "OSX":
-        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(objfiles), shell=True)
+        linker_return_code = call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join(obj_files), shell=True)
 
     if linker_return_code != 0:
         print("Linking failed!")

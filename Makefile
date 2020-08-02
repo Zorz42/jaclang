@@ -1,28 +1,15 @@
-ifeq (,$(which python))
-    PYTHON := python
-endif
-ifeq (,$(which python3))
-    PYTHON := python3
-endif
-
-all: fullinstall
-
-.PHONY: clean install
+all: jacmake jpm build install
 
 clean:
 	@rm -rf obj
 
-fullinstall: init jacmake jpm build install
-
-init:
-	@sudo $(PYTHON) install/dependencies.py
 build:
-	@python3 install/build.py
+	@python3 InstallScripts/build.py
 install:
-	@sudo python3 install/install.py
+	@sudo python3 InstallScripts/install.py
 jpm:
-	@sudo python3 install/installjpm.py
+	@sudo python3 InstallScripts/installjpm.py
 jacmake:
-	@sudo python3 install/installjacmake.py
+	@sudo python3 InstallScripts/installjacmake.py
 
-onlyjaclang: init build install
+onlyjaclang: build install

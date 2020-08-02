@@ -1,11 +1,4 @@
 **/__pycache__
-**/obj
-**/.DS_Store
+Objects
 **/.idea
-**/CMakeLists.txt
-**/cmake-build-debug
-**/*.tmp
-**/venv
-**/*.pyc
-**/*.gch
-data/jpm.bash.save
+**/.DS_Store

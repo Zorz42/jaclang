@@ -1,1 +1,0 @@
-Your_database_for_install_completion_is_empty!_Please_type_jpm_updatedatabase.
