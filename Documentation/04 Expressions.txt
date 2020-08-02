@@ -1,0 +1,26 @@
+Expressions are used everywhere and they have some rules:
+
+Expressions can have +, -, *, /, <, >, == and braces,
+
+They can be in multiple lines without any backslashes.
+
+
+This can bring some ambiguity:
+
+
+10
+
+-10 + 5
+
+
+Here you clearly meant two expressions (10 and -10 + 5) but compiler recognized it as one ( 10 - 10 + 5 ).
+
+You can fix this by putting braces around first part:
+
+
+10
+
+(-10) + 5
+
+
+Comparisons will result in 1 if true and 0 if false.

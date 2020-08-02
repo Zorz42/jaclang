@@ -5,7 +5,7 @@ from shutil import copytree, rmtree, copyfile
 
 from initJacDir import initJacDir, install_dir
 
-jacmake_version = "1.1.2"
+jacmake_version = "1.1.3"
 
 
 def install_jacmake_main():

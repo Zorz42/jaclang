@@ -64,9 +64,9 @@ void init() { // initialize global variables
     
     // Read empty frame file
 #if OS_TYPE == 0 // Linux
-    std::string file_to_read = "/usr/local/share/jaclang-data/empty-gnu.s";
+    std::string file_to_read = "/usr/local/Jac/Data/empty-gnu.s";
 #elif OS_TYPE == 1 // MACOS
-    std::string file_to_read = "/usr/local/share/jaclang-data/empty-macho.s";
+    std::string file_to_read = "/usr/local/Jac/Data/empty-macho.s";
 #endif
     std::ifstream read_file(file_to_read);
 

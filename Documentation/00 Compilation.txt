@@ -1,9 +1,11 @@
-Compilation from jl code to assembly:
+Compilation from jaclang code to assembly:
 
-input.jl -> tokens -> ast -> out.s
+input.jl -> tokens -> ast -> assembly tokens -> out.s
 
-This whole process is done in main function in main.cpp.
+This whole process is done in main function in main.cpp in function compileJaclang().
 
-The first part is done by lexer (lexer/core.cpp), the second part is done by parser (parser/core.cpp), the third part is made by generator (generator/core.cpp).
+The first part is done by lexer (Lexer/core.cpp), the second part is done by parser (Parser/core.cpp), the third part is made by generator (Generator/core.cpp), the forth part is made by assembly generator (Assembly/core.cpp).
 
-All those files are in src (source files).
+Some optimizations to ast is done by optimizer (Optimizer/core.cpp)
+
+All those files are in Sources/

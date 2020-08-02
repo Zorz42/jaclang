@@ -1,6 +1,6 @@
 Single-line comments start with semicolon
 
-; this is comment
+; this is single line comment
 
 Multiline comments start with /* and end with */
 

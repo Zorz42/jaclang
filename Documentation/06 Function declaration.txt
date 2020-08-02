@@ -1,0 +1,11 @@
+You can declare function like this:
+
+[function return type] [function name]( [argument type] [argument name], ... )
+
+You can define function like this:
+
+[function return type] [function name]( [argument type] [argument name], ... ) {
+    [function body]
+}
+
+Functions work similar to global variables. You can also overload functions.

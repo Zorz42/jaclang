@@ -174,12 +174,12 @@ void handle_arguments(int argc, char **argv) {
         printVersion();
         exit(0);
     } else if((args.empty() && args_with_params.empty()) || help) { // if there are no arguments or help
-        std::ifstream help_file("/usr/local/share/jaclang-data/help-text.txt");
+        std::ifstream help_file("/usr/local/Jac/Data/help-text.txt");
         if(help_file.is_open()) {
             printVersion();
             std::cout << help_file.rdbuf(); // print help text
         } else {
-            std::cout << "\033[1;31mCannot open help-text file (/usr/local/share/jaclang-data/help-text.txt)!\033[0m"
+            std::cout << "\033[1;31mCannot open help-text file (/usr/local/Jac/Data/help-text.txt)!\033[0m"
                       << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
         }

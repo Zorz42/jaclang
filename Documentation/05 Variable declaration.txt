@@ -1,0 +1,26 @@
+You can define a variable like this:
+
+[variable type] [variable name] = [expression]
+
+You can declare it like this:
+
+[variable type] [variable name]
+
+Once variable is declared it can be accessed but cannot be defined or declared again. Same goes for definition. They cannot be accessed from funcitons of they are defined outside of them.
+
+
+Global variables are a little different:
+
+You can define a global variable like this:
+
+global [variable type] [variable name] = [expression]
+
+You can declare it like this:
+
+global [variable type] [variable name]
+
+Global variables can be declared as many times as wanted and then defined. You only have to define global variable in one file and declare it in the others. They will share that variable. Global varaibles can be accessed from anywhere from their definition/declaration on.
+
+Local variables are the same as global variables, but you have ti write them with local keyword instead of global, and they can be only for one file.
+
+Difference between normal variables and local variables is, that local variables can be acessed from anywhere from their definition/declaration on in that files, while normal only in their scope and all nested scopes except for function scopes.
