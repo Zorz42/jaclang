@@ -1,4 +1,4 @@
-all: jacmake jpm build install
+all: build install jacmake jpm
 
 clean:
 	@rm -rf obj

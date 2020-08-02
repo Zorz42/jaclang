@@ -6,6 +6,7 @@ from initJacDir import initJacDir, install_dir
 
 
 def install():
+    print("Installing Jaclang.")
     initJacDir()
 
     move("jaclang", f"{install_dir}Binaries/jaclang")
@@ -14,7 +15,6 @@ def install():
 
     if sys() == 'Linux':
         copyfile("data/jpm.bash", "/etc/bash_completion.d/")
-    print("Jaclang installed successfully! Type jaclang in terminal for help.")
 
 
 if __name__ == "__main__":

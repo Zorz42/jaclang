@@ -13,8 +13,7 @@ INSTALLATION PROCESS:
 
       make
 
-* jaclang is installed at /usr/local/bin.
-* jaclang assets/data are installed in /usr/local/share
+* jaclang is installed at /usr/local/Jac/.
 
 To execute separate stages of installation:
 

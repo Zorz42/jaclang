@@ -5,7 +5,7 @@ from shutil import copytree, rmtree, copyfile
 
 from initJacDir import initJacDir, install_dir
 
-jpm_version = "1.6.4"
+jpm_version = "1.6.6"
 
 
 def install_jpm_main():
