@@ -47,6 +47,7 @@ void generator::main(bool in_function) {
     }
     current_branch_scope_count = prev_branch_scope_count;
     if(in_function) {
+        asm_::biggest_stack_pointer += 16 - asm_::biggest_stack_pointer % 16; // round to ceil of base 16
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
     }
@@ -64,8 +65,9 @@ std::string Variable::generateAddress() const {
     return position >= 0 && position <= 2 ? (position == 2 ? "l" : "g") + name + "(%rip)" : asm_::onStack(position);
 }
 
-int8_t Function::size() const {
-    return getTypeSize(type);
+int Function::size() const {
+    int size = getTypeSize(type);
+    return size;
 }
 
 std::string Function::generateName() const {

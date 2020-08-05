@@ -1,11 +1,11 @@
-from os import system, path, remove, listdir
-from urllib.request import urlopen
-from tarfile import open as tar_open
+from os import path, remove, listdir, symlink
 from shutil import copytree, rmtree, copyfile
+from tarfile import open as tar_open
+from urllib.request import urlopen
 
 from initJacDir import initJacDir, install_dir
 
-jacmake_version = "1.1.3"
+jacmake_version = "1.2.3"
 
 
 def install_jacmake_main():
@@ -31,9 +31,8 @@ def install_jacmake_main():
 
     if path.isfile(f"{install_dir}Binaries/jacmake"):
         remove(f"{install_dir}Binaries/jacmake")
-    
-    copyfile(f"jacmake-{jacmake_version}/jacmake", f"{install_dir}Binaries/jacmake")
-    system(f"sudo chmod +x {install_dir}Binaries/jacmake")
+
+    symlink(f"{install_dir}Jacmake/main.py", f"{install_dir}Binaries/jacmake")
 
     remove("jacmake.tar.gz")
     rmtree(f"jacmake-{jacmake_version}")
@@ -41,4 +40,3 @@ def install_jacmake_main():
 
 if __name__ == "__main__":
     install_jacmake_main()
-

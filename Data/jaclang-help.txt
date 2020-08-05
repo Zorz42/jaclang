@@ -1,9 +1,7 @@
-Jaclang help: 
 !!!IT IS NOT RECOMMENDED TO RUN JACLANG ON IT'S OWN!!!
 !!!IF YOU WANT TO COMPILE .jl FILES, USE JACMAKE!!!
-usage:
-   jaclang - for help
-   jaclang [input file] - for compilation
+
+jaclang [input file] [options, parameters...] - for compilation
 
 options:
    --debug-*          - get more detailed compilation (for nerds):

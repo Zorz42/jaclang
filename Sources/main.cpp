@@ -94,23 +94,17 @@ void end_timer() {
               << std::endl;
 }
 
-void printVersion() {
-    std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
-}
-
 void handle_arguments(int argc, char **argv) {
     /*
      This iterates through arguments to parse them and separate --options and -o specific_parameters and normal_parameters
      */
-    bool help = false, display_version = false;
+    bool display_version = false;
     std::vector<std::string> args, complete_args, args_with_params;
     for(int i = 1; i < argc; i++)
         complete_args.emplace_back(argv[i]);
     for(const std::string &i : complete_args) {
         if(i[0] == '-' && i[1] == '-') {
-            if(i == "--help") // various cases for different options
-                help = true;
-            else if(i == "--debug") {
+            if(i == "--debug") {
                 lexer::debug_show_tokens = true;
                 parser::debug_show_ast = true;
             } else if(i == "--debug-tokens")
@@ -171,15 +165,15 @@ void handle_arguments(int argc, char **argv) {
     // do specific thing is before specified
     
     if(display_version) {
-        printVersion();
+        std::cout << "BETA " << MAJOR << "." << MINOR << "." << PATCH << std::endl;
         exit(0);
-    } else if((args.empty() && args_with_params.empty()) || help) { // if there are no arguments or help
-        std::ifstream help_file("/usr/local/Jac/Data/help-text.txt");
+    } else if(args.empty() && args_with_params.empty()) { // if there are no arguments or help
+        std::ifstream help_file("/usr/local/Jac/Data/jaclang-help.txt");
         if(help_file.is_open()) {
-            printVersion();
+            std::cout << "Jaclang beta " << MAJOR << "." << MINOR << "." << PATCH << " - help" << std::endl;
             std::cout << help_file.rdbuf(); // print help text
         } else {
-            std::cout << "\033[1;31mCannot open help-text file (/usr/local/Jac/Data/help-text.txt)!\033[0m"
+            std::cout << "\033[1;31mCannot open help-text file (/usr/local/Jac/Data/jaclang-help.txt)!\033[0m"
                       << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
         }

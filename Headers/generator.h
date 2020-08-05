@@ -18,7 +18,7 @@ struct Function {
     
     bool defined;
     
-    int8_t size() const;
+    int size() const;
     std::string generateName() const;
 };
 

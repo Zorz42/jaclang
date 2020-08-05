@@ -1,7 +1,7 @@
-all: build install jacmake jpm
+all: jacmake jpm build install
 
 clean:
-	@rm -rf obj
+	@rm -rf Objects
 
 build:
 	@python3 InstallScripts/build.py
