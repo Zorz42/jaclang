@@ -5,7 +5,7 @@ from urllib.request import urlopen
 
 from initJacDir import initJacDir, install_dir
 
-jpm_version = "1.7.0"
+jpm_version = "1.7.2"
 
 
 def install_jpm_main():
