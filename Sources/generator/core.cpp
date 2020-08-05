@@ -47,7 +47,8 @@ void generator::main(bool in_function) {
     }
     current_branch_scope_count = prev_branch_scope_count;
     if(in_function) {
-        asm_::biggest_stack_pointer += 16 - asm_::biggest_stack_pointer % 16; // round to ceil of base 16
+        if(asm_::biggest_stack_pointer % 16)
+            asm_::biggest_stack_pointer += 16 - asm_::biggest_stack_pointer % 16; // round to ceil of base 16
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
     }

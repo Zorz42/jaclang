@@ -141,7 +141,9 @@ void generator::e::returnStatement() { // a simple return statement
     if(primitive_datatype_sizes[current_function->type]) {
         checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub.at(0)));  // do calculation
         asm_::append_instruction("mov", asm_::availableRegister(current_function->size()), "+112(%rbp)", current_function->size());
-
+        
+        if(asm_::biggest_stack_pointer % 16)
+            asm_::biggest_stack_pointer += 16 - asm_::biggest_stack_pointer % 16; // round to ceil of base 16
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
     }
     else

@@ -74,43 +74,73 @@ void removeComments() {
     }
 }
 
+bool startsWith(const std::string& target, const std::string& phrase, unsigned long index) {
+    for(unsigned long i = 0; i < phrase.size(); i++)
+        if(target.at(i + index) != phrase.at(i))
+            return false;
+    return true;
+}
+
+#define LIBRARY_DIRECTORY "/usr/local/Jac/Libraries/"
+
+bool includeFile(const std::string& path, std::list<std::string>::iterator& line) {
+    // read file and insert it
+    std::ifstream input_file_obj(path); // all headers must end with .jlh
+    if(!input_file_obj.is_open()) { // if didn't open (file could be missing)
+        return false;
+    }
+
+    line->clear(); // remove include directive
+    
+    std::string line_;
+    while(std::getline(input_file_obj, line_)) // iterate through lines of input file
+        raw_input_file->insert(line, line_);
+    input_file_obj.close(); // close the file
+    return true;
+}
+
+std::string parseDirective(std::string line) {
+    unsigned int i = 0;
+    while(line.at(i) == ' ' || line.at(i) == '\t') // remove all spaces and tabs in front of directive
+        i++;
+    while(line.at(i) != ' ' && line.at(i) != '\t') // remove directive word
+        i++;
+    while(line.at(i) == ' ' || line.at(i) == '\t') // remove spaces and tabs between word and parameter
+        i++;
+
+    line.erase(line.begin(), line.begin() + i);
+    
+    i = 0;
+    while(line.at(line.size() - i - 1) == ' ' || line.at(line.size() - i - 1) == '\t')
+        i++;
+    
+    line.erase(line.end() - i, line.end());
+    return line;
+}
+
 void processIncludes() {
     std::string include_string = "include ";
+    std::string import_string = "import ";
     for(auto line = raw_input_file->begin(); line != raw_input_file->end(); line++) {
         for(unsigned long i = 0; i < line->length(); i++) {
-            if(line->at(i) == include_string.at(0)) { // check if line starts with "include"
-                bool exists = true;
-                for(unsigned long i2 = 1; i2 < include_string.length() && i2 < line->length(); i2++)
-                    if(line->at(i + i2) != include_string.at(i2)) {
-                        exists = false;
-                        break;
-                    }
-                if(exists) {
-                    std::string include_path = *line;
-                    include_path.erase(include_path.begin(), include_path.begin() + i + include_string.size()); // remove tabs and "include" in front
-                    
-                    while(include_path.back() == ' ') // remove spaces in the end
-                        include_path.pop_back();
-                    
-                    unsigned long spaces_in_front = 0; // remove spaces in the front
-                    while(include_path.at(spaces_in_front) == ' ')
-                        spaces_in_front++;
-                    include_path.erase(include_path.begin(), include_path.begin() + spaces_in_front);
-                    
-                    line->clear(); // remove include directive
-                    
-                    // read file and insert it
-                    std::ifstream input_file_obj(input_file_directory + include_path + ".jlh"); // all headers must end with .jlh
-                    if(!input_file_obj.is_open()) { // if didn't open (file could be missing)
-                        std::cout << "\033[1;31mFile '" << include_path << "' could not be included!\033[0m" << std::endl;
-                        error::terminate("SYNTAX ERROR", Err_Syntax_Error);
-                    }
-
-                    std::string line_;
-                    while(std::getline(input_file_obj, line_)) // iterate through lines of input file
-                        raw_input_file->insert(line, line_);
-                    input_file_obj.close(); // close the file
+            if(startsWith(*line, include_string, i)) {
+                std::string include_path = parseDirective(*line);
+                
+                if(!includeFile(input_file_directory + include_path + ".jlh", line)) {
+                    std::cout << "\033[1;31m" << *line << std::endl
+                    << "File '" << include_path << "' could not be included!\033[0m" << std::endl;
+                    error::terminate("SYNTAX ERROR", Err_Syntax_Error);
                 }
+            }
+            else if(startsWith(*line, import_string, i)) {
+                std::string include_path = parseDirective(*line);
+                
+                if(!includeFile(LIBRARY_DIRECTORY + include_path + "/Headers/__main__.jlh", line)) {
+                    std::cout << "\033[1;31m" << *line << std::endl
+                    << "Library '" << include_path << "' does not exist!\033[0m" << std::endl;
+                    error::terminate("SYNTAX ERROR", Err_Syntax_Error);
+                }
+                std::cout << include_path << std::endl;
             }
             else if(line->at(i) != ' ' && line->at(i) != '\t') // ignore spaces and tabs in the front
                 break;

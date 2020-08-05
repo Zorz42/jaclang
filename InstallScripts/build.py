@@ -1,7 +1,6 @@
 from os import system, path, listdir, mkdir
 from platform import system as sys
 from shutil import get_terminal_size
-from subprocess import call
 from threading import Thread
 
 obj_dir = "Objects/"
@@ -37,7 +36,7 @@ class BuildThread(Thread):
             compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{include_dir}" \
                               f" -o {obj_dir}{self.name}.o -c {src_dir}{self.name}.cpp " \
                               f"-include-pch {obj_dir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
-        current_thread = call(compile_command, shell=True)
+        current_thread = system(compile_command)
         if current_thread != 0:
             exit(1)
         else:
@@ -88,7 +87,7 @@ def build():
     if threads:
         print("Linking object files.")
 
-    if call(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join([f"{obj_dir}{file}.o" for file in files]), shell=True):
+    if system(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join([f"{obj_dir}{file}.o" for file in files])):
         exit(1)
 
 

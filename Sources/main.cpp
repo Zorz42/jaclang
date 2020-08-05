@@ -117,6 +117,10 @@ void handle_arguments(int argc, char **argv) {
                 display_version = true;
             else if(i == "--no-optimizations")
                 optimize = false;
+            else if(i == "--__dump-imports") {
+                quiet = true;
+                preprocessor::dump_imports = true;
+            }
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
                           << std::endl;
