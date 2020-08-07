@@ -8,7 +8,7 @@ src_dir = "Sources/"
 include_dir = "Headers/"
 stdlib = "gnu++17"
 optimisation = "2"
-warnings = "-Wall -Wshadow -Wextra"
+warnings = "-Wall -Wshadow -Wextra -Wno-deprecated"
 
 if sys() != "Darwin" and sys() != "Linux":
     print("Unsupported platform!")

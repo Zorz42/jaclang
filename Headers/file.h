@@ -1,5 +1,3 @@
-#pragma once
-
 namespace file {
     inline unsigned long asm_data;
     inline unsigned long asm_bss;

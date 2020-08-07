@@ -1,5 +1,3 @@
-#pragma once
-
 struct Branch {
 public:
     std::string name;

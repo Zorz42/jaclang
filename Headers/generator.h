@@ -1,5 +1,3 @@
-#pragma once
-
 #define PUSHA_SIZE 112
 
 struct Variable {

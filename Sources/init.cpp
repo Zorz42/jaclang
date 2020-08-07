@@ -2,8 +2,6 @@
 #include "jaclang.h"
 #endif
 
-#include <fstream>
-
 void init() { // initialize global variables
     asm_::available_registers[0] = {
             "bl",

@@ -1,5 +1,3 @@
-#pragma once
-
 enum TokenType {Undefined, Indent, Constant, String, Symbol, Operator, Keyword};
 
 struct Token {

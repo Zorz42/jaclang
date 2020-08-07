@@ -1,5 +1,3 @@
-#pragma once
-
 bool contains(std::vector<std::string> &list, const std::string &text);
 void printAST(Branch &obj);
 bool isInt(const std::string &text);

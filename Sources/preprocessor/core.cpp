@@ -4,8 +4,6 @@
 #include "jaclang.h"
 #endif
 
-#include <fstream>  // open file
-
 void removeComments();
 void processIncludes();
 

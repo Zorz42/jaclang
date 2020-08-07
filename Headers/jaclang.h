@@ -1,7 +1,5 @@
 // main header, which includes everything all files need
 
-#pragma once
-
 #include "version.h"
 
 #include <iostream>
@@ -9,6 +7,8 @@
 #include <algorithm>
 #include <list>
 #include <unordered_map>
+#include <fstream>
+#include <chrono>
 
 struct Branch;
 

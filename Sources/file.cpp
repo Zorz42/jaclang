@@ -2,8 +2,6 @@
 #include "jaclang.h"
 #endif
 
-#include <fstream>  // open file
-
 void file::read(const std::string &text) { // read file
     std::ifstream input_file_obj(text); // open file and store it in std::ifstream object
     if(!input_file_obj.is_open()) { // if didn't open (file missing,...)

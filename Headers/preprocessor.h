@@ -1,5 +1,3 @@
-#pragma once
-
 namespace preprocessor {
     inline bool dump_imports = false;
 
