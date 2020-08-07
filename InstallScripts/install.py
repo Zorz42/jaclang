@@ -13,9 +13,6 @@ def install():
     for file in listdir("Data"):
         copyfile(f"Data/{file}", f"{install_dir}Data/{file}")
 
-    if sys() == 'Linux':
-        copyfile("data/jpm.bash", "/etc/bash_completion.d/")
-
     if sys() == "Darwin":
         if path.isfile("/etc/paths.d/jaclang-paths"):
             remove("/etc/paths.d/jaclang-paths")

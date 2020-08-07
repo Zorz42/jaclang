@@ -8,7 +8,7 @@ src_dir = "Sources/"
 include_dir = "Headers/"
 stdlib = "gnu++17"
 optimisation = "2"
-warnings = "-Wall -Wshadow -Wextra"
+warnings = "-Wall -Wshadow -Wextra -Wno-deprecated -Wno-macro-redefined"
 
 if sys() != "Darwin" and sys() != "Linux":
     print("Unsupported platform!")
@@ -73,7 +73,7 @@ def build():
 
     if build_header:
         print("Building jaclang header.")
-        system(f"g++ {warnings} -pipe -m64 -c -O{optimisation} -g {include_dir}jaclang.h -o {obj_dir}jaclang.h.gch -std={stdlib}")
+        system(f"g++ {warnings} -c -O{optimisation} {include_dir}jaclang.h -o {obj_dir}jaclang.h.gch -std={stdlib}")
 
     if threads:
         print("Building jaclang source files.")
