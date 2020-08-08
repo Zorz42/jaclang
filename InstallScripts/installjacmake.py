@@ -5,7 +5,7 @@ from urllib.request import urlopen
 
 from initJacDir import initJacDir, install_dir
 
-jacmake_version = "1.2.6"
+jacmake_version = "1.2.7"
 
 
 def install_jacmake_main():
