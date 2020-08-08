@@ -6,6 +6,10 @@ from initJacDir import initJacDir, install_dir
 
 
 def install():
+    if not path.isfile("jaclang"):
+        print("You must first successfully build jaclang and then install it!")
+        exit(1)
+
     print("Installing Jaclang.")
     initJacDir()
 

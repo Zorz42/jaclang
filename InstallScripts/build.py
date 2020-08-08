@@ -6,9 +6,11 @@ from threading import Thread
 obj_dir = "Objects/"
 src_dir = "Sources/"
 include_dir = "Headers/"
-stdlib = "gnu++17"
+std = "gnu++17"
 optimisation = "2"
 warnings = "-Wall -Wshadow -Wextra -Wno-deprecated"
+
+build_fail = False
 
 if sys() != "Darwin" and sys() != "Linux":
     print("Unsupported platform!")
@@ -30,15 +32,16 @@ class BuildThread(Thread):
     def run(self):
         compile_command = ""
         if sys() == "Linux":
-            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{obj_dir} " \
+            compile_command = f"g++ {warnings} -m64 -O{optimisation} -std={std} -I{obj_dir} " \
                               f"-o {obj_dir}{self.name}.o -c {src_dir}{self.name}.cpp"
         elif sys() == "Darwin":
-            compile_command = f"g++ {warnings} -pipe -m64 -O{optimisation} -std={stdlib} -I{include_dir}" \
+            compile_command = f"g++ {warnings} -m64 -O{optimisation} -std={std}" \
                               f" -o {obj_dir}{self.name}.o -c {src_dir}{self.name}.cpp " \
                               f"-include-pch {obj_dir}jaclang.h.gch -D IGNORE_MAIN_INCLUDE"
-        current_thread = system(compile_command)
-        if current_thread != 0:
-            exit(1)
+        if system(compile_command):
+            global build_fail
+            build_fail = True
+            return
         else:
             BuildThread.compiled_count += 1
 
@@ -73,7 +76,7 @@ def build():
 
     if build_header:
         print("Building jaclang header.")
-        system(f"g++ {warnings} -pipe -m64 -c -O{optimisation} -g {include_dir}jaclang.h -o {obj_dir}jaclang.h.gch -std={stdlib}")
+        system(f"g++ {warnings} -m64 -O{optimisation} -std={std} -c {include_dir}jaclang.h -o{obj_dir}jaclang.h.gch")
 
     if threads:
         print("Building jaclang source files.")
@@ -82,12 +85,14 @@ def build():
             thread.start()
         for thread in threads:
             thread.join()
+            if build_fail:
+                exit(1)
         print(f"{' ' * getColumns()}\r", end='')
 
     if threads:
         print("Linking object files.")
 
-    if system(f"g++ -m64 -std={stdlib} -o jaclang " + " ".join([f"{obj_dir}{file}.o" for file in files])):
+    if system(f"g++ -m64 -o jaclang {' '.join([f'{obj_dir}{file}.o' for file in files])}"):
         exit(1)
 
 
