@@ -1,4 +1,4 @@
-from os import listdir, path, remove
+from os import listdir, path, remove, system
 from platform import system as sys
 from shutil import move, copyfile, which, copy
 
@@ -21,17 +21,16 @@ def install():
         if path.isfile("/etc/paths.d/jaclang-paths"):
             remove("/etc/paths.d/jaclang-paths")
         copy(f"{install_dir}Data/jaclang-paths.txt", "/etc/paths.d/jaclang-paths")
-        remove(f"{install_dir}Data/jaclang-paths.txt")
     elif sys() == "Linux":
-        with open(f"{path.expanduser('~')}/.bashrc") as bashrc_file:
-            lines = bashrc_file.read().split("\n")
-            path_line = "export PATH=${PATH}:/usr/local/Jac/Binaries"
-            if path_line not in lines:
-                bashrc_file.write(f"{path_line}\n")
+        if path.isfile("/etc/profile.d/jaclang-paths.sh"):
+            remove("/etc/profile.d/jaclang-paths.sh")
+        copy(f"{install_dir}Data/jaclang-paths.sh", "/etc/profile.d/jaclang-paths.sh")
     else:
         print("Unsupported os!")
         exit(1)
 
+    remove(f"{install_dir}Data/jaclang-paths.txt")
+    remove(f"{install_dir}Data/jaclang-paths.sh")
     print("Jaclang is installed.", end='')
 
     if which("jaclang") is None:

@@ -8,7 +8,7 @@ clean:
 build:
 	@python3 InstallScripts/build.py
 install:
-	@sudo python3 InstallScripts/install.py
+	@sudo env "PATH=${PATH}" python3 InstallScripts/install.py
 jpm:
 	@sudo python3 InstallScripts/installjpm.py
 jacmake:
