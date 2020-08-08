@@ -19,7 +19,11 @@ def install():
         copy(f"{install_dir}Data/jaclang-paths.txt", "/etc/paths.d/jaclang-paths")
         remove(f"{install_dir}Data/jaclang-paths.txt")
     elif sys() == "Linux":
-        pass
+        with open(f"{path.expanduser('~')}/.bashrc") as bashrc_file:
+            lines = bashrc_file.read().split("\n")
+            path_line = "export PATH=${PATH}:/usr/local/Jac/Binaries"
+            if path_line not in lines:
+                bashrc_file.write(f"{path_line}\n")
     else:
         print("Unsupported os!")
         exit(1)
