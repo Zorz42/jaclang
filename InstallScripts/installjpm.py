@@ -1,11 +1,11 @@
-from os import path, remove, listdir, symlink
+from os import path, remove, listdir, system
 from shutil import copytree, rmtree, copyfile
 from tarfile import open as tar_open
 from urllib.request import urlopen
 
 from initJacDir import initJacDir, install_dir
 
-jpm_version = "1.7.2"
+jpm_version = "1.7.6"
 
 
 def install_jpm_main():
@@ -32,7 +32,8 @@ def install_jpm_main():
     if path.isfile(f"{install_dir}Binaries/jpm"):
         remove(f"{install_dir}Binaries/jpm")
 
-    symlink(f"{install_dir}Jpm/main.py", f"{install_dir}Binaries/jpm")
+    copyfile(f"jpm-{jpm_version}/jpm", f"{install_dir}Binaries/jpm")
+    system(f"sudo chmod +x {install_dir}Binaries/jpm")
 
     remove("jpm.tar.gz")
     rmtree(f"jpm-{jpm_version}")
