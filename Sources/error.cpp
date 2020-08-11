@@ -31,7 +31,7 @@ void error::semanticError(const std::string &error) { // print out syntax error
 
 
 void error::terminate(const std::string &reason, ErrorType error_type) { // exit if error
-    std::cerr << "Jaclang terminated with exit code " << error_type << "." << std::endl // Terminated
+    std::cout << "Jaclang terminated with exit code " << error_type << "." << std::endl // Terminated
               << "Reason: " << reason << "." << std::endl; // reason
     exit(error_type); // exit
 }

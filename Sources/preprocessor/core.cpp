@@ -125,7 +125,7 @@ void processIncludes() {
                 std::string include_path = parseDirective(*line);
                 
                 if(!includeFile(input_file_directory + include_path + ".jlh", line)) {
-                    std::cout << "\033[1;31m" << *line << std::endl
+                    std::cerr << "\033[1;31m" << *line << std::endl
                     << "File '" << include_path << "' could not be included!\033[0m" << std::endl;
                     error::terminate("SYNTAX ERROR", Err_Syntax_Error);
                 }
@@ -134,11 +134,11 @@ void processIncludes() {
                 std::string include_path = parseDirective(*line);
                 
                 if(!includeFile(LIBRARY_DIRECTORY + include_path + "/Headers/__main__.jlh", line)) {
-                    std::cout << "\033[1;31m" << *line << std::endl
+                    std::cerr << "\033[1;31m" << *line << std::endl
                     << "Library '" << include_path << "' does not exist!\033[0m" << std::endl;
                     error::terminate("SYNTAX ERROR", Err_Syntax_Error);
                 }
-                std::cout << include_path << std::endl;
+                preprocessor::imports_to_dump.push_back(include_path);
             }
             else if(line->at(i) != ' ' && line->at(i) != '\t') // ignore spaces and tabs in the front
                 break;

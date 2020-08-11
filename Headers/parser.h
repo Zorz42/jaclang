@@ -1,5 +1,4 @@
 struct Branch {
-public:
     std::string name;
     std::vector<Branch> sub;
 };
