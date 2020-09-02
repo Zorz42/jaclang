@@ -1,3 +1,19 @@
+##################
+# GLOBAL OPTIONS #
+##################
+
+JAC_DIR = /usr/local/Jac
+
+all: jacmake jpm build install
+onlyjaclang: build install
+
+$(JAC_DIR):
+	mkdir -p $(JAC_DIR)/Binaries $(JAC_DIR)/Data $(JAC_DIR)/Libraries
+
+#########
+# BUILD #
+#########
+
 SRC_DIR = Sources
 OBJ_DIR = Objects
 HEADER_DIR = Headers
@@ -17,27 +33,9 @@ ifeq ($(UNAME_S), Darwin)
     GCC_SOURCE_FLAGS += -include-pch $(OBJ_DIR)/jaclang.h.gch -D IGNORE_MAIN_INCLUDE
 endif
 
-
-all: jacmake jpm build install
-
-_set:
-	export PATH=${PATH}:/usr/local/Jac/Binaries
-
 build: $(OBJ_DIR)/$(OBJ_FILES)
 	@echo Linking object files
 	@g++ -m64 -o jaclang $(OBJ_FILES)
-
-install:
-	@sudo env "PATH=${PATH}" python3 InstallScripts/install.py
-
-jpm:
-	@sudo python3 InstallScripts/installjpm.py
-
-jacmake:
-	@sudo python3 InstallScripts/installjacmake.py
-
-onlyjaclang: build install
-
 
 clean:
 	@rm -r Objects
@@ -53,3 +51,48 @@ $(OBJ_DIR)/jaclang.h.gch: $(HEADER_DIR)/*.h $(SRC_DIR)/*.cpp
 
 $(OBJ_DIR):
 	@mkdir $(OBJ_DIR)
+
+###########
+# JACMAKE #
+###########
+
+JACMAKE_VERSION = 1.2.9
+
+
+jacmake: $(JAC_DIR)
+	@echo Installing Jacmake
+	@rm -rf jacmake-*
+	@curl -L https://github.com/Zorz42/jacmake/archive/v$(JACMAKE_VERSION).tar.gz --output jacmake.tar.gz --silent
+	@tar -zxf jacmake.tar.gz
+	@rm -rf $(JAC_DIR)/Jacmake $(JAC_DIR)/Binaries/jacmake /usr/local/bin/jacmake
+	@mv jacmake-$(JACMAKE_VERSION)/Sources $(JAC_DIR)/Jacmake
+	@mv jacmake-$(JACMAKE_VERSION)/Data/* $(JAC_DIR)/Data
+	@ln -s $(JAC_DIR)/Jacmake/main.py $(JAC_DIR)/Binaries/jacmake
+	@ln -s $(JAC_DIR)/Binaries/jacmake /usr/local/bin/jacmake
+	@rm -r jacmake-$(JACMAKE_VERSION) jacmake.tar.gz 
+
+#######   
+# JPM #
+#######
+
+JACMAKE_VERSION = 1.2.9
+
+
+jacmake: $(JAC_DIR)
+        @echo Installing Jacmake
+        @rm -rf jacmake-*
+        @curl -L https://github.com/Zorz42/jacmake/archive/v$(JACMAKE_VERSION).tar.gz --output jacmake.tar.gz --silent
+        @tar -zxf jacmake.tar.gz
+        @rm -rf $(JAC_DIR)/Jacmake $(JAC_DIR)/Binaries/jacmake /usr/local/bin/jacmake
+        @mv jacmake-$(JACMAKE_VERSION)/Sources $(JAC_DIR)/Jacmake
+        @mv jacmake-$(JACMAKE_VERSION)/Data/* $(JAC_DIR)/Data
+        @ln -s $(JAC_DIR)/Jacmake/main.py $(JAC_DIR)/Binaries/jacmake
+        @ln -s $(JAC_DIR)/Binaries/jacmake /usr/local/bin/jacmake
+        @rm -r jacmake-$(JACMAKE_VERSION) jacmake.tar.gz
+
+###########
+# INSTALL #
+###########
+
+install:
+	@sudo env "PATH=${PATH}" python3 InstallScripts/install.py

@@ -1,4 +1,4 @@
-from os import listdir, path, remove, system
+from os import listdir, path, remove, system, symlink
 from platform import system as sys
 from shutil import move, copyfile, which, copy
 
@@ -16,28 +16,12 @@ def install():
     move("jaclang", f"{install_dir}Binaries/jaclang")
     for file in listdir("Data"):
         copyfile(f"Data/{file}", f"{install_dir}Data/{file}")
+    
+    if path.isfile(f"/usr/local/bin/jaclang"):
+        remove(f"/usr/local/bin/jaclang")
+    symlink(f"{install_dir}Binaries/jaclang", f"/usr/local/bin/jaclang")
 
-    if sys() == "Darwin":
-        if path.isfile("/etc/paths.d/jaclang-paths"):
-            remove("/etc/paths.d/jaclang-paths")
-        copy(f"{install_dir}Data/jaclang-paths.txt", "/etc/paths.d/jaclang-paths")
-    elif sys() == "Linux":
-        if path.isfile("/etc/profile.d/jaclang-paths.sh"):
-            remove("/etc/profile.d/jaclang-paths.sh")
-        copy(f"{install_dir}Data/jaclang-paths.sh", "/etc/profile.d/jaclang-paths.sh")
-    else:
-        print("Unsupported os!")
-        exit(1)
-
-    remove(f"{install_dir}Data/jaclang-paths.txt")
-    remove(f"{install_dir}Data/jaclang-paths.sh")
-    print("Jaclang is installed.", end='')
-
-    if which("jaclang") is None:
-        print(" If you want to use it you will have to restart your terminal session or run:")
-        print("     eval $(make _set)")
-    else:
-        print()
+    print("Jaclang is installed.")
 
 
 if __name__ == "__main__":
