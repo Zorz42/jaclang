@@ -7,7 +7,7 @@
 std::string input_file;
 std::string output_file;
 
-bool quiet = false, optimize = false;
+bool quiet = false, optimize = false, dump_imports = false;
 
 long start;
 void init();
@@ -70,6 +70,9 @@ void compile_jaclang() {
     asm_::main(); // generate assembly code from assembly tokens and optimize it
     
     file::write(output_file); // writes to file
+    
+    for(const std::string& import : preprocessor::imports_to_dump)
+        std::cout << import << std::endl;
 }
 
 void start_timer() {
@@ -117,7 +120,7 @@ void handle_arguments(int argc, char **argv) {
                 optimize = false;
             else if(i == "--__dump-imports") {
                 quiet = true;
-                preprocessor::dump_imports = true;
+                dump_imports = true;
             }
             else {
                 std::cout << "\033[1;31m" << i << " is not a valid argument!\033[0m"
