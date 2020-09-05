@@ -71,8 +71,9 @@ void compile_jaclang() {
     
     file::write(output_file); // writes to file
     
-    for(const std::string& import : preprocessor::imports_to_dump)
-        std::cout << import << std::endl;
+    if(dump_imports)
+        for(const std::string& import : preprocessor::imports_to_dump)
+            std::cout << import << std::endl;
 }
 
 void start_timer() {
