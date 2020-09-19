@@ -59,9 +59,9 @@ void compile_jaclang() {
     for(unsigned int i = 0; i < main_func_name.size(); i++) // replace all "/" with ".."
         if(main_func_name.at(i) == '/') {
             main_func_name.at(i) = '.';
-            main_func_name.insert(main_func_name.begin() + i, '.');
-            i++;
-        }
+        } else if((main_func_name.at(i) < 'A' || main_func_name.at(i) > 'Z') &&
+                  (main_func_name.at(i) < 'a' || main_func_name.at(i) > 'z'))
+            main_func_name.erase(i, 1);
     asm_::append_instruction(".globl", main_func_name);
     asm_::append_instruction(main_func_name + ":");
     generator::main(true); // generate assembly tokens out of syntax tree
@@ -179,16 +179,16 @@ void handle_arguments(int argc, char **argv) {
             std::cout << "Jaclang beta " << MAJOR << "." << MINOR << "." << PATCH << " - help" << std::endl;
             std::cout << help_file.rdbuf(); // print help text
         } else {
-            std::cout << "\033[1;31mCannot open help-text file (/usr/local/Jac/Data/jaclang-help.txt)!\033[0m"
+            std::cerr << "\033[1;31mCannot open help-text file (/usr/local/Jac/Data/jaclang-help.txt)!\033[0m"
                       << std::endl; // file missing
             error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
         }
         exit(0);
     } else if(args.size() > 1) { // if there is more args than 1
-        std::cout << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
+        std::cerr << "\033[1;31mOnly one input file is allowed for now!\033[0m" << std::endl;
         error::terminate("INVALID ARGUMENT COUNT", Err_Arg_Count);
     } else if(args.empty()) {
-        std::cout << "\033[1;31mNo input file!\033[0m" << std::endl;
+        std::cerr << "\033[1;31mNo input file!\033[0m" << std::endl;
         error::terminate("INVALID ARGUMENT COUNT", Err_Arg_Count);
     }
     args_with_params.clear();

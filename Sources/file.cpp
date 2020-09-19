@@ -5,7 +5,7 @@
 void file::read(const std::string &text) { // read file
     std::ifstream input_file_obj(text); // open file and store it in std::ifstream object
     if(!input_file_obj.is_open()) { // if didn't open (file missing,...)
-        std::cout << "\033[1;31mFile does not exist!\033[0m" << std::endl;
+        std::cerr << "\033[1;31mFile does not exist!\033[0m" << std::endl;
         error::terminate("UNABLE TO OPEN FILE", Err_Unable_To_Open_File);
     }
 
