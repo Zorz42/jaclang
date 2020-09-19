@@ -4,10 +4,9 @@
 jaclang [input file] [options, parameters...] - for compilation
 
 options:
-   --debug-*          - get more detailed compilation (for nerds):
-      --debug-ast       - show ast
-      --debug-tokens    - show tokens
-      --debug           - show ast and tokens
+   --debug-ast        - show ast
+   --debug-tokens     - show tokens
+   --debug            - show ast and tokens
    --quiet            - say nothing except errors and debug messages if specified
    --version          - display version
    --no-optimizations - do not optimize code (for debugging)
