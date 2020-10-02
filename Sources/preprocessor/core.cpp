@@ -57,7 +57,7 @@ bool startsWith(const std::string phrase, std::list<char>::iterator iter) {
     for(unsigned long i = 0; i < phrase.size(); i++)
         if(*iter++ != phrase.at(i))
             return false;
-    return true;
+    return *iter == ' ' || *iter == '\t';
 }
 
 bool includeFile(const std::string path, std::list<char>::iterator iter) {
@@ -70,11 +70,15 @@ bool includeFile(const std::string path, std::list<char>::iterator iter) {
     std::list<char>::iterator start = iter;
     while(*iter != '\n') iter++;
     file::input_text.erase(start, iter); // remove include directive
+    start = iter;
+    start--;
     
     std::string line;
     while(std::getline(input_file_obj, line)) // iterate through lines of input file
         for(char c : line)
             file::input_text.insert(iter, c);
+    
+    preprocess(start, iter, path);
     input_file_obj.close(); // close the file
     return true;
 }
@@ -98,17 +102,14 @@ std::string parseDirective(std::list<char>::iterator i) {
     while(*i == ' ' || *i == '\t') // remove spaces and tabs between word and parameter
         i++;
     
-    while(*i != '\n')
+    while(*i != '\n' && *i != ' ' && *i != '\t')
         result.push_back(*i++);
     return result;
 }
 
 void processIncludes(std::list<char>::iterator start, std::list<char>::iterator end) {
-    std::string include_string = "include ";
-    std::string import_string = "import ";
-    
     for(auto i = start; i != end; i++) {
-        if(startsWith(include_string, i)) {
+        if(startsWith("include", i)) {
             std::string include_path = parseDirective(i);
             
             if(!includeFileFromDirs(include_path, i)) {
@@ -116,7 +117,7 @@ void processIncludes(std::list<char>::iterator start, std::list<char>::iterator 
                 error::terminate("SYNTAX ERROR", Err_Syntax_Error);
             }
         }
-        else if(startsWith(import_string, i)) {
+        else if(startsWith("import", i)) {
             std::string include_path = parseDirective(i);
             
             if(!includeFile("/usr/local/Jac/Libraries/" + include_path + "/Headers/__main__.jlh", i)) {
@@ -128,30 +129,7 @@ void processIncludes(std::list<char>::iterator start, std::list<char>::iterator 
         else if(*i != ' ' && *i != '\t')
             while(i != end && *i != '\n')
                 i++;
+        if(i == end)
+            i--;
     }
-    
-    /*for(unsigned long iter = 0; iter < raw_input_file->size(); iter++)
-        for(unsigned long i = 0; i < line.length(); i++) {
-            if(startsWith(line, include_string, i)) {
-                std::string include_path = parseDirective(line);
-                
-                if(!includeFileFromDirs(include_path, iter)) {
-                    std::cerr << "\033[1;31m" << line << std::endl
-                    << "File '" << include_path << "' could not be included!\033[0m" << std::endl;
-                    error::terminate("SYNTAX ERROR", Err_Syntax_Error);
-                }
-            }
-            else if(startsWith(line, import_string, i)) {
-                std::string include_path = parseDirective(line);
-                
-                if(!includeFile(LIBRARY_DIRECTORY + include_path + "/Headers/__main__.jlh", iter)) {
-                    std::cerr << "\033[1;31m" << line << std::endl
-                    << "Library '" << include_path << "' does not exist!\033[0m" << std::endl;
-                    error::terminate("SYNTAX ERROR", Err_Syntax_Error);
-                }
-                preprocessor::imports_to_dump.push_back(include_path);
-            }
-            else if(line.at(i) != ' ' && line.at(i) != '\t') // ignore spaces and tabs in the front
-                break;
-        }*/
 }
