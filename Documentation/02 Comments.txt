@@ -1,12 +1,12 @@
-Single-line comments start with semicolon
+Single-line comments start with a hash '#'
 
-; this is single line comment
+# this is a single line comment
 
 Multiline comments start with /* and end with */
 
 /* 
 this
-is 
-multiline
+is
+a multiline
 comment 
 */
