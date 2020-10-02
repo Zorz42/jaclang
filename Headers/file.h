@@ -6,9 +6,10 @@ namespace file {
 
     inline std::list<char> input_text; // Text of the input file
     inline std::vector<std::string> output_vector; // Vector of lines of code (output file)
+    inline std::string input_file, output_file;
 
-    void read(const std::string &text); // Read input file and put result in inputFileVector
-    void write(const std::string &output); // When finished compiling, c++ code will be on outputFileVector. Transfer it to output file
+    void read(); // Read input file and put result in input_file_vector
+    void write(); // When finished compiling, c++ code will be on output_file_vector. Transfer it to output file
 
     std::string getLine(int LINE); // Get text of line
 

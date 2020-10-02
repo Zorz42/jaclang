@@ -7,9 +7,9 @@ options:
    --debug-ast        - show ast
    --debug-tokens     - show tokens
    --debug            - show ast and tokens
-   --quiet            - say nothing except errors and debug messages if specified
    --version          - display version
    --no-optimizations - do not optimize code (for debugging)
 
 parameters:
    -o [output file] - set output file
+   -i [include_dir] - add include directory

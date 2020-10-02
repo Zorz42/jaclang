@@ -62,30 +62,28 @@ void init() { // initialize global variables
     
     // Read empty frame file
 #if OS_TYPE == 0 // Linux
-    std::string file_to_read = "/usr/local/Jac/Data/empty-gnu.s";
+#define FILE_TO_READ "/usr/local/Jac/Data/empty-gnu.s"
 #elif OS_TYPE == 1 // MACOS
-    std::string file_to_read = "/usr/local/Jac/Data/empty-macho.s";
+#define FILE_TO_READ "/usr/local/Jac/Data/empty-macho.s"
 #endif
-    std::ifstream read_file(file_to_read);
+    std::ifstream read_file(FILE_TO_READ);
 
     std::string line;
     if(!read_file.is_open()) {
-        std::cout << "\033[1;31mCannot open empty assembly frame file!\033[0m" << std::endl; // file missing
+        std::cout << "\033[1;31mCannot open empty assembly file!\033[0m" << std::endl; // file missing
         error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
     }
+    
     while(std::getline(read_file, line))
         file::output_vector.push_back(line);
 
-    parser::scopes = {&parser::main_branch};
+    parser::scopes.push(&parser::main_branch);
 
-#define FIND(x) find(file::output_vector, x)
-
-    file::asm_data = FIND(OS_SECTION_DATA) + 1; // locate each section
-    file::asm_bss = FIND(OS_SECTION_BSS) + 1;
-    file::asm_text = FIND(OS_SECTION_TEXT) + 1;
+    file::asm_data = find(file::output_vector, OS_SECTION_DATA) + 1; // locate each section
+    file::asm_bss = find(file::output_vector, OS_SECTION_BSS) + 1;
+    file::asm_text = find(file::output_vector, OS_SECTION_TEXT) + 1;
     file::asm_func = file::output_vector.size();
 
-#undef FIND
     // define all primitive datatypes and their sizes and also their matches
     
     generator::primitive_datatype_sizes.reserve(5);

@@ -6,8 +6,7 @@
 
 bool parser::e::ifStatement() { // simple if statement
     if(CURRENT->text == "if") {
-        Branch current_branch;
-        current_branch.name = "ifStatement";
+        Branch current_branch("ifStatement");
         parser::nextToken();
         appendBranch(parser::expr(), current_branch);
         appendBranch(current_branch, *current_branch_scope);

@@ -19,7 +19,7 @@ void lexer::main() { // main lexer function
     bool in_string_q = false, in_string_dq = false;  // if in string with single quotes or double quotes
 
 #define CHAR *c_iter // shortcut to get current character of string that for loop is parsing
-
+    
     for(c_iter = file::input_text.begin(); c_iter != file::input_text.end(); c_iter++) {
         if(!IN_STRING && (CHAR == ' ' || CHAR == '	' || CHAR == '\n')) {
             // tabs, spaces and newlines separate tokens if not in string

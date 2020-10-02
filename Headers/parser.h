@@ -1,10 +1,13 @@
 struct Branch {
     std::string name;
     std::vector<Branch> sub;
+    
+    Branch() = default;
+    Branch(std::string name) : name(name) {}
 };
 
 namespace parser {
-    void main(std::string root_name);
+    void main();
 
     bool isSystemIndent(std::string indent);
 
@@ -40,5 +43,5 @@ namespace parser {
         bool localVariableDeclaration();
     }
 
-    inline std::vector<Branch*> scopes;
+    inline std::stack<Branch*> scopes;
 }

@@ -37,6 +37,7 @@ struct DatatypeMatches {
 };
 
 namespace generator {
+    void initialMain();
     void main(bool inFunction=false);
 
     namespace e {

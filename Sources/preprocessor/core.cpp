@@ -6,39 +6,44 @@
 
 void removeComments();
 void processIncludes();
-
 void convertIntoString();
+std::string getDirectoryOfFile(std::string path);
 
-void getInputFileDirectory();
-std::string input_file_directory;
-extern std::string input_file;
+std::vector<std::string> *raw_input_file;
+std::stack<std::string> file_dirs;
 
-std::list<std::string> *raw_input_file;
-
-void preprocessor::main(std::list<std::string> *raw_input_file_) {
+void preprocessor::main() {
     /*
      Preprocessor removes comments and follows directives
      */
-    raw_input_file = raw_input_file_;
-    getInputFileDirectory();
+    
+    file_dirs.push(getDirectoryOfFile(file::input_file));
     
     removeComments();
-    processIncludes();
-    removeComments();
+    //processIncludes();
+    //removeComments();
     
-    convertIntoString();
+    //convertIntoString();
 }
 
-void getInputFileDirectory() {
-    input_file_directory = input_file; // pops characters until '/' to get directory
-    while(!input_file_directory.empty() && input_file_directory.back() != '/')
-        input_file_directory.pop_back();
-    if(input_file_directory.empty()) // if there is just "example.jl" (for example) for input file, then do "./"
-        input_file_directory = "./";
+std::string getDirectoryOfFile(std::string path) {
+    while(!path.empty() && path.back() != '/')
+        path.pop_back();
+    // if there is just "example.jl" for input file, then do "./"
+    return path.empty() ? "./" : path;
 }
 
 void removeComments() {
-    bool in_multiline_comment = false;
+    std::list<char>::iterator start, end;
+    for(auto i = file::input_text.begin(); i != file::input_text.end(); i++) {
+        if(*i == ';') {
+            for(start = i; *i != '\n' && i != file::input_text.end(); i++);
+            end = i;
+            file::input_text.erase(start, end);
+        }
+    }
+    
+    /*bool in_multiline_comment = false;
     unsigned long start = 0;
     
     for(std::string &line : *raw_input_file) {
@@ -69,10 +74,10 @@ void removeComments() {
                 }
             }
         }
-    }
+    }*/
 }
 
-bool startsWith(const std::string& target, const std::string& phrase, unsigned long index) {
+bool startsWith(const std::string &target, const std::string& phrase, unsigned long index) {
     for(unsigned long i = 0; i < phrase.size(); i++)
         if(target.at(i + index) != phrase.at(i))
             return false;
@@ -81,20 +86,30 @@ bool startsWith(const std::string& target, const std::string& phrase, unsigned l
 
 #define LIBRARY_DIRECTORY "/usr/local/Jac/Libraries/"
 
-bool includeFile(const std::string& path, std::list<std::string>::iterator& line) {
+bool includeFile(const std::string& path, unsigned long line) {
     // read file and insert it
     std::ifstream input_file_obj(path); // all headers must end with .jlh
     if(!input_file_obj.is_open()) { // if didn't open (file could be missing)
         return false;
     }
-
-    line->clear(); // remove include directive
+    
+    raw_input_file->at(line).clear(); // remove include directive
     
     std::string line_;
     while(std::getline(input_file_obj, line_)) // iterate through lines of input file
-        raw_input_file->insert(line, line_);
+        raw_input_file->insert(raw_input_file->begin() + line, line_);
     input_file_obj.close(); // close the file
     return true;
+}
+
+bool includeFileFromDirs(const std::string& file_name, unsigned long line) {
+    if(includeFile(file_dirs.top() + file_name + ".jlh", line))
+        return true;
+    
+    for(const std::string& i : preprocessor::include_dirs)
+        if(includeFile(i + file_name + ".jlh", line))
+            return true;
+    return false;
 }
 
 std::string parseDirective(std::string line) {
@@ -119,32 +134,34 @@ std::string parseDirective(std::string line) {
 void processIncludes() {
     std::string include_string = "include ";
     std::string import_string = "import ";
-    for(auto line = raw_input_file->begin(); line != raw_input_file->end(); line++) {
-        for(unsigned long i = 0; i < line->length(); i++) {
-            if(startsWith(*line, include_string, i)) {
-                std::string include_path = parseDirective(*line);
+#define line raw_input_file->at(iter)
+    for(unsigned long iter = 0; iter < raw_input_file->size(); iter++)
+        for(unsigned long i = 0; i < line.length(); i++) {
+            if(startsWith(line, include_string, i)) {
+                std::string include_path = parseDirective(line);
                 
-                if(!includeFile(input_file_directory + include_path + ".jlh", line)) {
-                    std::cerr << "\033[1;31m" << *line << std::endl
+                if(!includeFileFromDirs(include_path, iter)) {
+                    std::cerr << "\033[1;31m" << line << std::endl
                     << "File '" << include_path << "' could not be included!\033[0m" << std::endl;
                     error::terminate("SYNTAX ERROR", Err_Syntax_Error);
                 }
             }
-            else if(startsWith(*line, import_string, i)) {
-                std::string include_path = parseDirective(*line);
+            else if(startsWith(line, import_string, i)) {
+                std::string include_path = parseDirective(line);
                 
-                if(!includeFile(LIBRARY_DIRECTORY + include_path + "/Headers/__main__.jlh", line)) {
-                    std::cerr << "\033[1;31m" << *line << std::endl
+                if(!includeFile(LIBRARY_DIRECTORY + include_path + "/Headers/__main__.jlh", iter)) {
+                    std::cerr << "\033[1;31m" << line << std::endl
                     << "Library '" << include_path << "' does not exist!\033[0m" << std::endl;
                     error::terminate("SYNTAX ERROR", Err_Syntax_Error);
                 }
                 preprocessor::imports_to_dump.push_back(include_path);
             }
-            else if(line->at(i) != ' ' && line->at(i) != '\t') // ignore spaces and tabs in the front
+            else if(line.at(i) != ' ' && line.at(i) != '\t') // ignore spaces and tabs in the front
                 break;
         }
-    }
 }
+
+#undef line
 
 void convertIntoString() {
     for(const std::string &line : *raw_input_file) { // append every single line
@@ -152,5 +169,4 @@ void convertIntoString() {
             file::input_text.push_back(line.at(i));
         file::input_text.push_back('\n');
     }
-    file::input_text.push_back(' '); // So that lexer stores the last token for certainty
 }

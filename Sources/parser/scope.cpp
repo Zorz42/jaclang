@@ -8,11 +8,9 @@
 
 bool parser::e::beginScope() { // a simple scope begin
     if(CURRENT->text == "{") {
-        Branch scope;
-        scope.name = "scope";
-        appendBranch(scope, *current_branch_scope);
+        appendBranch(Branch("scope"), *current_branch_scope);
         current_branch_scope = &(current_branch_scope->sub.back());
-        scopes.push_back(current_branch_scope);
+        scopes.push(current_branch_scope);
         return true;
     } else
         return false;
@@ -22,8 +20,8 @@ bool parser::e::endScope() { // a simple scope end
     if(CURRENT->text == "}") {
         if(scopes.size() < 2)
             error::syntaxError("There is no scope to end");
-        scopes.pop_back();
-        current_branch_scope = scopes.back();
+        scopes.pop();
+        current_branch_scope = scopes.top();
         return true;
     } else
         return false;

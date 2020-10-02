@@ -2,27 +2,24 @@
 #include "jaclang.h"
 #endif
 
-void file::read(const std::string &text) { // read file
-    std::ifstream input_file_obj(text); // open file and store it in std::ifstream object
+void file::read() { // read file
+    std::ifstream input_file_obj(input_file); // open file and store it in std::ifstream object
     if(!input_file_obj.is_open()) { // if didn't open (file missing,...)
         std::cerr << "\033[1;31mFile does not exist!\033[0m" << std::endl;
         error::terminate("UNABLE TO OPEN FILE", Err_Unable_To_Open_File);
     }
-
-    std::string line;
-    std::list<std::string> raw_input_file;
-    while(std::getline(input_file_obj, line)) // iterate through lines of input file
-        raw_input_file.push_back(line);
-    input_file_obj.close(); // close the file - file has been read
-    preprocessor::main(&raw_input_file); // call preprocessor
+    
+    input_text.assign((std::istreambuf_iterator<char>(input_file_obj)),
+                      std::istreambuf_iterator<char>());
+    
+    preprocessor::main(); // call preprocessor
 }
 
-void file::write(const std::string &file_output) { // write to file
-    std::ofstream output_file_obj(file_output); // open file (or create)
+void file::write() { // write to file
+    std::ofstream output_file_obj(file::output_file); // open file (or create)
     if(output_file_obj.is_open()) // if file was opened (or created)
         for(auto &t : file::output_vector) // add line from vector
             output_file_obj << t << "\n"; // add new line so that the code wont be in the same line
-
     output_file_obj.close(); // close file, c++ code has been written
 }
 

@@ -6,7 +6,7 @@
 
 bool break_loop = false;
 
-void parser::main(std::string root_name) {
+void parser::main() {
     /*
      This goes through all the code tokens and each function checks if it is a recognised pattern of tokens,
      if it is, it returns true, else false
@@ -26,7 +26,7 @@ void parser::main(std::string root_name) {
     };
 
     current_branch_scope = &main_branch;
-    main_branch.name = std::move(root_name); // root name is input file name
+    main_branch.name = file::input_file;
 
     curr_token = lexer::tokens.begin();
     if(curr_token == lexer::tokens.end())
