@@ -113,9 +113,10 @@ void processIncludes(std::list<char>::iterator start, std::list<char>::iterator 
             preprocessor::imports_to_dump.push_back(include_path);
         }
         else if(*i != ' ' && *i != '\t')
-            while(i != end && *i != '\n')
+            while(*i != '\n') {
                 i++;
-        if(i == end)
-            i--;
+                if(i == end)
+                    return;
+            }
     }
 }
