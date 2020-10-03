@@ -12,7 +12,7 @@ void file::read() { // read file
     input_text.assign((std::istreambuf_iterator<char>(input_file_obj)),
                       std::istreambuf_iterator<char>());
     
-    preprocessor::main(); // call preprocessor
+    preprocessor::main(file::input_text.begin(), file::input_text.end(), file::input_file); // call preprocessor
 }
 
 void file::write() { // write to file
