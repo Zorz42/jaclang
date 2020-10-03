@@ -4,9 +4,6 @@
 #include "jaclang.h"
 #endif
 
-#define WHITE "\033[0m"
-#define RED "\033[1;31m"
-
 void error::syntaxError(const std::string &error) { // Print out syntax error
     if(parser::debug_show_ast)
         printAST(parser::main_branch);

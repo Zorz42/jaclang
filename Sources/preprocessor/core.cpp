@@ -93,7 +93,7 @@ void processIncludes(std::list<char>::iterator start, std::list<char>::iterator 
             std::string include_path = parseDirective(i);
             
             if(!includeFileFromDirs(include_path, i)) {
-                std::cerr << "\033[1;31mFile '" << include_path << "' could not be included!\033[0m" << std::endl;
+                std::cerr << RED << "File '" << include_path << "' could not be included!" << WHITE << std::endl;
                 error::terminate("SYNTAX ERROR", Err_Syntax_Error);
             }
         }
@@ -101,10 +101,11 @@ void processIncludes(std::list<char>::iterator start, std::list<char>::iterator 
             std::string include_path = parseDirective(i);
             
             if(!includeFile("/usr/local/Jac/Libraries/" + include_path + "/Headers/__main__.jlh", i)) {
-                std::cerr << "\033[1;31mLibrary '" << include_path << "' does not exist!\033[0m" << std::endl;
+                std::cerr << RED << "Library '" << include_path << "' does not exist!" << WHITE << std::endl;
                 error::terminate("SYNTAX ERROR", Err_Syntax_Error);
             }
-            preprocessor::imports_to_dump.push_back(include_path);
+            if(preprocessor::dump_imports)
+                preprocessor::imports_to_dump.push_back(include_path);
         }
         else if(*i != ' ' && *i != '\t')
             while(*i != '\n') {

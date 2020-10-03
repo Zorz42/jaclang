@@ -70,7 +70,7 @@ void init() { // initialize global variables
 
     std::string line;
     if(!read_file.is_open()) {
-        std::cout << "\033[1;31mCannot open empty assembly file!\033[0m" << std::endl; // file missing
+        std::cout << RED << "Cannot open empty assembly file!" << WHITE << std::endl; // file missing
         error::terminate("DATA MISSING OR CORRUPTED", Err_Data_Error);
     }
     
