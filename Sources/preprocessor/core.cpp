@@ -27,19 +27,15 @@ void preprocessor::main(std::list<char>::iterator start, std::list<char>::iterat
 }
 
 void removeComments(std::list<char>::iterator start, std::list<char>::iterator end) {
-    std::list<char>::iterator prev = file::input_text.begin();
-    for(auto i = start; i != end; i++) {
-        if(*i == '#') {
-            for(start = i; *i != '\n' && i != end; i++);
+    for(auto i = start; i++ != end;) {
+        if(*i == '#') { // #single line comment
+            for(start = i; *i != '\n' && i++ != end;);
             file::input_text.erase(start, i);
         }
-        else if(*prev == '/' && *i == '*') {
-            for(start = prev; i != end && (*i != '*' || *++i != '/'); i++);
-            if(i != end)
-                i++;
-            file::input_text.erase(start, i);
+        else if(*i == '/' && *++i == '*') { // /* multiline comment */
+            for(start = --i; i != end && (*i != '*' || *++i != '/'); i++);
+            file::input_text.erase(start, ++i);
         }
-        prev = i;
     }
 }
 
@@ -55,9 +51,9 @@ bool includeFile(const std::string path, std::list<char>::iterator& iter) {
     std::ifstream input_file_obj(path);
     if(!input_file_obj.is_open()) // if didn't open (file could be missing)
         return false;
-    std::list<char>::iterator start = iter, pre_start = iter;
-    pre_start--;
-    while(*iter != '\n') iter++;
+    
+    std::list<char>::iterator start = iter, pre_start = --iter;
+    while(*++iter != '\n');
     file::input_text.erase(start, iter); // remove include directive
     
     std::string line;
@@ -66,6 +62,7 @@ bool includeFile(const std::string path, std::list<char>::iterator& iter) {
             file::input_text.insert(iter, c);
         file::input_text.insert(iter, '\n');
     }
+    
     preprocessor::main(pre_start, iter, path);
     input_file_obj.close(); // close the file
     return true;
@@ -82,12 +79,9 @@ bool includeFileFromDirs(const std::string& file_name, std::list<char>::iterator
 }
 
 std::string parseDirective(std::list<char>::iterator i) {
+    while(*i != ' ' && *i++ != '\t'); // remove directive word
+    while(*i == ' ' || *i == '\t') i++; // remove spaces and tabs between word and parameter
     std::string result;
-    while(*i != ' ' && *i != '\t') // remove directive word
-        i++;
-    while(*i == ' ' || *i == '\t') // remove spaces and tabs between word and parameter
-        i++;
-    
     while(*i != '\n' && *i != ' ' && *i != '\t')
         result.push_back(*i++);
     return result;
