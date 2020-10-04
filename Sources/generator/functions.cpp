@@ -85,7 +85,6 @@ void generator::e::functionDeclaration() { // declaring a function
         generator::main(true);
 
         asm_::append_instruction("popa");
-        asm_::append_instruction("ret");
 
         asm_::current_register = prev_current_register;
         current_branch_scope = &parser::main_branch;

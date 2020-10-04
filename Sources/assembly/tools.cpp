@@ -23,15 +23,12 @@ void asm_::pushToStack(Variable source) { // push to stack
 }
 
 void asm_::nextRegister() { // increment register
-    current_register++;
-    if((uint8_t) current_register == available_registers[0].size())
+    if((uint8_t) ++current_register == available_registers[0].size())
         error::semanticError("register overflow");
 }
 
 void asm_::prevRegister() { // decrement register
     current_register--;
-    if(current_register == -1)
-        error::semanticError("register overflow");
 }
 
 std::string asm_::availableRegister(int8_t size, int8_t offset) { // get available register of specific size
@@ -41,12 +38,12 @@ std::string asm_::availableRegister(int8_t size, int8_t offset) { // get availab
     return "%" + available_registers[index].at((unsigned long) current_register + offset);
 }
 
-void asm_::incStackPointer(int value) { // increment stack pointer by some value
+void asm_::incStackPointer(int value) { // increment stack pointer
     stack_pointer += value;
     if(stack_pointer > biggest_stack_pointer)
         biggest_stack_pointer = stack_pointer;
 }
 
-void asm_::decStackPointer(int value) { // decrament stack pointer by some value
+void asm_::decStackPointer(int value) { // decrament stack pointer
     stack_pointer -= value;
 }

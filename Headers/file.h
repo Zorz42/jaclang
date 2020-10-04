@@ -17,5 +17,4 @@ namespace file {
     void appendBss(const std::string &line);
     void appendText(const std::string &line);
     void appendFunc(const std::string &line);
-    void insert(const std::string &line, unsigned long position);
 }
