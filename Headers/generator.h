@@ -37,6 +37,8 @@ struct DatatypeMatches {
 };
 
 namespace generator {
+    enum FunctionCode {function_success, function_convert, function_not_found, function_ambigous};
+
     void initialMain();
     void main(bool inFunction=false);
 
@@ -58,14 +60,14 @@ namespace generator {
     inline std::vector<Function> function_vector;
 
     Variable *getVariable(const std::string &name);
-    Function *getFunction(const std::string &name, const std::vector<std::string> &args);
+    std::pair<FunctionCode, Function*> getFunction(const std::string &name, const std::vector<std::string> &args);
 
     inline std::vector<std::string> primitive_datatypes;
     inline std::unordered_map<std::string, int> primitive_datatype_sizes;
     inline std::vector<DatatypeMatches> operator_matches;
     inline std::unordered_map<std::string, std::vector<std::string>> implicit_conversations;
 
-    void checkForImplicitConversion(const std::string &dest, const std::string &source);
+    bool checkForImplicitConversion(const std::string &dest, const std::string &source);
 
     inline Function *current_function = nullptr;
     inline Branch *current_branch_scope;

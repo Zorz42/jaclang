@@ -55,7 +55,7 @@ $(OBJ_DIR):
 # JACMAKE #
 ###########
 
-JACMAKE_VERSION = 1.4.1
+JACMAKE_VERSION = 1.4.2
 
 
 jacmake: $(JAC_DIR)

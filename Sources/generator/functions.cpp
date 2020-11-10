@@ -15,8 +15,7 @@ void f_asmbss();
 void f_printchar();
 std::string generateReadableFunctionName(const std::string &name, const std::vector<std::string> &args);
 
-void generator::e::systemFunctionCall() // system function: __test__
-{
+void generator::e::systemFunctionCall() { // system function: __test__
     if(CURRENT_NAME == "__asm__") {
         if(generator::current_function == nullptr)
             f_asmtext();
@@ -55,17 +54,17 @@ void generator::e::functionDeclaration() { // declaring a function
         obj.args.push_back(var_obj);
     }
     
-    Function *target = getFunction(obj.name, arguments_types);
+    std::pair<FunctionCode, Function*> target = getFunction(obj.name, arguments_types);
     
     current_branch_scope_count++;
     
     obj.defined = generator::current_branch_scope_count != generator::current_branch_scope->sub.size() && CURRENT.name == "scope";
-    if(!target)
+    if(target.first != function_success)
         generator::function_vector.push_back(obj);
     asm_::append_instruction(".globl", obj.generateName());
     
     if(obj.defined) { // if there isn't scope, then it's just declaration instead of definition
-        if(target && target->defined)
+        if(target.first == function_success && target.second->defined)
             error::semanticError("Function '" + generateReadableFunctionName(obj.name, arguments_types) + "' already defined!");
         // save all variables and then retrieve them
         
@@ -85,6 +84,7 @@ void generator::e::functionDeclaration() { // declaring a function
         generator::main(true);
 
         asm_::append_instruction("popa");
+        asm_::append_instruction("ret");
 
         asm_::current_register = prev_current_register;
         current_branch_scope = &parser::main_branch;
@@ -92,8 +92,7 @@ void generator::e::functionDeclaration() { // declaring a function
         asm_::stack_pointer = prev_stack_pointer;
         asm_::biggest_stack_pointer = prev_biggest_stack_pointer;
         current_function = nullptr;
-    }
-    else
+    } else
         current_branch_scope_count--;
 }
 
@@ -116,21 +115,23 @@ Function *generator::e::functionCall(const Branch &function_branch) {
     }
     asm_::prevRegister();
     
-    Function *target = getFunction(FUNCTION_NAME, argument_types); // go through existing functions and check if it exists
+    std::pair<FunctionCode, Function*> target = getFunction(FUNCTION_NAME, argument_types); // go through existing functions and check if it exists
     
-    if(!target)
+    if(target.first == function_not_found)
         error::semanticError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' does not exist!");
+    else if(target.first == function_ambigous)
+        error::semanticError("Function '" + generateReadableFunctionName(FUNCTION_NAME, argument_types) + "' can call mutiple functions! (ambigous)");
     
     for(unsigned long i = 0; i < argument_instruction_positions.size(); i++)
-        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target->args.at(i).position - PUSHA_SIZE) + "(%rsp)";
+        asm_::instructions.at(argument_instruction_positions.at(i)).arg2 = std::to_string(target.second->args.at(i).position - PUSHA_SIZE) + "(%rsp)";
     
-    asm_::append_instruction("call", target->generateName()); // call function
-    unsigned int target_size = target->size();
-    for(const Variable &iter : target->args)
+    asm_::append_instruction("call", target.second->generateName()); // call function
+    unsigned int target_size = target.second->size();
+    for(const Variable &iter : target.second->args)
         target_size += iter.size();
     if(asm_::stack_pointer + target_size > asm_::biggest_stack_pointer)
         asm_::biggest_stack_pointer = asm_::stack_pointer + target_size;
-    return target;
+    return target.second;
 }
 
 #undef FUNCTION_NAME
@@ -138,7 +139,9 @@ Function *generator::e::functionCall(const Branch &function_branch) {
 
 void generator::e::returnStatement() { // a simple return statement
     if(primitive_datatype_sizes[current_function->type]) {
-        checkForImplicitConversion(current_function->type, generator::e::expr(CURRENT.sub.at(0)));  // do calculation
+        std::string source = current_function->type, dest = generator::e::expr(CURRENT.sub.at(0));
+        if(!checkForImplicitConversion(source, dest)) // do calculation
+            error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
         asm_::append_instruction("mov", asm_::availableRegister(current_function->size()), "112(%rbp)", current_function->size());
         
         if(asm_::biggest_stack_pointer % 16)
@@ -155,28 +158,36 @@ void generator::e::returnStatement() { // a simple return statement
 std::string generateReadableFunctionName(const std::string &name, const std::vector<std::string> &args) {
     // generate function name for errors
     std::string function_name = name + "(";
-    for(unsigned long i = 0; i < args.size(); i++) {
-        if(i)
-            function_name.push_back(',');
-        function_name += args.at(i);
-    }
-    function_name.push_back(')');
-    return function_name;
+    for(unsigned long i = 0; i < args.size(); i++)
+        function_name += (i ? "," : "") + args.at(i);
+    return function_name + ")";
 }
 
-Function *generator::getFunction(const std::string &name, const std::vector<std::string> &args) {
+std::pair<generator::FunctionCode, Function*> generator::getFunction(const std::string &name, const std::vector<std::string> &args) {
     // go through existing functions and check if it exists
     for(Function &iter : generator::function_vector)
-        if(iter.name == name) {
-            if(args.size() != iter.args.size())
-                goto loop_end;
+        if(iter.name == name && args.size() == iter.args.size()) {
             for(unsigned long i = 0; i < args.size(); i++)
                 if(args.at(i) != iter.args.at(i).type)
                     goto loop_end;
-            return &iter;
+            return {function_success, &iter};
             loop_end:;
         }
-    return nullptr;
+    std::vector<Function*> functions;
+    for(Function &iter : generator::function_vector)
+        if(iter.name == name && args.size() == iter.args.size()) {
+            for(unsigned long i = 0; i < args.size(); i++)
+            if(!checkForImplicitConversion(args.at(i), iter.args.at(i).type))
+                goto loop_end2;
+            functions.push_back(&iter);
+            loop_end2:;
+        }
+    if(functions.empty())
+        return {function_not_found, nullptr};
+    else if(functions.size() == 1)
+        return {function_convert, functions.at(0)};
+    else
+        return {function_ambigous, nullptr};
 }
 
 void f_asmtext() { // append to text section

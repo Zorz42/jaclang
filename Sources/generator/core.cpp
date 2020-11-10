@@ -27,6 +27,8 @@ void generator::initialMain() {
     asm_::append_instruction(main_func_name + ":");
     
     generator::main(true); // generate assembly tokens out of syntax tree
+
+    asm_::append_instruction("ret");
 }
 
 void generator::main(bool in_function) {
@@ -65,7 +67,6 @@ void generator::main(bool in_function) {
             asm_::biggest_stack_pointer += 16 - asm_::biggest_stack_pointer % 16; // round to ceil of base 16
         asm_::instructions.at(sub_rsp).arg1 += std::to_string(asm_::biggest_stack_pointer);
         asm_::append_instruction("add", "$" + std::to_string(asm_::biggest_stack_pointer), "%rsp");
-        asm_::append_instruction("ret");
     }
 }
 
@@ -90,4 +91,13 @@ std::string Function::generateName() const {
     for(const Variable& iter : args)
         result += "." + iter.type;
     return result;
+}
+
+bool generator::checkForImplicitConversion(const std::string &dest, const std::string &source) {
+    if(dest == source)
+        return true;
+    for(const std::string &conversation : generator::implicit_conversations[source])
+        if(dest == conversation)
+            return true;
+    return false;
 }

@@ -23,14 +23,18 @@ void generator::e::variableDeclaration() {
     
     asm_::pushToStack(obj); // push to stack
     if(CURRENT.sub.at(2).name != "none") { // if it's definition
-        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        std::string source = obj.type, dest = generator::e::expr(CURRENT.sub.at(2));
+        if(!checkForImplicitConversion(source, dest)) // do calculation
+            error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
         asm_::append_instruction("mov", asm_::availableRegister(obj.size()), asm_::onStack(-asm_::stack_pointer), obj.size()); // set variable on stack
     }
 }
 
 void generator::e::variableSetting() {
     Variable *current_variable = getVariable(CURRENT.sub.at(0).name);
-    checkForImplicitConversion(current_variable->type, generator::e::expr(CURRENT.sub.at(1))); // do calculation
+    std::string source = current_variable->type, dest = generator::e::expr(CURRENT.sub.at(1));
+    if(!checkForImplicitConversion(source, dest)) // do calculation
+        error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
     asm_::append_instruction("mov", asm_::availableRegister(current_variable->size()), current_variable->generateAddress(), current_variable->size()); // set variable on stack
 }
 
@@ -52,7 +56,7 @@ Variable *generator::getVariable(const std::string &name) {
     return nullptr;
 }
 
-void generator::checkForImplicitConversion(const std::string &dest, const std::string &source) {
+/*void generator::checkForImplicitConversion(const std::string &dest, const std::string &source) {
     bool success = dest == source;
     if(!success)
         for(const std::string &conversation : generator::implicit_conversations[source])
@@ -60,7 +64,7 @@ void generator::checkForImplicitConversion(const std::string &dest, const std::s
                 success = true;
     if(!success)
         error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
-}
+}*/
 
 void generator::e::globalVariableDeclaration() {
     Variable obj; // obj variable
@@ -92,7 +96,9 @@ void generator::e::globalVariableDeclaration() {
     }
     
     if(CURRENT.sub.at(2).name == "expr") { // if it's definition
-        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        std::string source = obj.type, dest = generator::e::expr(CURRENT.sub.at(2));
+        if(!checkForImplicitConversion(source, dest)) // do calculation
+            error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
         asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
         asm_::append_instruction("g" + obj.name + ":", "", "", 0, Section_Data);
         asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
@@ -118,7 +124,9 @@ void generator::e::localVariableDeclaration() {
     asm_::append_instruction("." + asm_::size_keywords[obj.size()], "0", "", 0, Section_Data);
     
     if(CURRENT.sub.at(2).name == "expr") { // if it's definition
-        checkForImplicitConversion(obj.type, generator::e::expr(CURRENT.sub.at(2)));  // do calculation
+        std::string source = obj.type, dest = generator::e::expr(CURRENT.sub.at(2));
+        if(!checkForImplicitConversion(source, dest)) // do calculation
+            error::semanticError("Could not convert '" + source + "' to '" + dest + "'!");
         asm_::append_instruction("mov", asm_::availableRegister(obj.size()), obj.generateAddress(), obj.size()); // set variable
     }
 }
