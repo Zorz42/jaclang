@@ -1,6 +1,6 @@
 # Jaclang beta
 
-Jaclang is a programming language, that is trying to achieve as small compiled binaries as possible. Is is also aiming to be fast and have a clean code with as less syntax elements as possible and be as easy as possible to use.
+Jaclang is a programming language, that is trying to achieve a very clean looking and readable code as well as small compiled binaries. Is is also aiming to be fast and have a clean code with as less syntax elements as possible and be as easy as possible to use.
 
 ## Installation
 
