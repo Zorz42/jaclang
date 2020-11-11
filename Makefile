@@ -113,6 +113,6 @@ test:
 		if [ `$(TESTS_DIR)/$${file}/program` = `cat $(TESTS_DIR)/$${file}/output.txt` ]; then \
 			echo Success: $${file}; \
 		else \
-			echo Failed: $${file}: Failed!; \
+			echo Failed: $${file}; \
 		fi \
         done
