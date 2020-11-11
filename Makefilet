@@ -106,13 +106,11 @@ install: $(JAC_DIR) build
 # TEST #
 ########
 
-test:
-	@for file in $(shell ls $(TESTS_DIR)) ; do \
-		rm -r $(TESTS_DIR)/$${file}/Objects; \
-		jacmake $(TESTS_DIR)/$${file}; \
-		if [ `$(TESTS_DIR)/$${file}/program` = `cat $(TESTS_DIR)/$${file}/output.txt` ]; then \
-			echo Success: $${file}; \
-		else \
-			echo Failed: $${file}: Failed!; \
-		fi \
-        done
+test: $(TESTS_DIR)/*
+	@rm -r $^/Objects
+	@jacmake $^
+	@if [ $($^/program) == $(cat $^/output.txt) ]; then \
+		echo $^: Succeeded!; \
+	else; \
+		echo $^: Failed!; \
+	fi;

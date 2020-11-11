@@ -1,0 +1,7 @@
+{
+    "Type": "Program",
+    "ExecName": "program",
+    "StartFiles": [
+        "Sources/main.jl"
+    ]
+}
