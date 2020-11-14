@@ -107,7 +107,7 @@ void newToken(TokenType TYPE) {
 }
 
 bool isInt(const std::string &text) { // checks if string can be integer
-    return !text.empty() && std::find_if(text.begin(), text.end(), [](unsigned char c) { return !std::isdigit(c); }) == text.end();
+    return !text.empty() && std::find_if(text.begin(), text.end(), [](unsigned char c2) { return !std::isdigit(c2); }) == text.end();
 }
 
 TokenType isToken(char char1) {
@@ -137,6 +137,8 @@ TokenType isToken(char char1, char char2) {
             switch(char2) {
                 case '=':
                     return Operator;
+                default:
+                    return Undefined;
             }
         default:
             return Undefined;

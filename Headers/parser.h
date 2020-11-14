@@ -3,7 +3,7 @@ struct Branch {
     std::vector<Branch> sub;
     
     Branch() = default;
-    Branch(std::string name) : name(name) {}
+    Branch(std::string name_) : name(name_) {}
 };
 
 namespace parser {

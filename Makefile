@@ -49,7 +49,7 @@ $(OBJ_DIR)/jaclang.h.gch: $(HEADER_DIR)/*.h $(SRC_DIR)/*.cpp
 	@echo Compiling jaclang header
 	@g++ $(GCC_FLAGS) -c $(HEADER_DIR)/jaclang.h -o $(OBJ_DIR)/jaclang.h.gch
 
-$(OBJ_DIR):
+$(OBJ_DIR)/:
 	@mkdir $(OBJ_DIR)
 
 ###########

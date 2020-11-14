@@ -8,6 +8,7 @@
 #include <list>
 #include <unordered_map>
 #include <fstream>
+#include <stack>
 
 struct Branch;
 
